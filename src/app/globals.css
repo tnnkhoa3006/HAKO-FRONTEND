@@ -1,0 +1,202 @@
+@import "tailwindcss";
+
+:root {
+  /* Dark mode (default) */
+  --background: #0a0a0a;
+  --foreground: #ededed;
+
+  /* Sidebar */
+  --sidebar-bg: #000000;
+  --sidebar-border: #262626;
+  --sidebar-hover: #1a1a1a;
+  --sidebar-active: #1a1a1a;
+  --sidebar-text: #ffffff;
+
+  /* SeeMore Menu */
+  --menu-bg: #262626;
+  --menu-border: #363636;
+  --menu-hover: #363636;
+  --menu-text: #ffffff;
+  --menu-divider: #363636;
+
+  /* Mobile navbar */
+  --mobile-nav-bg: #0d1015;
+
+  /* General UI */
+  --card-bg: #1c1c1c;
+  --input-bg: #262626;
+  --border-color: #363636;
+  --secondary-text: #a8a8a8;
+  --icon-color: #ffffff;
+
+  /* Post / Home feed */
+  --post-bg: #000000;
+  --post-mobile-bg: #0d1015;
+  --post-border: #262626;
+  --post-text: #fafafa;
+  --post-subtext: #dbdbdb;
+  --post-time-text: #8e8e8e;
+
+  /* Avatar placeholder */
+  --avatar-placeholder-bg: #262626;
+
+  /* Suggestions panel */
+  --suggestion-username-color: #f9f9f9;
+  --suggestion-text-color: #a8a8a8;
+  --suggestion-seeall-color: #f9f9f9;
+  --suggestion-cancel-color: #f9f9f9;
+  --suggestion-cancel-hover-bg: #262626;
+  --suggestion-divider: #262626;
+
+  /* Messenger */
+  --messenger-sidebar-bg: #0f0f0f;
+  --messenger-sidebar-mobile-bg: #0d1015;
+  --messenger-modal-bg: #0a0a0a;
+  --messenger-chat-bg: #0d1015;
+  --messenger-text: #ffffff;
+  --messenger-secondary-text: #a8a8a8;
+  --messenger-input-border: #262626;
+  --messenger-action-hover: rgba(255, 255, 255, 0.08);
+
+  /* Profile */
+  --profile-text: #f5f5f5;
+}
+
+[data-theme="light"] {
+  /* Light mode overrides */
+  --background: #fafafa;
+  --foreground: #0a0a0a;
+
+  /* Sidebar */
+  --sidebar-bg: #ffffff;
+  --sidebar-border: #dbdbdb;
+  --sidebar-hover: #efefef;
+  --sidebar-active: #efefef;
+  --sidebar-text: #000000;
+
+  /* SeeMore Menu */
+  --menu-bg: #ffffff;
+  --menu-border: #dbdbdb;
+  --menu-hover: #efefef;
+  --menu-text: #000000;
+  --menu-divider: #dbdbdb;
+
+  /* Mobile navbar */
+  --mobile-nav-bg: #ffffff;
+
+  /* General UI */
+  --card-bg: #ffffff;
+  --input-bg: #efefef;
+  --border-color: #dbdbdb;
+  --secondary-text: #737373;
+  --icon-color: #000000;
+
+  /* Post / Home feed */
+  --post-bg: #ffffff;
+  --post-mobile-bg: #ffffff;
+  --post-border: #dbdbdb;
+  --post-text: #0a0a0a;
+  --post-subtext: #262626;
+  --post-time-text: #737373;
+
+  /* Avatar placeholder */
+  --avatar-placeholder-bg: #efefef;
+
+  /* Suggestions panel */
+  --suggestion-username-color: #0a0a0a;
+  --suggestion-text-color: #737373;
+  --suggestion-seeall-color: #0a0a0a;
+  --suggestion-cancel-color: #0a0a0a;
+  --suggestion-cancel-hover-bg: #efefef;
+  --suggestion-divider: #dbdbdb;
+
+  /* Messenger */
+  --messenger-sidebar-bg: #ffffff;
+  --messenger-sidebar-mobile-bg: #ffffff;
+  --messenger-modal-bg: #ffffff;
+  --messenger-chat-bg: #f7f7f7;
+  --messenger-text: #0a0a0a;
+  --messenger-secondary-text: #737373;
+  --messenger-input-border: #dbdbdb;
+  --messenger-action-hover: rgba(0, 0, 0, 0.06);
+
+  /* Profile */
+  --profile-text: #0a0a0a;
+}
+
+/*
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+} */
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  scrollbar-color: #808080 transparent;
+  overflow-x: hidden !important;
+  -ms-overflow-style: none;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+@media(max-width: 768px) {
+  body {
+    background-color: var(--mobile-nav-bg);
+  }
+
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  body::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  html::-webkit-scrollbar {
+    display: none !important;
+  }
+
+  html {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+}
+
+main {
+  margin-left: 240px;
+  overflow-x: hidden !important;
+}
+
+@media(max-width: 1264px) {
+  main {
+    margin-left: 70px;
+  }
+}
+
+@media(max-width: 768px) {
+  main {
+    margin-left: 0;
+  }
+}
+
+/* Chỉ riêng trang setting trên PC (>= 1264px) sẽ margin-left: 70px */
+@media (min-width: 1264px) {
+  main[data-page="setting"] {
+    margin-left: 70px !important;
+  }
+}
+
+body.modal-open {
+  overflow: hidden !important;
+}

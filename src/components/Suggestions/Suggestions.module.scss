@@ -1,0 +1,269 @@
+.suggestionsContainer {
+  max-width: 420px;
+  height: 100%;
+  padding-top: 12px;
+  background-color: transparent;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 100%;
+  margin-right: 15px;
+  padding-right: 50px;
+  height: auto;
+
+  @media (max-width: 1160px) {
+    display: none;
+  }
+}
+
+.content {
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  // gap: 20px;
+  max-height: 100dvh;
+  // overflow-y: auto;
+  flex: 1;
+  position: relative;
+}
+
+.userAvatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 12px;
+  background-color: var(--avatar-placeholder-bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.userInfo {
+  flex: 1;
+}
+
+.username {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--suggestion-username-color);
+}
+
+.fullName,
+.suggestionText {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: var(--suggestion-text-color);
+}
+
+.switchButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #0095f6;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0;
+  margin-left: 8px;
+
+  &:hover {
+    color: #00376b;
+  }
+}
+
+// Suggestions section
+.suggestionsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.suggestionsTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--suggestion-text-color);
+  margin: 0; // Loại bỏ margin-bottom: 20px để căn thẳng hàng
+}
+
+.seeAllButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--suggestion-seeall-color);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 0;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--suggestion-text-color);
+    transform: translateX(-2px);
+  }
+}
+
+// Animation cho danh sách suggestions
+.suggestionsList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  transition: all 0.3s ease-in-out;
+  overflow-y: auto;
+  max-height: 55dvh; // Giới hạn chiều cao tối đa
+
+  // Thêm custom scrollbar
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 2px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+}
+
+.suggestionItem {
+  display: flex;
+  align-items: center;
+  transition: all 0.3s ease-in-out;
+  transform-origin: top;
+  flex-shrink: 0; // Ngăn item bị co lại
+}
+
+.suggestionItem .userAvatar {
+  width: 45px;
+  height: 45px;
+}
+
+// Trạng thái ẩn/hiện cho từng item
+.suggestionItem.visible {
+  opacity: 1;
+  transform: translateY(0) scaleY(1);
+  max-height: 60px;
+  margin-bottom: 12px;
+}
+
+.suggestionItem.hidden {
+  opacity: 0;
+  transform: translateY(-10px) scaleY(0);
+  max-height: 0;
+  margin-bottom: 0;
+  pointer-events: none;
+}
+
+.followButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #0095f6;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 0;
+  margin-left: auto;
+
+  &:hover {
+    color: #00376b;
+  }
+
+  // Thêm style cho các trạng thái khác nhau
+  &.following {
+    color: #a8a8a8;
+  }
+
+  &.loading {
+    color: #a8a8a8;
+    cursor: not-allowed;
+  }
+}
+
+// Animation cho container cancel button
+.cancelButtonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--suggestion-divider);
+  opacity: 0;
+  transform: translateY(20px);
+  animation: slideInFromBottom 0.4s ease-out forwards;
+  flex-shrink: 0; // Ngăn container này bị co lại
+}
+
+@keyframes slideInFromBottom {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slideInFromBottom {
+  animation: slideInFromBottom 0.4s ease-out forwards;
+}
+
+.cancelButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--suggestion-cancel-color);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--suggestion-cancel-hover-bg);
+    color: var(--suggestion-text-color);
+    transform: scale(1.05);
+  }
+}
+
+// Animation khi mở rộng danh sách
+.suggestionsList.expanded {
+  animation: expandList 0.3s ease-out;
+}
+
+@keyframes expandList {
+  from {
+    max-height: calc(5 * 60px);
+  }
+
+  to {
+    max-height: 70dvh; // Thay đổi từ max-height: none thành 70dvh
+  }
+}
+
+// Thêm style cho error text
+.errorText {
+  color: #ed4956;
+  font-size: 11px;
+  margin-top: 2px;
+}
+
+// Thêm style cho checkmark icon
+.checkMarkIcon {
+  flex-shrink: 0;
+}

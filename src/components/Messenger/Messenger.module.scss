@@ -1,0 +1,433 @@
+.container {
+  display: flex;
+  position: fixed;
+  top: 50%;
+  left: 49.5%;
+  width: 100%;
+  transform: translate(-50%, -50%);
+  height: 100dvh;
+  padding: 32px 85px;
+  margin-left: 40px;
+
+  @media (max-width: 768px) {
+    padding: 0;
+    margin: 0;
+    left: 50%;
+    z-index: 997;
+    height: 100dvh;
+  }
+}
+
+// Thêm style cho modal
+.modalContainer {
+  position: static !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  left: unset !important;
+  top: unset !important;
+  transform: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: var(--messenger-modal-bg);
+  border-radius: 0;
+  flex: 1 1 0%;
+  box-sizing: border-box;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  overflow: hidden;
+}
+
+.sidebar {
+  flex: 1;
+  background-color: var(--messenger-sidebar-bg);
+
+  @media (max-width: 622px) {
+    width: 100vw;
+    height: 100dvh;
+    z-index: 997;
+    margin: auto 0;
+    background-color: var(--messenger-sidebar-mobile-bg);
+    border: none;
+  }
+}
+
+.mainChat {
+  flex: 3.2;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
+  overflow-x: hidden !important;
+
+  @media (max-width: 622px) {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100dvh;
+    z-index: 998;
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    margin: auto 0;
+
+    .chatHeader {
+      position: sticky;
+      top: 0;
+      height: 60px;
+      z-index: 998;
+      flex-shrink: 0;
+      background-color: var(--messenger-chat-bg) !important;
+    }
+
+    .messageInput {
+      position: sticky;
+      bottom: 0;
+      min-height: 70px;
+      z-index: 998;
+      flex-shrink: 0;
+      max-height: fit-content;
+      background-color: var(--messenger-chat-bg) !important;
+    }
+
+    .fileInput {
+      background-color: transparent !important;
+    }
+
+    .messages {
+      flex: 2;
+      min-height: 0;
+      background-color: var(--messenger-chat-bg) !important;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+  }
+}
+
+.showMainChat {
+  @media (max-width: 622px) {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.backBtnContainer {
+  display: none;
+
+  @media (max-width: 622px) {
+    display: block;
+  }
+}
+
+.backBtn {
+  @media (max-width: 622px) {
+    display: block !important;
+    background: none;
+    color: var(--messenger-text);
+    border: none;
+    cursor: pointer;
+
+    svg {
+      width: 22px;
+      height: 22px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .avatar {
+    width: 30px;
+    height: 30px;
+  }
+
+  .username {
+    font-size: 14px !important;
+  }
+
+  .checkMark {
+    width: 12px !important;
+    height: 12px !important;
+  }
+
+  .timeOnline {
+    font-size: 11px;
+  }
+}
+
+.text {
+  overflow-wrap: anywhere;
+  white-space: normal;
+  // font-size: 17px;
+}
+
+.replyMessage {
+  font-size: 14px;
+}
+
+.text2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.profilePicture {
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.username {
+  @media (max-width: 480px) {
+    font-size: 13px !important;
+  }
+}
+
+.info {
+  @media (max-width: 480px) {
+    display: none;
+  }
+}
+
+// Message Actions Styles
+.messageActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-100%);
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.2s ease-in-out;
+  z-index: 10;
+
+  // Positioning based on user type
+  &.currentUser {
+    // For current user - actions on the left side of message bubble
+    right: calc(100% + 12px);
+    flex-direction: row;
+  }
+
+  &.otherUser {
+    // For other user - actions on the right side of message bubble
+    left: calc(100% + 12px);
+    flex-direction: row-reverse;
+  }
+}
+
+// Preview mode for message actions
+.messageActionsPreview {
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  position: unset;
+  opacity: 0;
+  visibility: hidden;
+  gap: 4px;
+  margin-left: 8px;
+  transition: all 0.2s;
+  z-index: 10;
+}
+
+.messageContainer:hover .messageMetaPreviewRow .messageActionsPreview {
+  opacity: 1;
+  visibility: visible;
+}
+
+// Container cho time + actions preview
+.messageMetaPreviewRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.messageActionsPreview .messageActionBtn {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--messenger-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.messageActionsPreview .messageActionBtn svg {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+// Show actions on hover
+.messageContainer {
+  position: relative;
+
+  .avatarContainer {
+    margin-bottom: 33px;
+  }
+
+  &:hover {
+    .messageActions {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
+
+// Action buttons styling
+.messageActionBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  // border-radius: 50%;
+  // background: rgba(255, 255, 255, 0.1);
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  color: var(--messenger-text);
+  backdrop-filter: blur(10px);
+
+  &:active {
+    transform: scale(0.95);
+  }
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+// Animation for smooth appearance
+@keyframes fadeInActions {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) scale(0.8);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+  }
+}
+
+// Ensure message bubble container has relative positioning for absolute positioning of actions
+.messageContainer .max-w-md .message-bubble {
+  position: relative;
+}
+
+// Additional styling for better visual hierarchy
+.messageActions {
+  // Add subtle shadow for better visibility
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+// Touch devices - show actions on tap/touch
+@media (hover: none) and (pointer: coarse) {
+  .messageContainer {
+    &:active {
+      .messageActions {
+        opacity: 1;
+        visibility: visible;
+      }
+    }
+  }
+}
+
+// High contrast mode support
+@media (prefers-contrast: high) {
+  .messageActionBtn {
+    background: rgba(255, 255, 255, 0.9);
+    color: #000;
+
+    &:hover {
+      background: #fff;
+    }
+  }
+}
+
+// Reduced motion support
+@media (prefers-reduced-motion: reduce) {
+
+  .messageActions,
+  .messageActionBtn {
+    transition: none;
+  }
+
+  .messageContainer:hover .messageActions {
+    animation: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .messageActions {
+    display: none;
+  }
+}
+
+// Thêm vào Messenger.module.scss
+@keyframes shimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.animate-shimmer {
+  animation: shimmer 1.5s infinite;
+}
+
+// Cải thiện skeleton loading container
+.skeleton-container {
+  .animate-pulse {
+    animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse {
+
+    0%,
+    100% {
+      opacity: 1;
+    }
+
+    50% {
+      opacity: 0.7;
+    }
+  }
+}
+
+.searchInput {
+  @media (max-width: 768px) {
+    background-color: transparent !important;
+    border: 1px solid var(--messenger-input-border);
+  }
+}
+
+.backButton {
+  @media (max-width: 768px) {
+    background-color: transparent !important;
+  }
+}
+
+.messageActionsPreview .messageActionBtn:hover,
+.messageActions .messageActionBtn:hover {
+  background: var(--messenger-action-hover);
+  transform: scale(1.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
+  border-radius: unset; // bỏ border tròn nếu có
+  transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 50%;
+}

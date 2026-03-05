@@ -1,0 +1,22 @@
+.header {
+  .authorInfo,
+  .controls {
+    margin-top: 10px;
+  }
+}
+
+.containerStory {
+  @media (max-width: 768px) {
+    gap: 0 !important;
+    padding-top: 38px !important;
+    padding-bottom: 40px !important;
+  }
+}
+
+.input {
+  background-color: transparent;
+
+  &::placeholder {
+    color: #fff;
+  }
+}

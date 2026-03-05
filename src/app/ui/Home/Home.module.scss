@@ -1,0 +1,77 @@
+.homeContainerResponsiveBg {
+  background-color: var(--post-bg);
+  color: var(--post-text);
+  transition: background-color 0.3s ease;
+
+  @media (max-width: 768px) {
+    background-color: var(--post-mobile-bg);
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: 100vw !important;
+    box-sizing: border-box;
+  }
+}
+
+.postItemResponsiveBg {
+  background-color: var(--post-bg);
+  transition: background-color 0.3s ease;
+
+  @media (max-width: 768px) {
+    background-color: var(--post-mobile-bg);
+  }
+
+  @media (max-width: 480px) {
+    padding-bottom: 20px;
+    border: none;
+
+    img {
+      padding: 0 !important;
+    }
+  }
+}
+
+.InteractionButtonContainer {
+  @media (max-width: 480px) {
+    padding: 15px 10px;
+  }
+}
+
+.mediaContainerResponsiveBg {
+  background-color: var(--post-bg);
+  transition: background-color 0.3s ease;
+
+  img {
+    padding: 1px;
+  }
+
+  @media (max-width: 768px) {
+    background-color: var(--post-mobile-bg);
+  }
+}
+
+.mobileOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 996;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+
+  &.fadeIn {
+    opacity: 1;
+  }
+
+  &.fadeOut {
+    opacity: 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .commentInput {
+    display: none;
+  }
+}
