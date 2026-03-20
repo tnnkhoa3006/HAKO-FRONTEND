@@ -65,16 +65,30 @@ export const CommentItem = ({
       )}
 
       <div style={{ display: "flex", gap: "12px" }}>
-        <div className={styles.commentAvatar}>
+        <div 
+          className={styles.commentAvatar}
+          style={{
+            width: isReply ? 32 : 40,
+            height: isReply ? 32 : 40,
+            minWidth: isReply ? 32 : 40,
+            minHeight: isReply ? 32 : 40,
+            borderRadius: "50%",
+            overflow: "hidden",
+            flexShrink: 0,
+          }}
+        >
           <Image
             src={comment.author.profilePicture || "/default-avatar.png"}
             alt={comment.author.username}
             width={isReply ? 32 : 40}
             height={isReply ? 32 : 40}
-            className="rounded-full"
             style={{
               border: "2px solid var(--post-border)",
               boxShadow: "0 2px 8px rgba(0,0,0,0.3)",
+              objectFit: "cover",
+              objectPosition: "center",
+              width: "100%",
+              height: "100%",
             }}
           />
         </div>

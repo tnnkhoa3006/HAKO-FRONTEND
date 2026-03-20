@@ -39,7 +39,8 @@ export const getHomePosts = async (page = 1, limit = 10) => {
 };
 
 // Lấy bài viết được gợi ý dựa trên AI topics và lịch sử tương tác
-export const getRecommendedPosts = async (limit = 15) => {
+// Hỗ trợ pagination (page + limit) giống getHomePosts
+export const getRecommendedPosts = async (limit = 15, page = 1) => {
   try {
     const token = getAuthToken();
 
@@ -52,7 +53,7 @@ export const getRecommendedPosts = async (limit = 15) => {
     }
 
     const response = await fetch(
-      `${BASE_URL}/getRecommendedPosts?limit=${limit}`,
+      `${BASE_URL}/getRecommendedPosts?page=${page}&limit=${limit}`,
       {
         method: "GET",
         headers,
@@ -65,7 +66,8 @@ export const getRecommendedPosts = async (limit = 15) => {
     }
 
     const data = await response.json();
-    return data; // { posts, total, isRecommendation }
+    // Trả về { posts, total, page, limit, hasMore, totalPages, isRecommendation }
+    return data;
   } catch (error) {
     console.error("Lỗi khi lấy bài viết gợi ý:", error);
     throw error;

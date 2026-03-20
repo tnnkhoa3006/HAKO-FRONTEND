@@ -95,6 +95,9 @@ export default function Home() {
   const notificationItem = navItems.find((item) => item.label === "Thông báo");
   const messageItem = navItems.find((item) => item.label === "Tin nhắn");
 
+  // Track whether we're using the recommendation feed or fallback
+  const [feedMode, setFeedMode] = useState<"recommended" | "home">("home");
+
   // Load posts đầu tiên — thử recommendation trước, fallback về getHomePosts
   useEffect(() => {
     async function fetchPosts() {
@@ -103,16 +106,18 @@ export default function Home() {
         let response;
         try {
           // Thử lấy bài gợi ý theo AI + tương tác
-          const recommended = await getRecommendedPosts(limit);
+          const recommended = await getRecommendedPosts(limit, 1);
           if (recommended?.posts?.length > 0) {
-            response = { posts: recommended.posts, hasMore: false };
+            response = recommended; // Đã có { posts, hasMore, page, ... }
+            setFeedMode("recommended");
           }
         } catch {
           // Nếu lỗi (chưa đăng nhập, chưa có tương tác) → fallback
         }
-        // Fallback về feed thông thường nếu recommendation trống
+        // Fallback về feed thông thường nếu recommendation trống hoặc lỗi
         if (!response) {
           response = await getHomePosts(1, limit);
+          setFeedMode("home");
         }
         setPosts(response.posts);
         setHasMore(response.hasMore ?? false);
@@ -126,16 +131,21 @@ export default function Home() {
     fetchPosts();
   }, [setPosts, limit]);
 
-  // Optimized load more với debouncing
+  // Optimized load more — dùng đúng API theo feedMode
   const loadMorePosts = useCallback(async () => {
     if (!hasMore || loadingMore || loading) return;
 
     try {
       setLoadingMore(true);
       const nextPage = page + 1;
-      const response = await getHomePosts(nextPage, limit);
 
-      // Sử dụng Set để filter nhanh hơn
+      // Gọi đúng API theo mode hiện tại
+      const response =
+        feedMode === "recommended"
+          ? await getRecommendedPosts(limit, nextPage)
+          : await getHomePosts(nextPage, limit);
+
+      // Lọc duplicate bằng Set
       const existingIds = new Set(posts.map((post) => post._id));
       const newPosts = response.posts.filter(
         (post: { _id: string }) => !existingIds.has(post._id)
@@ -146,13 +156,13 @@ export default function Home() {
         setPage(nextPage);
       }
 
-      setHasMore(response.hasMore);
+      setHasMore(response.hasMore ?? false);
     } catch (err) {
       console.error("Lỗi load more posts:", err);
     } finally {
       setLoadingMore(false);
     }
-  }, [hasMore, loadingMore, loading, page, limit, posts, setPosts]);
+  }, [hasMore, loadingMore, loading, page, limit, posts, setPosts, feedMode]);
 
   // Callback mở modal, truyền xuống HomeUi
   const handleOpenPostModal = (post: Post, videoTime = 0) => {
