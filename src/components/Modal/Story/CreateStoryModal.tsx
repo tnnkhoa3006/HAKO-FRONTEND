@@ -1,11 +1,10 @@
-"use client";
-
-import React, { useState, useRef, ChangeEvent, useEffect } from "react";
-import { X, Plus, Image as ImageIcon, Video, Send, Music, Search, Check } from "lucide-react";
+import React, { useState, useRef, ChangeEvent, useEffect, useCallback } from "react";
+import { X, Plus, Send, Music, Search, Check } from "lucide-react";
 import { createStory, getMusicList } from "@/server/story";
 import { useAppDispatch } from "@/store/hooks";
 import { fetchStoryHome } from "@/store/story";
 import { createPortal } from "react-dom";
+import Image from "next/image";
 
 interface CreateStoryModalProps {
   isOpen: boolean;
@@ -43,13 +42,7 @@ export default function CreateStoryModal({ isOpen, onClose }: CreateStoryModalPr
     return () => setMounted(false);
   }, []);
 
-  useEffect(() => {
-    if (isMusicMenuOpen && musicList.length === 0) {
-      fetchMusic();
-    }
-  }, [isMusicMenuOpen]);
-
-  const fetchMusic = async () => {
+  const fetchMusic = useCallback(async () => {
     try {
       setIsLoadingMusic(true);
       const music = await getMusicList();
@@ -59,7 +52,13 @@ export default function CreateStoryModal({ isOpen, onClose }: CreateStoryModalPr
     } finally {
       setIsLoadingMusic(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (isMusicMenuOpen && musicList.length === 0) {
+      fetchMusic();
+    }
+  }, [isMusicMenuOpen, musicList.length, fetchMusic]);
 
   if (!isOpen || !mounted) return null;
 
@@ -114,8 +113,9 @@ export default function CreateStoryModal({ isOpen, onClose }: CreateStoryModalPr
       dispatch(fetchStoryHome());
       
       handleClose();
-    } catch (err: any) {
-      setError(err.message || "Đã xảy ra lỗi khi tạo story.");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Đã xảy ra lỗi khi tạo story.";
+      setError(errorMessage);
     } finally {
       setIsUploading(false);
     }
@@ -195,10 +195,12 @@ export default function CreateStoryModal({ isOpen, onClose }: CreateStoryModalPr
                 <>
                   <div className="w-full relative rounded-2xl overflow-hidden bg-black flex items-center justify-center aspect-[9/16] shadow-2xl ring-1 ring-zinc-800">
                     {mediaType === "image" ? (
-                      <img 
+                      <Image 
                         src={previewUrl} 
                         alt="Preview" 
-                        className="w-full h-full object-cover"
+                        fill
+                        className="object-cover"
+                        unoptimized
                       />
                     ) : (
                       <video 
@@ -211,8 +213,8 @@ export default function CreateStoryModal({ isOpen, onClose }: CreateStoryModalPr
                     {/* Music Indicator Overlay */}
                     {selectedMusic && (
                       <div className="absolute top-4 left-4 right-16 flex items-center gap-3 p-3 bg-black/40 backdrop-blur-md rounded-xl border border-white/10 animate-in slide-in-from-left duration-300">
-                        <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 animate-pulse">
-                          <img src={selectedMusic.image} alt={selectedMusic.nameMusic} className="w-full h-full object-cover" />
+                        <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0 animate-pulse relative">
+                          <Image src={selectedMusic.image} alt={selectedMusic.nameMusic} fill className="object-cover" />
                         </div>
                         <div className="flex-1 min-w-0">
                           <p className="text-white text-xs font-bold truncate">{selectedMusic.nameMusic}</p>
@@ -304,7 +306,7 @@ export default function CreateStoryModal({ isOpen, onClose }: CreateStoryModalPr
                       }`}
                     >
                       <div className="w-12 h-12 rounded-lg overflow-hidden relative flex-shrink-0">
-                        <img src={track.image} alt={track.nameMusic} className="w-full h-full object-cover" />
+                        <Image src={track.image} alt={track.nameMusic} fill className="object-cover" />
                         {selectedMusic?._id === track._id && (
                           <div className="absolute inset-0 bg-blue-600/40 flex items-center justify-center">
                             <Music className="w-5 h-5 text-white animate-bounce" />
@@ -404,7 +406,6 @@ export default function CreateStoryModal({ isOpen, onClose }: CreateStoryModalPr
       `}</style>
     </div>
   );
-
 
   return createPortal(modalContent, document.body);
 }
