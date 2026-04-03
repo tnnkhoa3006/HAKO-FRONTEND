@@ -69,8 +69,8 @@ const StoryAvatarProfile: React.FC<StoryAvatarProfileProps> = ({
           {/* Avatar container responsive: 150px desktop, 60px mobile */}
           <div className="w-[130px] h-[130px] max-[480px]:w-[75%] max-[480px]:h-[auto] rounded-full overflow-hidden bg-black flex items-center justify-center mx-auto my-auto">
             <Image
-              src={author.profilePicture || "/api/placeholder/150/150"}
-              alt={author.username}
+              src={author?.profilePicture || "/api/placeholder/150/150"}
+              alt={author?.username || "avatar"}
               width={150}
               height={150}
               className="w-full h-full object-cover rounded-full"

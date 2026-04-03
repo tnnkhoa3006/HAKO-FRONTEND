@@ -149,10 +149,10 @@ const PostItem = memo(
               <Image
                 onClick={(e) => {
                   e.stopPropagation();
-                  onUserClick(post.author.username);
+                  onUserClick(post.author?.username || "");
                 }}
-                src={post.author.profilePicture}
-                alt={post.author.username}
+                src={post.author?.profilePicture || "/api/placeholder/40/40"}
+                alt={post.author?.username || "avatar"}
                 width={40}
                 height={40}
                 className="rounded-full object-cover w-10 h-10"
@@ -168,10 +168,10 @@ const PostItem = memo(
                 className="hover:underline cursor-pointer flex items-center gap-1.5"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onUserClick(post.author.username);
+                  onUserClick(post.author?.username || "");
                 }}
               >
-                {post.author.username}
+                {post.author?.username || "Người dùng"}
 
                 {post.author.checkMark && (
                   <svg
@@ -285,7 +285,7 @@ const PostItem = memo(
             className={`font-semibold mr-2 cursor-pointer hover:underline`}
             style={{ color: "var(--post-text)" }}
           >
-            {post.author.username}
+            {post.author?.username || "Người dùng"}
           </span>
           <ShortenCaption text={post.caption} maxLines={2} className="w-full" />
         </div>

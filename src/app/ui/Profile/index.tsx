@@ -45,20 +45,20 @@ export default function Profile({ user: initialUser }: { user: User }) {
                   <div className={styles.hasStories}>
                     <StoryAvatarProfile author={user} hasStories={true} />
                     <div className={styles.fullName}>
-                      <h3>{user.fullName}</h3>
+                      <h3>{user?.fullName || "Người dùng"}</h3>
                     </div>
                   </div>
                 ) : (
                   <div className={styles.avatar}>
                     <Image
-                      src={user.profilePicture}
+                      src={user?.profilePicture || "/api/placeholder/150/150"}
                       alt="avatar"
                       width={150}
                       height={150}
                       className={styles.avatarImage}
                     />
                     <div className={styles.fullName}>
-                      <h3>{user.fullName}</h3>
+                      <h3>{user?.fullName || "Người dùng"}</h3>
                     </div>
                   </div>
                 )}
@@ -74,7 +74,7 @@ export default function Profile({ user: initialUser }: { user: User }) {
                   onClick={handleAvatarClick}
                 />
                 <div className={styles.fullName}>
-                  <h3>{user.fullName}</h3>
+                  <h3>{user?.fullName || "Người dùng"}</h3>
                 </div>
               </div>
             ) : (
@@ -84,14 +84,14 @@ export default function Profile({ user: initialUser }: { user: User }) {
                 style={{ cursor: "pointer" }}
               >
                 <Image
-                  src={user.profilePicture}
+                  src={user?.profilePicture || "/api/placeholder/150/150"}
                   alt="avatar"
                   width={150}
                   height={150}
                   className={styles.avatarImage}
                 />
                 <div className={styles.fullName}>
-                  <h3>{user.fullName}</h3>
+                  <h3>{user?.fullName || "Người dùng"}</h3>
                 </div>
               </div>
             )}
@@ -192,7 +192,7 @@ export default function Profile({ user: initialUser }: { user: User }) {
       {/* Modal upload avatar */}
       {showAvatarModal && (
         <UploadAvatar
-          currentAvatar={user.profilePicture}
+          currentAvatar={user?.profilePicture || "/api/placeholder/150/150"}
           onClose={() => setShowAvatarModal(false)}
           onAvatarChange={handleAvatarChange}
         />

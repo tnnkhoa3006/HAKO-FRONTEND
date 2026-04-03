@@ -129,8 +129,8 @@ const StoryAvatar: React.FC<StoryAvatarProps> = ({
             }
           >
             <Image
-              src={author.profilePicture || "/api/placeholder/60/60"}
-              alt={author.username}
+              src={author?.profilePicture || "/api/placeholder/60/60"}
+              alt={author?.username || "avatar"}
               width={40}
               height={40}
               className="w-full h-full object-cover rounded-full"
@@ -143,7 +143,7 @@ const StoryAvatar: React.FC<StoryAvatarProps> = ({
       {/* Nếu là messenger thì không hiển thị username */}
       {showUsername && variant !== "messenger" && (
         <div className="flex items-center justify-center space-x-1 max-w-20 w-full mt-2">
-          <span className="text-white text-xs truncate">{author.username}</span>
+          <span className="text-white text-xs truncate">{author?.username || "Người dùng"}</span>
           {author.checkMark && (
             <svg
               aria-label="Đã xác minh"
