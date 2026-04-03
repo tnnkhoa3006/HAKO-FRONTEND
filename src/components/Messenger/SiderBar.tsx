@@ -431,7 +431,7 @@ export default function SiderBar({
 
   return (
     <div
-      className={`bg-[#0f0f0f] border-r border-[#222] flex flex-col ${
+      className={`flex flex-col ${
         preview ? "w-full" : "w-full"
       } ${styles.sidebar}`}
       style={
@@ -440,55 +440,57 @@ export default function SiderBar({
               width: "100%",
               minWidth: 0,
               maxWidth: "100%",
-              background: "#212328",
+              background: "var(--messenger-sidebar-bg)",
             }
           : {}
       }
     >
-      <div className="flex justify-between items-center px-4 py-3 border-b border-[#222]">
+      <div
+        className={`flex justify-between items-center px-4 py-3 ${styles.headerDivider}`}
+      >
         <div className="flex items-center">
           <button
             onClick={handleBackClick}
-            className={`md:hidden w-9 h-9 rounded-full bg-[#1a1a1a] hover:bg-[#2a2a2a] flex items-center justify-center cursor-pointer transition-colors mr-3 ${styles.backButton}`}
+            className={`md:hidden w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-colors mr-3 ${styles.backButton} ${styles.iconButton}`}
           >
-            <ArrowLeft className="h-5 w-5 text-gray-200" />
+            <ArrowLeft className="h-5 w-5" />
           </button>
           <h1
-            className={`font-bold text-[1.25rem] text-white${
+            className={`font-bold text-[1.25rem] ${styles.titleText}${
               preview ? " !text-lg" : ""
             }`}
             style={preview ? { fontSize: "1.1rem" } : {}}
           >
             {username}
           </h1>
-          <ChevronDown
-            className={`ml-2 h-4 w-4 text-gray-300 ${styles.chevronDown}`}
-          />
+          <ChevronDown className={`ml-2 h-4 w-4 ${styles.chevronDown}`} />
         </div>
         {preview && onClose ? (
           <button
-            className="w-9 h-9 rounded-full bg-[#1a1a1a] hover:bg-[#2a2a2a] flex items-center justify-center cursor-pointer transition-colors"
+            className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-colors ${styles.iconButton}`}
             onClick={onClose}
             aria-label="Đóng Messenger"
           >
-            <X className="h-4 w-4 text-gray-200" />
+            <X className="h-4 w-4" />
           </button>
         ) : (
           <div
-            className={`w-9 h-9 rounded-full bg-[#1a1a1a] hover:bg-[#2a2a2a] flex items-center justify-center cursor-pointer transition-colors ${styles.backButton}`}
+            className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-colors ${styles.backButton} ${styles.iconButton}`}
           >
-            <Edit className="h-4 w-4 text-gray-200" />
+            <Edit className="h-4 w-4" />
           </div>
         )}
       </div>
 
       <div className="px-4 py-3">
         <div
-          className={`relative flex items-center bg-[#1a1a1a] rounded-full px-3 py-2 transition-all ${
+          className={`relative flex items-center rounded-full px-3 py-2 transition-all ${
             styles.searchInput
           } ${isSearchFocused ? "ring-1 ring-blue-500" : ""}`}
         >
-          <Search className="h-4 w-4 text-gray-400 mr-2 flex-shrink-0" />
+          <Search
+            className={`h-4 w-4 mr-2 flex-shrink-0 ${styles.searchIcon}`}
+          />
           <input
             type="text"
             placeholder="Tìm kiếm trên Messenger"
@@ -496,14 +498,14 @@ export default function SiderBar({
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setIsSearchFocused(true)}
             onBlur={() => setIsSearchFocused(false)}
-            className={`flex-1 bg-transparent text-white placeholder-gray-400 text-sm outline-none`}
+            className={`flex-1 bg-transparent text-sm outline-none ${styles.searchFieldText}`}
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="ml-2 w-5 h-5 rounded-full bg-gray-500 hover:bg-gray-400 flex items-center justify-center transition-colors"
+              className={`ml-2 w-5 h-5 rounded-full flex items-center justify-center transition-colors ${styles.clearSearchButton}`}
             >
-              <X className="h-3 w-3 text-white" />
+              <X className="h-3 w-3" />
             </button>
           )}
         </div>
@@ -514,7 +516,9 @@ export default function SiderBar({
           <button className="flex-1 py-2 px-4 mx-1 rounded-full text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors">
             Hộp thư
           </button>
-          <button className="flex-1 py-2 px-4 mx-1 rounded-full text-sm font-medium text-gray-300 hover:bg-[#1a1a1a] transition-colors">
+          <button
+            className={`flex-1 py-2 px-4 mx-1 rounded-full text-sm font-medium transition-colors ${styles.secondaryTabButton}`}
+          >
             Tin nhắn chờ
           </button>
         </div>
@@ -544,8 +548,8 @@ export default function SiderBar({
                     return (
                       <div
                         key={chat.user._id}
-                        className={`flex items-center p-2 cursor-pointer rounded-lg hover:bg-[#1a1a1a] transition-colors mb-1 ${
-                          isChatSelected ? "bg-[#1a1a1a]" : ""
+                        className={`flex items-center p-2 cursor-pointer rounded-lg transition-colors mb-1 ${styles.chatRow} ${
+                          isChatSelected ? styles.chatRowActive : ""
                         }`}
                       >
                         <div className="w-12 h-12 rounded-full mr-3 relative flex-shrink-0">
@@ -588,8 +592,8 @@ export default function SiderBar({
                             <p
                               className={`truncate font-medium ${
                                 hasUnreadMessage
-                                  ? "text-white font-semibold"
-                                  : "text-white"
+                                  ? `${styles.chatName} font-semibold`
+                                  : styles.chatName
                               }`}
                             >
                               {chat.user.username}
@@ -616,14 +620,14 @@ export default function SiderBar({
                             <span
                               className={`text-sm truncate flex-1 mr-2 ${
                                 hasUnreadMessage
-                                  ? "text-white font-medium"
-                                  : "text-gray-400"
+                                  ? styles.chatMessageUnread
+                                  : styles.chatMessage
                               }`}
                             >
                               {formatMessage(chat)}
                             </span>
                             <div className="flex items-center gap-2 flex-shrink-0">
-                              <span className="text-xs text-gray-500">
+                              <span className={`text-xs ${styles.metaText}`}>
                                 {chat.lastMessage
                                   ? formatTime(chat.lastMessage.createdAt)
                                   : ""}
@@ -643,7 +647,7 @@ export default function SiderBar({
               {filteredAvailableUsers.length > 0 && (
                 <>
                   {searchQuery && filteredChats.length === 0 && (
-                    <hr className="border-gray-700 my-2" />
+                    <hr className={`my-2 ${styles.divider}`} />
                   )}
                   {filteredAvailableUsers.map((user) => {
                     const isChatSelected =
@@ -653,8 +657,8 @@ export default function SiderBar({
                     return (
                       <div
                         key={user._id}
-                        className={`flex items-center p-2 cursor-pointer rounded-lg hover:bg-[#1a1a1a] transition-colors mb-1 ${
-                          isChatSelected ? "bg-[#1a1a1a]" : ""
+                        className={`flex items-center p-2 cursor-pointer rounded-lg transition-colors mb-1 ${styles.chatRow} ${
+                          isChatSelected ? styles.chatRowActive : ""
                         }`}
                         onClick={() => handleUserClick(user)}
                       >
@@ -699,7 +703,7 @@ export default function SiderBar({
 
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-1 mb-0.5">
-                            <p className="text-white truncate font-medium">
+                            <p className={`truncate font-medium ${styles.chatName}`}>
                               {user.username}
                             </p>
                             {user.checkMark && (
@@ -714,7 +718,7 @@ export default function SiderBar({
                             )}
                           </div>
                           <div className="flex items-center justify-between">
-                            <span className="text-sm text-gray-400">
+                            <span className={`text-sm ${styles.chatMessage}`}>
                               Nhấn để bắt đầu trò chuyện
                             </span>
                           </div>
@@ -730,26 +734,26 @@ export default function SiderBar({
                   <>
                     {searchQuery ? (
                       <div className="flex flex-col items-center justify-center py-12 text-center">
-                        <div className="w-16 h-16 bg-[#1a1a1a] rounded-full flex items-center justify-center mb-4">
-                          <Search className="h-8 w-8 text-gray-400" />
+                        <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${styles.emptyIcon}`}>
+                          <Search className="h-8 w-8" />
                         </div>
-                        <p className="text-gray-300 font-medium">
+                        <p className={`font-medium ${styles.emptyTitle}`}>
                           Không tìm thấy kết quả
                         </p>
-                        <p className="text-gray-500 text-sm mt-1">
+                        <p className={`text-sm mt-1 ${styles.emptyText}`}>
                           Thử tìm kiếm với từ khóa khác hoặc kiểm tra danh sách
                           bạn bè.
                         </p>
                       </div>
                     ) : (
                       <div className="flex flex-col items-center justify-center py-12 text-center">
-                        <div className="w-16 h-16 bg-[#1a1a1a] rounded-full flex items-center justify-center mb-4">
-                          <Edit className="h-8 w-8 text-gray-400" />
+                        <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${styles.emptyIcon}`}>
+                          <Edit className="h-8 w-8" />
                         </div>
-                        <p className="text-gray-300 font-medium">
+                        <p className={`font-medium ${styles.emptyTitle}`}>
                           Không có cuộc trò chuyện nào
                         </p>
-                        <p className="text-gray-500 text-sm mt-1">
+                        <p className={`text-sm mt-1 ${styles.emptyText}`}>
                           Bắt đầu cuộc trò chuyện mới với bạn bè hoặc tìm kiếm
                           người dùng.
                         </p>

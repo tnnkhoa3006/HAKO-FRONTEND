@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef, ChangeEvent, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { createPost } from "@/server/posts"; // Import hàm createPost
 import UploadPostUi from "@/app/ui/Upload";
 import LoadingComponent from "@/components/Loading/LoadingComponent"; // Import LoadingComponent
@@ -62,6 +63,7 @@ export default function UploadPost({
   >(null);
   const [errorMessage, setErrorMessage] = useState("");
   const [showUi, setShowUi] = useState(true);
+  const [isMounted, setIsMounted] = useState(false);
 
   const username = localStorage.getItem("username");
 
@@ -76,6 +78,11 @@ export default function UploadPost({
     }, 10);
 
     return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
   }, []);
 
   // Xử lý đóng loading component và reset trạng thái
@@ -283,7 +290,7 @@ export default function UploadPost({
 
   const aspect = 1; // Instagram uses 1:1 by default
 
-  return (
+  const modalContent = (
     <>
       {showUi && !showLoading && (
         <UploadPostUi
@@ -339,4 +346,10 @@ export default function UploadPost({
       )}
     </>
   );
+
+  if (!isMounted) {
+    return null;
+  }
+
+  return createPortal(modalContent, document.body);
 }

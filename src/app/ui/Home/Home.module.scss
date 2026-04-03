@@ -1,5 +1,5 @@
 .homeContainerResponsiveBg {
-  background-color: var(--post-bg);
+  background-color: transparent;
   color: var(--post-text);
   transition: background-color 0.3s ease;
 
@@ -14,16 +14,23 @@
 }
 
 .postItemResponsiveBg {
-  background-color: var(--post-bg);
-  transition: background-color 0.3s ease;
+  background: var(--surface-soft);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  border-radius: 28px !important;
+  box-shadow: var(--surface-shadow);
+  backdrop-filter: blur(20px);
+  overflow: hidden;
 
   @media (max-width: 768px) {
     background-color: var(--post-mobile-bg);
+    border-radius: 0 !important;
+    box-shadow: none;
   }
 
   @media (max-width: 480px) {
     padding-bottom: 20px;
     border: none;
+    background: transparent;
 
     img {
       padding: 0 !important;
@@ -38,15 +45,18 @@
 }
 
 .mediaContainerResponsiveBg {
-  background-color: var(--post-bg);
+  background: var(--surface-media);
   transition: background-color 0.3s ease;
+  border-radius: 22px;
+  overflow: hidden;
 
   img {
-    padding: 1px;
+    padding: 0;
   }
 
   @media (max-width: 768px) {
     background-color: var(--post-mobile-bg);
+    border-radius: 0;
   }
 }
 
@@ -56,7 +66,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: var(--overlay-backdrop);
   z-index: 996;
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -71,7 +81,37 @@
 }
 
 @media (max-width: 480px) {
-  .commentInput {
+.commentInput {
     display: none;
+  }
+}
+
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: var(--surface-base);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--divider-soft);
+  box-shadow: 0 16px 28px rgba(2, 7, 16, 0.18);
+}
+
+.headerContent {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.action {
+  button,
+  a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 14px;
+    border: 1px solid var(--divider-soft);
+    background: var(--surface-muted);
+    color: var(--post-text);
   }
 }

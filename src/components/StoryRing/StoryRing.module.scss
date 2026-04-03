@@ -3,17 +3,14 @@
 
   &.viewed {
     stroke-dasharray: 8 4;
-    stroke: rgba(255, 255, 255, 0.4);
-    // Xóa animation ở đây, chỉ để lại moving dash animation
+    stroke: var(--story-ring-viewed);
     animation: movingDash 3s linear infinite;
   }
 }
 
-// Animation chỉ chạy khi có class dashAnimation
 .storyCircle.dashAnimation {
   animation: dashAnimation 2s ease-in-out;
 
-  // Nếu cũng có class viewed thì chạy cả 2 animation
   &.viewed {
     animation: dashAnimation 2s ease-in-out, movingDash 3s linear infinite;
   }
@@ -32,22 +29,22 @@
 
   60% {
     stroke-dasharray: 5 10;
-    stroke: rgba(255, 255, 255, 0.6);
+    stroke: var(--story-ring-viewed-strong);
     opacity: 0.6;
   }
 
   100% {
     stroke-dasharray: 8 4;
-    stroke: rgba(255, 255, 255, 0.4);
+    stroke: var(--story-ring-viewed);
     opacity: 0.4;
   }
 }
 
-// Animation cho moving dashes
 @keyframes movingDash {
   0% {
     stroke-dashoffset: 0;
   }
+
   100% {
     stroke-dashoffset: 24;
   }

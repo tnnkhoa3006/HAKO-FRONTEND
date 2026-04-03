@@ -21,17 +21,27 @@ export default function MobileHeader({
   handleBack,
 }: MobileHeaderProps) {
   return (
-    <div className="flex items-center justify-between p-4 border-b border-[#333] md:hidden">
+    <div
+      className="flex items-center justify-between p-4 md:hidden"
+      style={{ borderBottom: "1px solid var(--divider-soft)" }}
+    >
       {/* Left: Back */}
-      <div className="text-white">
-        <button onClick={handleBack} className="text-white cursor-pointer">
+      <div style={{ color: "var(--foreground)" }}>
+        <button
+          onClick={handleBack}
+          className="cursor-pointer"
+          style={{ color: "var(--foreground)" }}
+        >
           <ArrowLeft size={20} />
         </button>
       </div>
 
       {/* Right: Menu button + Tab label */}
       <div className="flex items-center space-x-3 flex-1 justify-center">
-        <h1 className="text-lg font-semibold text-white">
+        <h1
+          className="text-lg font-semibold"
+          style={{ color: "var(--foreground)" }}
+        >
           {tabs.find((tab) => tab.id === activeTab)?.label}
         </h1>
         {/* <button onClick={() => setMobileMenuOpen(true)} className="text-white">

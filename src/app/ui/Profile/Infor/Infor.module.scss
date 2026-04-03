@@ -13,7 +13,9 @@
 .action {
   display: flex;
   align-items: center;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  gap: 18px;
 
   @media (max-width: 735px) {
     flex-direction: column;
@@ -31,12 +33,13 @@
 }
 
 .username {
-  font-size: 20px;
-  font-weight: 300;
+  font-size: 24px;
+  font-weight: 600;
   margin-right: 20px;
   display: flex;
   align-items: center;
   gap: 10px;
+  letter-spacing: -0.03em;
 
   @media (max-width: 735px) {
     margin-right: 0;
@@ -52,10 +55,21 @@
   object-fit: contain;
 }
 
+.action_btn_wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  @media (max-width: 735px) {
+    align-items: center;
+  }
+}
+
 .action_btn {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
+  gap: 10px;
 
   @media (max-width: 735px) {
     justify-content: center;
@@ -70,6 +84,12 @@
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  border: 1px solid rgba(164, 186, 224, 0.18);
+  background: var(--profile-card);
 
   @media (max-width: 480px) {
     display: none;
@@ -78,23 +98,50 @@
 
 .edit,
 .viewArchive {
-  background-color: #363636;
-  color: #f5f5f5;
-  border: none;
-  border-radius: 8px;
-  padding: 7px 16px;
+  background: var(--profile-card);
+  color: var(--profile-text);
+  border: 1px solid rgba(164, 186, 224, 0.18);
+  border-radius: 14px;
+  padding: 10px 18px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  margin-right: 8px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--profile-card-hover);
+    border-color: rgba(102, 217, 255, 0.18);
+  }
 
   @media (max-width: 480px) {
     display: none;
   }
 }
 
+.followButton {
+  background: linear-gradient(135deg, rgba(102, 217, 255, 0.22), rgba(43, 190, 242, 0.14));
+  border-color: rgba(102, 217, 255, 0.22);
+}
+
+.followingButton {
+  background: var(--surface-muted);
+}
+
+.disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.errorMessageContainer {
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(237, 73, 86, 0.08);
+  border: 1px solid rgba(237, 73, 86, 0.18);
+}
+
 .fullName {
-  font-size: 14px;
+  font-size: 18px;
+  font-weight: 600;
 
   @media (max-width: 735px) {
     text-align: center;
@@ -107,7 +154,13 @@
 
 .stats {
   display: flex;
-  margin-bottom: 20px;
+  align-items: stretch;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding: 16px 18px;
+  background: var(--profile-card);
+  border: 1px solid rgba(164, 186, 224, 0.18);
+  border-radius: 22px;
 
   @media (max-width: 735px) {
     justify-content: center;
@@ -116,19 +169,27 @@
   @media (max-width: 480px) {
     display: flex;
     justify-content: space-between;
+    gap: 0;
     margin-bottom: 0;
     margin-top: 0;
     width: 100%;
-    border-top: 1px solid rgba(84, 84, 84, 0.2);
-    border-bottom: 1px solid rgba(84, 84, 84, 0.2);
+    padding: 0;
+    background: transparent;
+    border-top: 1px solid var(--profile-divider);
+    border-bottom: 1px solid var(--profile-divider);
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
   }
 }
 
 .statItem {
-  margin-right: 40px;
-  font-size: 16px;
+  font-size: 15px;
   display: flex;
   gap: 10px;
+  padding: 10px 12px;
+  border-radius: 16px;
+  transition: background-color 0.2s ease;
 
   @media (max-width: 480px) {
     margin-right: 0;
@@ -138,77 +199,43 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 10px 0;
+    padding: 12px 0;
     gap: 2px;
     flex: 1;
+    border-radius: 0;
   }
 }
 
 .statValue {
-  font-weight: 600;
+  font-weight: 700;
 
   @media (max-width: 480px) {
     display: block;
-    font-size: 14px;
+    font-size: 15px;
     margin-bottom: 0;
-    font-weight: 600;
   }
 }
-.bio {
-  padding-top: 15px;
-  font-size: 14px;
-  width: 100%;
-  flex-wrap: wrap;
-  word-break: break-word;
 
-  /* Hiệu ứng chữ loang màu động */
-  background: linear-gradient(
-    45deg,
-    #f09433,
-    #e6683c,
-    #dc2743,
-    #cc2366,
-    #bc1888,
-    #833ab4,
-    #5851db
-  );
-  background-size: 400% 400%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: transparent;
-  font-weight: 600;
-  display: inline-block;
-  letter-spacing: 2px;
-  animation: gradient-shift 3s ease infinite;
+.bio {
+  margin-top: 16px;
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.65;
+  width: 100%;
+  word-break: break-word;
+  background: var(--profile-bio-bg);
+  border: 1px solid var(--profile-bio-border);
+  border-radius: 18px;
+  color: var(--profile-bio-text);
 
   @media (max-width: 480px) {
-    padding-left: 20px;
+    margin-top: 12px;
+    padding: 14px;
   }
 }
-
-@keyframes gradient-shift {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
-}
-// Thêm vào Infor.module.scss
 
 .clickable {
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
+    background-color: var(--profile-card-hover);
   }
-}
-
-.statValue {
-  font-weight: bold;
-  font-size: 1.1em;
 }

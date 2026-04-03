@@ -22,22 +22,12 @@ export default function MessengerPreview() {
 
   const top3Users = availableUsers.slice(0, 3);
 
-  const handleOpenModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-  };
-
   return (
     <>
-      {/* Nút Messenger */}
       <div
-        onClick={handleOpenModal}
-        className={`fixed bottom-6 right-12 z-[997] h-14 rounded-full shadow-lg flex items-center justify-between px-4 cursor-pointer hover:shadow-xl transition-shadow min-w-[250px] bg-[#212328] hover:bg-[#38393e] ${styles.messengerPreview}`}
+        onClick={() => setIsModalOpen(true)}
+        className={`fixed bottom-6 right-12 z-[997] h-14 rounded-full flex items-center justify-between px-4 cursor-pointer min-w-[250px] ${styles.messengerPreview}`}
       >
-        {/* Bên trái: Icon và Text */}
         <div className="flex items-center">
           <div className="flex items-center justify-center w-8 h-8 mr-2">
             <svg
@@ -62,17 +52,18 @@ export default function MessengerPreview() {
               ></path>
             </svg>
           </div>
-          <span className="text-sm font-medium text-white">Tin nhắn</span>
+          <span className={`text-sm font-medium ${styles.previewLabel}`}>
+            Tin nhắn
+          </span>
         </div>
 
-        {/* Bên phải: Avatar người dùng */}
         <div className="flex items-center space-x-1">
           {top3Users.map((user, idx) => (
             <div
               key={user._id}
               className={`w-7 h-7 rounded-full ${
                 idx > 0 ? "-ml-2" : ""
-              } bg-gray-600 overflow-hidden`}
+              } overflow-hidden ${styles.previewAvatar}`}
             >
               {user.profilePicture ? (
                 <Image
@@ -88,8 +79,10 @@ export default function MessengerPreview() {
         </div>
       </div>
 
-      {/* Modal Messenger */}
-      <MessengerModal isOpen={isModalOpen} onClose={handleCloseModal} />
+      <MessengerModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </>
   );
 }

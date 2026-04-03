@@ -13,8 +13,14 @@ type Post = {
 
 // Skeleton component
 const PostSkeleton = () => (
-  <div className="relative aspect-square bg-gray-800 rounded-lg animate-pulse">
-    <div className="w-full h-full bg-gray-700/50 rounded-lg"></div>
+  <div
+    className="relative aspect-square rounded-lg animate-pulse"
+    style={{ backgroundColor: "var(--profile-card)" }}
+  >
+    <div
+      className="w-full h-full rounded-lg"
+      style={{ backgroundColor: "var(--surface-muted-hover)" }}
+    ></div>
   </div>
 );
 
@@ -88,11 +94,16 @@ export default function TabPosts({ user }: { user: User }) {
       ) : postsCount === 0 ? (
         // Empty state
         <div className="flex flex-col justify-center items-center text-center p-10">
-          <div className="text-gray-400 mb-4">
+          <div className="mb-4" style={{ color: "var(--secondary-text)" }}>
             <Camera size={50} />
           </div>
-          <h2 className="text-xl font-semibold text-white">Chưa có ảnh</h2>
-          <p className="text-gray-400">
+          <h2
+            className="text-xl font-semibold"
+            style={{ color: "var(--profile-text)" }}
+          >
+            Chưa có ảnh
+          </h2>
+          <p style={{ color: "var(--secondary-text)" }}>
             Khi người dùng chia sẻ ảnh, ảnh sẽ hiển thị tại đây
           </p>
         </div>
@@ -115,7 +126,10 @@ export default function TabPosts({ user }: { user: User }) {
               {isPostLoading &&
                 selectedPost &&
                 selectedPost._id === post._id && (
-                  <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center rounded-lg">
+                  <div
+                    className="absolute inset-0 flex items-center justify-center rounded-lg"
+                    style={{ backgroundColor: "var(--overlay-backdrop)" }}
+                  >
                     <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
                   </div>
                 )}

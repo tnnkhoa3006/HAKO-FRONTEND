@@ -227,7 +227,7 @@ export default function MainChat({
 
   return (
     <div
-      className={`flex-1 flex flex-col bg-[#111] ${styles.mainChat} ${
+      className={`flex-1 flex flex-col ${styles.mainChat} ${
         showMainChat ? styles.showMainChat : ""
       } ${preview ? "w-full h-full" : ""}`}
       style={
@@ -242,7 +242,7 @@ export default function MainChat({
       }
     >
       <div
-        className={`flex justify-between items-center p-4 border-b border-[#222] position-relative bg-[#0f0f0f] ${styles.chatHeader}`}
+        className={`flex justify-between items-center p-4 position-relative ${styles.chatHeader}`}
       >
         {selectedUser ? (
           <>
@@ -281,7 +281,7 @@ export default function MainChat({
               <div>
                 <div className="flex items-center gap-2">
                   <p
-                    className={`font-medium ${styles.text2} ${styles.username}`}
+                    className={`font-medium ${styles.text2} ${styles.username} ${styles.chatName}`}
                     onClick={() => handleUserClick(selectedUser.username)}
                     style={{
                       cursor: "pointer",
@@ -306,7 +306,7 @@ export default function MainChat({
                     </svg>
                   )}
                 </div>
-                <p className={`text-xs text-gray-400 ${styles.text2}`}>
+                <p className={`text-xs ${styles.text2} ${styles.chatMessage}`}>
                   {getActivityStatus(selectedUser)}
                 </p>
               </div>
@@ -319,14 +319,14 @@ export default function MainChat({
             />
           </>
         ) : (
-          <div className="w-full text-center text-gray-500 min-h-[28px]"></div>
+          <div className={`w-full text-center min-h-[28px] ${styles.metaText}`}></div>
         )}
       </div>
 
       {/* Messages */}
       {selectedUser ? (
         <div
-          className={`flex-1 overflow-y-auto overflow-x-hidden p-4 bg-[#111] ${styles.messages}`}
+          className={`flex-1 overflow-y-auto overflow-x-hidden p-4 ${styles.messages}`}
           ref={messagesContainerRef}
           onScroll={handleScroll}
           style={{
@@ -399,7 +399,13 @@ export default function MainChat({
                             className="object-cover"
                           />
                         ) : (
-                          <div className="w-full h-full bg-gray-600 flex items-center justify-center text-xs">
+                          <div
+                            className="w-full h-full flex items-center justify-center text-xs"
+                            style={{
+                              backgroundColor: "var(--messenger-empty-icon-bg)",
+                              color: "var(--messenger-text)",
+                            }}
+                          >
                             {selectedUser.username.charAt(0).toUpperCase()}
                           </div>
                         )}
@@ -510,7 +516,7 @@ export default function MainChat({
                             {msg.message && (
                               <div
                                 className={`message-bubble ${
-                                  isCurrentUser ? "bg-blue-600" : "bg-[#333]"
+                                  isCurrentUser ? styles.bubbleSelf : styles.bubbleOther
                                 } px-3 py-2 inline-block max-w-[280px] w-fit`}
                                 style={{
                                   zIndex: 2,
@@ -551,7 +557,7 @@ export default function MainChat({
                                 }}
                               >
                                 <p
-                                  className={`${styles.text} text-white text-sm leading-relaxed`}
+                                  className={`${styles.text} ${styles.bubbleText} text-sm leading-relaxed`}
                                 >
                                   {msg.message}
                                 </p>
@@ -690,7 +696,7 @@ export default function MainChat({
                                     <HiOutlineFaceSmile size={16} />
                                   </button>
                                 </div>
-                                <p className="text-xs text-gray-500 px-1">
+                                <p className={`text-xs px-1 ${styles.metaText}`}>
                                   {formatTime(
                                     typeof msg.createdAt === "number"
                                       ? new Date(msg.createdAt)
@@ -703,7 +709,7 @@ export default function MainChat({
                               </>
                             ) : (
                               <>
-                                <p className="text-xs text-gray-500 px-1">
+                                <p className={`text-xs px-1 ${styles.metaText}`}>
                                   {formatTime(
                                     typeof msg.createdAt === "number"
                                       ? new Date(msg.createdAt)
@@ -745,7 +751,7 @@ export default function MainChat({
                             )}
                           </div>
                         ) : (
-                          <p className="text-xs text-gray-500 mt-4 px-1">
+                          <p className={`text-xs mt-4 px-1 ${styles.metaText}`}>
                             {formatTime(
                               typeof msg.createdAt === "number"
                                 ? new Date(msg.createdAt)
@@ -764,7 +770,7 @@ export default function MainChat({
             })
           ) : (
             <div className="flex justify-center items-center h-full">
-              <p className="text-gray-400">
+              <p className={styles.emptyText}>
                 Chưa có tin nhắn nào. Hãy bắt đầu cuộc trò chuyện!
               </p>
             </div>
@@ -772,7 +778,7 @@ export default function MainChat({
           <div ref={messagesEndRef} />
         </div>
       ) : (
-        <div className="flex-1 flex items-center justify-center bg-[#111] text-gray-500">
+        <div className={`flex-1 flex items-center justify-center ${styles.emptyText}`}>
           Chọn một cuộc trò chuyện hoặc bắt đầu một cuộc trò chuyện mới
         </div>
       )}

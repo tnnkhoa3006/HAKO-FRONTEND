@@ -2,25 +2,32 @@
   padding: 10px 20px;
   max-width: 700px;
   width: 100%;
-  margin: 0 auto;
+  margin: 0 auto 18px;
   overflow: hidden;
+  background: var(--story-tray-surface);
+  border: 1px solid var(--story-tray-border);
+  border-radius: 28px;
+  box-shadow: var(--surface-shadow);
+  backdrop-filter: blur(18px);
 
   @media (max-width: 822px) {
-    padding: 10px 30px;
+    padding: 10px 18px;
   }
 
   @media (max-width: 768px) {
-    padding: 5px 0 20px 0;
+    padding: 5px 0 14px 0;
     margin-top: 70px;
+    border-radius: 0;
+    border-left: none;
+    border-right: none;
+    box-shadow: none;
+    background: transparent;
   }
 }
 
 .modal {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
+  inset: 0;
   background-color: rgba(0, 0, 0, 1);
   z-index: 996;
   overflow: hidden;

@@ -2,27 +2,30 @@
   width: 240px;
   color: var(--sidebar-text);
   height: 100vh;
-  padding: 20px 10px 30px 10px;
+  padding: 18px 12px 28px 12px;
   display: flex;
   flex-direction: column;
   border-right: 1px solid var(--sidebar-border);
-  background-color: var(--sidebar-bg);
-  position: relative;
-  z-index: 900;
-  transition: width 0.2s ease-in, background-color 0.3s ease, border-color 0.3s ease;
+  background: var(--surface-base);
+  backdrop-filter: blur(24px);
   position: fixed;
   top: 0;
   left: 0;
+  z-index: 900;
+  box-shadow: 18px 0 42px rgba(2, 7, 16, 0.22);
+  transition:
+    width 0.2s ease-in,
+    background-color 0.3s ease,
+    border-color 0.3s ease;
 
   @media (max-width: 1264px) {
     width: 70px;
-    padding: 20px 5px 30px 5px;
+    padding: 18px 6px 28px 6px;
   }
 
   @media (max-width: 768px) {
     width: 100% !important;
     height: 60px;
-    position: fixed;
     top: auto;
     bottom: 0;
     left: 0;
@@ -30,16 +33,17 @@
     align-items: center;
     padding: 7px;
     border-right: none;
-    background-color: var(--mobile-nav-bg);
-    overflow-x: hidden;
-    overflow-y: hidden;
+    background: var(--mobile-nav-bg);
+    backdrop-filter: blur(20px);
+    overflow: hidden;
+    box-shadow: 0 -16px 30px rgba(2, 7, 16, 0.32);
   }
 }
 
 .logo {
-  margin-top: 20px;
-  margin-bottom: 30px;
-  padding-left: 10px;
+  margin-top: 10px;
+  margin-bottom: 22px;
+  padding-left: 8px;
 
   @media (max-width: 972px) {
     padding: 0;
@@ -52,10 +56,45 @@
   }
 }
 
+.logoLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  min-width: 48px;
+  padding: 0 12px;
+  border-radius: 18px;
+  background: var(--surface-muted);
+  border: 1px solid rgba(164, 186, 224, 0.12);
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+
+  &:hover {
+    background: var(--surface-muted-hover);
+    border-color: rgba(164, 206, 255, 0.18);
+    transform: translateY(-1px);
+  }
+}
+
+.logoIconExpanded {
+  width: auto;
+  height: auto;
+  max-width: 126px;
+}
+
+.logoIconCollapsed {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 14px rgba(102, 217, 255, 0.14));
+}
+
 .nav {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   height: 100%;
 
   @media (max-width: 768px) {
@@ -67,8 +106,7 @@
     margin: 0;
     padding: 0;
     gap: 0;
-    overflow-x: hidden;
-    overflow-y: hidden;
+    overflow: hidden;
   }
 }
 
@@ -76,18 +114,31 @@
   display: flex;
   align-items: center;
   gap: 14px;
-  padding: 10px 15px;
-  border-radius: 8px;
-  transition: background 0.2s ease;
+  padding: 12px 15px;
+  border-radius: 16px;
+  border: 1px solid transparent;
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   width: 100%;
+  color: var(--sidebar-text);
 
   &:hover {
     background-color: var(--sidebar-hover);
+    border-color: rgba(164, 206, 255, 0.18);
+    transform: translateX(2px);
+    box-shadow: 0 12px 28px rgba(2, 7, 16, 0.22);
 
     @media (max-width: 768px) {
       background-color: transparent;
+      border-color: transparent;
+      transform: none;
+      box-shadow: none;
     }
   }
 
@@ -103,31 +154,36 @@
   @media (max-width: 768px) {
     width: auto;
     padding: 8px 12px !important;
+    border-radius: 999px;
   }
 }
 
 .active {
-  background-color: var(--sidebar-active);
+  background:
+    linear-gradient(135deg, rgba(102, 217, 255, 0.16), rgba(102, 217, 255, 0.04));
+  border-color: rgba(164, 206, 255, 0.2);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 
   @media (max-width: 768px) {
     background-color: transparent;
+    border-color: transparent;
+    box-shadow: none;
   }
 }
 
 .avatar {
   img {
-    border: none; // Không có border mặc định
+    border: none;
     width: 30px;
     height: 30px;
     border-radius: 50%;
     padding: 3px;
-    transition: border 0.2s ease;
+    transition: border 0.2s ease, transform 0.2s ease;
   }
 }
 
-// Khi avatar item được active
 .navItem.avatar.active img {
-  border: 2px solid #fff;
+  border: 2px solid var(--accent-color);
   padding: 2px;
 }
 
@@ -140,7 +196,6 @@
 }
 
 @media (max-width: 768px) {
-
   .item2,
   .item4,
   .item8,
@@ -162,8 +217,17 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-right: 10px;
-    // margin-bottom: 20px;
+    margin-right: 0;
+    padding-left: 0;
+  }
+
+  .logoLink {
+    width: 50px;
+    height: 50px;
+    min-width: 50px;
+    min-height: 50px;
+    padding: 0;
+    border-radius: 16px;
   }
 
   .navItem {
@@ -172,6 +236,10 @@
 
     span {
       display: none;
+    }
+
+    &:hover {
+      transform: none;
     }
   }
 
@@ -210,21 +278,20 @@
       height: 32px;
     }
 
-    // Mobile active state - border dày hơn khi active
     &.active img {
-      border: 2px solid #fff;
+      border: 2px solid var(--accent-color);
       padding: 1.5px;
     }
   }
 }
 
 .skeleton-icon {
-  background: linear-gradient(90deg, #222 25%, #333 50%, #222 75%);
+  background: linear-gradient(90deg, rgba(82, 111, 154, 0.28) 25%, rgba(118, 148, 191, 0.4) 50%, rgba(82, 111, 154, 0.28) 75%);
   animation: skeleton-loading 1.2s infinite linear;
 }
 
 .skeleton-avatar {
-  background: linear-gradient(90deg, #333 25%, #444 50%, #333 75%);
+  background: linear-gradient(90deg, rgba(96, 126, 171, 0.32) 25%, rgba(140, 171, 214, 0.46) 50%, rgba(96, 126, 171, 0.32) 75%);
   animation: skeleton-loading 1.2s infinite linear;
 }
 

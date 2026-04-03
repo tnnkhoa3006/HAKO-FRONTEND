@@ -2,126 +2,327 @@
 
 :root {
   /* Dark mode (default) */
-  --background: #0a0a0a;
-  --foreground: #ededed;
+  --background: #0d1727;
+  --foreground: #eef4ff;
+  --accent-color: #66d9ff;
+  --accent-strong: #2bbef2;
+  --accent-soft: rgba(102, 217, 255, 0.16);
+  --surface-shadow: 0 24px 60px rgba(9, 18, 32, 0.28);
+  --page-gradient:
+    radial-gradient(circle at top left, rgba(67, 116, 255, 0.22), transparent 34%),
+    radial-gradient(circle at top right, rgba(102, 217, 255, 0.16), transparent 30%),
+    linear-gradient(180deg, #1b2a42 0%, #0d1727 100%);
+  --page-gradient-mobile:
+    radial-gradient(circle at top center, rgba(67, 116, 255, 0.18), transparent 42%),
+    linear-gradient(180deg, #1c2d47 0%, #0d1727 100%);
+  --page-overlay:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), transparent 32%),
+    radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.07), transparent 34%);
+  --surface-strong:
+    linear-gradient(180deg, rgba(34, 52, 80, 0.94), rgba(24, 39, 61, 0.92));
+  --surface-base:
+    linear-gradient(180deg, rgba(31, 48, 74, 0.94), rgba(24, 39, 61, 0.92));
+  --surface-soft:
+    linear-gradient(180deg, rgba(33, 51, 79, 0.94), rgba(22, 37, 58, 0.92));
+  --surface-media:
+    linear-gradient(180deg, rgba(28, 44, 69, 0.96), rgba(21, 34, 54, 0.96));
+  --surface-mobile: #15263c;
+  --surface-muted: rgba(255, 255, 255, 0.07);
+  --surface-muted-hover: rgba(255, 255, 255, 0.1);
+  --surface-inset: rgba(41, 61, 92, 0.92);
+  --divider-soft: rgba(135, 161, 205, 0.14);
+  --overlay-backdrop: rgba(4, 9, 20, 0.72);
+  --footer-surface: rgba(255, 255, 255, 0.06);
+  --auth-page-gradient:
+    radial-gradient(circle at top left, rgba(67, 116, 255, 0.24), transparent 32%),
+    radial-gradient(circle at bottom right, rgba(102, 217, 255, 0.16), transparent 30%),
+    linear-gradient(180deg, #1c2d47 0%, #0d1727 100%);
+  --auth-surface:
+    linear-gradient(180deg, rgba(34, 52, 80, 0.94), rgba(24, 39, 61, 0.92));
+  --auth-input-bg: rgba(41, 61, 92, 0.92);
+  --auth-input-text: #ffffff;
+  --auth-placeholder: #7f90ac;
+  --auth-error: #ff8d98;
+  --modal-surface: #1a1a1a;
+  --modal-header-bg: #000000;
+  --modal-header-border: #000000;
+  --modal-text: #ffffff;
+  --modal-muted: #a3a3a3;
+  --story-core-bg: #000000;
+  --story-label: #d6e1f1;
+  --story-label-hover: #f7fbff;
+  --story-placeholder-bg: linear-gradient(180deg, #6b7280 0%, #1f2937 100%);
+  --story-tray-surface:
+    linear-gradient(180deg, rgba(31, 48, 74, 0.92), rgba(23, 38, 60, 0.9));
+  --story-tray-border: rgba(164, 186, 224, 0.18);
+  --story-add-border: rgba(164, 186, 224, 0.18);
+  --story-add-plus-border: #0d1727;
+  --story-ring-viewed: rgba(214, 225, 241, 0.54);
+  --story-ring-viewed-strong: rgba(231, 239, 249, 0.76);
+  --settings-mobile-bg: #0d1015;
+  --messenger-shell-bg:
+    radial-gradient(circle at top left, rgba(67, 116, 255, 0.2), transparent 30%),
+    linear-gradient(180deg, rgba(18, 31, 49, 0.96), rgba(13, 23, 39, 0.92));
+  --messenger-sidebar-surface:
+    linear-gradient(180deg, rgba(34, 52, 80, 0.96), rgba(24, 39, 61, 0.94));
+  --messenger-main-surface:
+    linear-gradient(180deg, rgba(29, 46, 72, 0.96), rgba(22, 36, 57, 0.94));
+  --messenger-header-surface:
+    linear-gradient(180deg, rgba(34, 52, 80, 0.94), rgba(24, 39, 61, 0.92));
+  --messenger-chat-surface:
+    radial-gradient(circle at top center, rgba(67, 116, 255, 0.12), transparent 32%),
+    linear-gradient(180deg, rgba(29, 46, 72, 0.94), rgba(22, 36, 57, 0.9));
+  --messenger-search-field: rgba(255, 255, 255, 0.08);
+  --messenger-search-clear-bg: rgba(107, 114, 128, 0.95);
+  --messenger-search-clear-text: #ffffff;
+  --messenger-item-hover: rgba(255, 255, 255, 0.07);
+  --messenger-tab-muted-bg: transparent;
+  --messenger-tab-muted-text: #c7d4e8;
+  --messenger-empty-icon-bg: rgba(255, 255, 255, 0.08);
+  --messenger-empty-title: #d6e1f1;
+  --messenger-empty-text: #8ca0bc;
+  --message-bubble-self: #2563eb;
+  --message-bubble-other: #2f3540;
+  --message-bubble-other-text: #ffffff;
+  --message-meta-text: #8b97ab;
+  --message-preview-surface: rgba(255, 255, 255, 0.04);
+  --message-preview-border: rgba(135, 161, 205, 0.12);
+  --message-input-icon: #9ca3af;
+  --message-input-icon-hover: #e5eefb;
 
   /* Sidebar */
-  --sidebar-bg: #000000;
-  --sidebar-border: #262626;
-  --sidebar-hover: #1a1a1a;
-  --sidebar-active: #1a1a1a;
-  --sidebar-text: #ffffff;
+  --sidebar-bg: rgba(24, 39, 62, 0.9);
+  --sidebar-border: rgba(164, 186, 224, 0.18);
+  --sidebar-hover: rgba(125, 176, 255, 0.14);
+  --sidebar-active: rgba(102, 217, 255, 0.14);
+  --sidebar-text: #f7fbff;
 
   /* SeeMore Menu */
-  --menu-bg: #262626;
-  --menu-border: #363636;
-  --menu-hover: #363636;
-  --menu-text: #ffffff;
-  --menu-divider: #363636;
+  --menu-bg: rgba(28, 44, 69, 0.96);
+  --menu-border: rgba(164, 186, 224, 0.18);
+  --menu-hover: rgba(102, 217, 255, 0.14);
+  --menu-text: #f7fbff;
+  --menu-divider: rgba(164, 186, 224, 0.16);
 
   /* Mobile navbar */
-  --mobile-nav-bg: #0d1015;
+  --mobile-nav-bg: rgba(22, 37, 59, 0.96);
 
   /* General UI */
-  --card-bg: #1c1c1c;
-  --input-bg: #262626;
-  --border-color: #363636;
-  --secondary-text: #a8a8a8;
-  --icon-color: #ffffff;
+  --card-bg: rgba(27, 43, 67, 0.9);
+  --input-bg: rgba(34, 53, 82, 0.94);
+  --border-color: rgba(164, 186, 224, 0.18);
+  --secondary-text: #a3b4cf;
+  --icon-color: #f7fbff;
 
   /* Post / Home feed */
-  --post-bg: #000000;
-  --post-mobile-bg: #0d1015;
-  --post-border: #262626;
-  --post-text: #fafafa;
-  --post-subtext: #dbdbdb;
-  --post-time-text: #8e8e8e;
+  --post-bg: rgba(25, 40, 62, 0.92);
+  --post-mobile-bg: #15263c;
+  --post-border: rgba(164, 186, 224, 0.18);
+  --post-text: #f4f8ff;
+  --post-subtext: #d6e1f1;
+  --post-time-text: #98abc9;
 
   /* Avatar placeholder */
-  --avatar-placeholder-bg: #262626;
+  --avatar-placeholder-bg: #263a58;
 
   /* Suggestions panel */
-  --suggestion-username-color: #f9f9f9;
-  --suggestion-text-color: #a8a8a8;
-  --suggestion-seeall-color: #f9f9f9;
-  --suggestion-cancel-color: #f9f9f9;
-  --suggestion-cancel-hover-bg: #262626;
-  --suggestion-divider: #262626;
+  --suggestion-username-color: #f4f8ff;
+  --suggestion-text-color: #a3b4cf;
+  --suggestion-seeall-color: #eaf4ff;
+  --suggestion-cancel-color: #eaf4ff;
+  --suggestion-cancel-hover-bg: rgba(102, 217, 255, 0.12);
+  --suggestion-divider: rgba(164, 186, 224, 0.18);
 
   /* Messenger */
-  --messenger-sidebar-bg: #0f0f0f;
-  --messenger-sidebar-mobile-bg: #0d1015;
-  --messenger-modal-bg: #0a0a0a;
-  --messenger-chat-bg: #0d1015;
-  --messenger-text: #ffffff;
-  --messenger-secondary-text: #a8a8a8;
-  --messenger-input-border: #262626;
-  --messenger-action-hover: rgba(255, 255, 255, 0.08);
+  --messenger-sidebar-bg: rgba(25, 40, 62, 0.94);
+  --messenger-sidebar-mobile-bg: #15263c;
+  --messenger-modal-bg: rgba(24, 39, 61, 0.98);
+  --messenger-chat-bg: #16283f;
+  --messenger-text: #f7fbff;
+  --messenger-secondary-text: #a3b4cf;
+  --messenger-input-border: rgba(164, 186, 224, 0.18);
+  --messenger-action-hover: rgba(102, 217, 255, 0.14);
 
   /* Profile */
-  --profile-text: #f5f5f5;
+  --profile-text: #f4f8ff;
+  --profile-surface:
+    linear-gradient(180deg, rgba(31, 48, 74, 0.9), rgba(24, 39, 61, 0.88));
+  --profile-surface-mobile: transparent;
+  --profile-divider: rgba(164, 186, 224, 0.16);
+  --profile-card: rgba(255, 255, 255, 0.07);
+  --profile-card-hover: rgba(102, 217, 255, 0.1);
+  --profile-bio-bg: rgba(137, 228, 255, 0.12);
+  --profile-bio-border: rgba(137, 228, 255, 0.18);
+  --profile-bio-text: #d9e7f7;
+  --profile-overlay: rgba(0, 0, 0, 0.6);
+  --profile-modal-surface:
+    linear-gradient(180deg, rgba(36, 54, 82, 0.98), rgba(24, 39, 61, 0.96));
+  --profile-avatar-shadow: 0 18px 34px rgba(2, 7, 16, 0.24);
+  --profile-ring-viewed: rgba(214, 225, 241, 0.44);
+  --profile-ring-viewed-strong: rgba(231, 239, 249, 0.72);
 }
 
 [data-theme="light"] {
   /* Light mode overrides */
-  --background: #fafafa;
-  --foreground: #0a0a0a;
+  --background: #edf3fb;
+  --foreground: #102038;
+  --accent-color: #167ab8;
+  --accent-strong: #0f6aa0;
+  --accent-soft: rgba(21, 133, 199, 0.12);
+  --surface-shadow: 0 22px 48px rgba(112, 136, 176, 0.16);
+  --page-gradient:
+    radial-gradient(circle at top left, rgba(21, 133, 199, 0.14), transparent 30%),
+    radial-gradient(circle at top right, rgba(67, 116, 255, 0.12), transparent 30%),
+    linear-gradient(180deg, #fbfdff 0%, #edf3fb 54%, #e7eef9 100%);
+  --page-gradient-mobile:
+    radial-gradient(circle at top center, rgba(21, 133, 199, 0.12), transparent 40%),
+    linear-gradient(180deg, #fbfdff 0%, #edf3fb 100%);
+  --page-overlay:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.72), rgba(255, 255, 255, 0.12) 28%, transparent 54%),
+    radial-gradient(circle at 12% 18%, rgba(67, 116, 255, 0.08), transparent 28%),
+    radial-gradient(circle at 88% 8%, rgba(21, 133, 199, 0.08), transparent 24%);
+  --surface-strong:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(245, 249, 255, 0.96));
+  --surface-base:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.95), rgba(244, 248, 253, 0.94));
+  --surface-soft:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(240, 246, 253, 0.93));
+  --surface-media:
+    linear-gradient(180deg, rgba(247, 250, 255, 0.98), rgba(235, 242, 251, 0.96));
+  --surface-mobile: #f7fbff;
+  --surface-muted: rgba(19, 42, 75, 0.05);
+  --surface-muted-hover: rgba(19, 42, 75, 0.08);
+  --surface-inset: rgba(243, 247, 252, 0.98);
+  --divider-soft: rgba(105, 129, 170, 0.16);
+  --overlay-backdrop: rgba(152, 171, 202, 0.32);
+  --footer-surface: rgba(255, 255, 255, 0.72);
+  --auth-page-gradient:
+    radial-gradient(circle at top left, rgba(67, 116, 255, 0.13), transparent 30%),
+    radial-gradient(circle at bottom right, rgba(21, 133, 199, 0.12), transparent 28%),
+    linear-gradient(180deg, #fbfdff 0%, #edf3fb 58%, #e8f0fa 100%);
+  --auth-surface:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 248, 253, 0.96));
+  --auth-input-bg: rgba(244, 248, 252, 0.98);
+  --auth-input-text: #102038;
+  --auth-placeholder: #7c90aa;
+  --auth-error: #cc4958;
+  --modal-surface: #f8fbff;
+  --modal-header-bg: #f2f7fc;
+  --modal-header-border: rgba(105, 129, 170, 0.16);
+  --modal-text: #102038;
+  --modal-muted: #627997;
+  --story-core-bg: #f7fbff;
+  --story-label: #4f657f;
+  --story-label-hover: #102038;
+  --story-placeholder-bg: linear-gradient(180deg, #dbe6f5 0%, #c1d1e8 100%);
+  --story-tray-surface:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 248, 253, 0.95));
+  --story-tray-border: rgba(105, 129, 170, 0.16);
+  --story-add-border: rgba(105, 129, 170, 0.16);
+  --story-add-plus-border: #f7fbff;
+  --story-ring-viewed: rgba(100, 120, 150, 0.62);
+  --story-ring-viewed-strong: rgba(79, 100, 131, 0.84);
+  --settings-mobile-bg: #edf3fb;
+  --messenger-shell-bg:
+    radial-gradient(circle at top left, rgba(67, 116, 255, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba(248, 251, 255, 0.98), rgba(235, 242, 251, 0.96));
+  --messenger-sidebar-surface:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 249, 255, 0.96));
+  --messenger-main-surface:
+    linear-gradient(180deg, rgba(252, 254, 255, 0.98), rgba(241, 247, 253, 0.96));
+  --messenger-header-surface:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(245, 249, 255, 0.96));
+  --messenger-chat-surface:
+    radial-gradient(circle at top center, rgba(67, 116, 255, 0.08), transparent 30%),
+    linear-gradient(180deg, rgba(249, 252, 255, 0.98), rgba(238, 245, 252, 0.95));
+  --messenger-search-field: rgba(226, 235, 247, 0.86);
+  --messenger-search-clear-bg: rgba(125, 140, 164, 0.9);
+  --messenger-search-clear-text: #ffffff;
+  --messenger-item-hover: rgba(19, 42, 75, 0.05);
+  --messenger-tab-muted-bg: rgba(19, 42, 75, 0.04);
+  --messenger-tab-muted-text: #4f657f;
+  --messenger-empty-icon-bg: rgba(19, 42, 75, 0.06);
+  --messenger-empty-title: #20344d;
+  --messenger-empty-text: #667c97;
+  --message-bubble-self: #1f6feb;
+  --message-bubble-other: #e8eff8;
+  --message-bubble-other-text: #102038;
+  --message-meta-text: #7287a3;
+  --message-preview-surface: rgba(19, 42, 75, 0.05);
+  --message-preview-border: rgba(105, 129, 170, 0.16);
+  --message-input-icon: #6f839b;
+  --message-input-icon-hover: #102038;
 
   /* Sidebar */
-  --sidebar-bg: #ffffff;
-  --sidebar-border: #dbdbdb;
-  --sidebar-hover: #efefef;
-  --sidebar-active: #efefef;
-  --sidebar-text: #000000;
+  --sidebar-bg: rgba(255, 255, 255, 0.9);
+  --sidebar-border: rgba(105, 129, 170, 0.16);
+  --sidebar-hover: rgba(38, 120, 186, 0.08);
+  --sidebar-active: rgba(38, 120, 186, 0.12);
+  --sidebar-text: #0c1729;
 
   /* SeeMore Menu */
-  --menu-bg: #ffffff;
-  --menu-border: #dbdbdb;
-  --menu-hover: #efefef;
-  --menu-text: #000000;
-  --menu-divider: #dbdbdb;
+  --menu-bg: rgba(255, 255, 255, 0.95);
+  --menu-border: rgba(105, 129, 170, 0.18);
+  --menu-hover: rgba(38, 120, 186, 0.08);
+  --menu-text: #0c1729;
+  --menu-divider: rgba(105, 129, 170, 0.14);
 
   /* Mobile navbar */
-  --mobile-nav-bg: #ffffff;
+  --mobile-nav-bg: rgba(252, 254, 255, 0.96);
 
   /* General UI */
-  --card-bg: #ffffff;
-  --input-bg: #efefef;
-  --border-color: #dbdbdb;
-  --secondary-text: #737373;
-  --icon-color: #000000;
+  --card-bg: rgba(255, 255, 255, 0.94);
+  --input-bg: rgba(243, 247, 252, 0.95);
+  --border-color: rgba(105, 129, 170, 0.16);
+  --secondary-text: #566d88;
+  --icon-color: #0c1729;
 
   /* Post / Home feed */
-  --post-bg: #ffffff;
-  --post-mobile-bg: #ffffff;
-  --post-border: #dbdbdb;
-  --post-text: #0a0a0a;
-  --post-subtext: #262626;
-  --post-time-text: #737373;
+  --post-bg: rgba(255, 255, 255, 0.94);
+  --post-mobile-bg: #f7fbff;
+  --post-border: rgba(105, 129, 170, 0.16);
+  --post-text: #102038;
+  --post-subtext: #324861;
+  --post-time-text: #617895;
 
   /* Avatar placeholder */
-  --avatar-placeholder-bg: #efefef;
+  --avatar-placeholder-bg: #e2ecf8;
 
   /* Suggestions panel */
-  --suggestion-username-color: #0a0a0a;
-  --suggestion-text-color: #737373;
-  --suggestion-seeall-color: #0a0a0a;
-  --suggestion-cancel-color: #0a0a0a;
-  --suggestion-cancel-hover-bg: #efefef;
-  --suggestion-divider: #dbdbdb;
+  --suggestion-username-color: #0c1729;
+  --suggestion-text-color: #627997;
+  --suggestion-seeall-color: #0c1729;
+  --suggestion-cancel-color: #0c1729;
+  --suggestion-cancel-hover-bg: rgba(38, 120, 186, 0.08);
+  --suggestion-divider: rgba(105, 129, 170, 0.16);
 
   /* Messenger */
-  --messenger-sidebar-bg: #ffffff;
-  --messenger-sidebar-mobile-bg: #ffffff;
-  --messenger-modal-bg: #ffffff;
-  --messenger-chat-bg: #f7f7f7;
-  --messenger-text: #0a0a0a;
-  --messenger-secondary-text: #737373;
-  --messenger-input-border: #dbdbdb;
-  --messenger-action-hover: rgba(0, 0, 0, 0.06);
+  --messenger-sidebar-bg: rgba(255, 255, 255, 0.96);
+  --messenger-sidebar-mobile-bg: #f7fbff;
+  --messenger-modal-bg: rgba(252, 254, 255, 0.97);
+  --messenger-chat-bg: #f7fbff;
+  --messenger-text: #102038;
+  --messenger-secondary-text: #627997;
+  --messenger-input-border: rgba(105, 129, 170, 0.16);
+  --messenger-action-hover: rgba(38, 120, 186, 0.08);
 
   /* Profile */
-  --profile-text: #0a0a0a;
+  --profile-text: #102038;
+  --profile-surface:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.97), rgba(244, 248, 253, 0.95));
+  --profile-surface-mobile: transparent;
+  --profile-divider: rgba(105, 129, 170, 0.16);
+  --profile-card: rgba(19, 42, 75, 0.05);
+  --profile-card-hover: rgba(19, 42, 75, 0.08);
+  --profile-bio-bg: rgba(21, 133, 199, 0.08);
+  --profile-bio-border: rgba(21, 133, 199, 0.14);
+  --profile-bio-text: #3b536d;
+  --profile-overlay: rgba(152, 171, 202, 0.34);
+  --profile-modal-surface:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(244, 248, 253, 0.96));
+  --profile-avatar-shadow: 0 16px 30px rgba(112, 136, 176, 0.14);
+  --profile-ring-viewed: rgba(100, 120, 150, 0.52);
+  --profile-ring-viewed-strong: rgba(79, 100, 131, 0.72);
 }
 
 /*
@@ -140,19 +341,34 @@
 } */
 
 body {
-  background: var(--background);
+  background-color: var(--background);
+  background-image: var(--page-gradient);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
   scrollbar-color: #808080 transparent;
   overflow-x: hidden !important;
   -ms-overflow-style: none;
   box-sizing: border-box;
   transition: background-color 0.3s ease, color 0.3s ease;
+  min-height: 100vh;
+  position: relative;
+  isolation: isolate;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: var(--page-overlay);
+  opacity: 0.7;
+  z-index: -1;
 }
 
 @media(max-width: 768px) {
   body {
     background-color: var(--mobile-nav-bg);
+    background-image: var(--page-gradient-mobile);
   }
 
   body::-webkit-scrollbar {
@@ -176,6 +392,7 @@ body {
 main {
   margin-left: 240px;
   overflow-x: hidden !important;
+  transition: margin-left 0.25s ease;
 }
 
 @media(max-width: 1264px) {
@@ -199,4 +416,26 @@ main {
 
 body.modal-open {
   overflow: hidden !important;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--foreground);
 }

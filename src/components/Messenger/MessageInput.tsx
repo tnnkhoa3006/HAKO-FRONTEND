@@ -73,11 +73,13 @@ export default function MessageInput({
 
   return (
     <div
-      className={`border-t border-[#222] p-4 bg-[#111] ${styles.messageInput}`}
+      className={`p-4 ${styles.messageInput}`}
     >
       {/* Reply preview below input */}
       {replyTo && (
-        <div className="flex items-center mb-2 bg-[#232323] rounded-lg px-3 py-2 relative overflow-hidden justify-start">
+        <div
+          className={`flex items-center mb-2 rounded-lg px-3 py-2 relative overflow-hidden justify-start ${styles.replyPreview}`}
+        >
           <div className="flex-1 min-w-0">
             {replyToMediaType === "image" ? (
               <>
@@ -89,7 +91,7 @@ export default function MessageInput({
                   isPreview={true}
                   currentMessageSenderId={userId}
                 />
-                <p className="text-[13px] text-gray-300 font-medium mb-0.5">
+                <p className={`text-[13px] font-medium mb-0.5 ${styles.chatName}`}>
                   Hình ảnh
                 </p>
               </>
@@ -103,7 +105,7 @@ export default function MessageInput({
                   isPreview={true}
                   currentMessageSenderId={userId}
                 />
-                <p className="text-[13px] text-gray-300 font-medium mb-0.5">
+                <p className={`text-[13px] font-medium mb-0.5 ${styles.chatName}`}>
                   Video
                 </p>
               </>
@@ -129,7 +131,7 @@ export default function MessageInput({
             )}
           </div>
           <button
-            className="ml-2 text-gray-400 hover:text-red-400 text-xs px-1"
+            className={`ml-2 text-xs px-1 ${styles.inputIcon}`}
             onClick={clearReplyTo}
             title="Hủy trả lời"
             type="button"
@@ -154,7 +156,7 @@ export default function MessageInput({
             <video src={filePreview} controls className="max-h-24 rounded" />
           )}
           <button
-            className="ml-2 text-gray-400 hover:text-red-400 text-xs px-1"
+            className={`ml-2 text-xs px-1 ${styles.inputIcon}`}
             onClick={() => {
               if (setFile) setFile(null);
               if (setFilePreview) setFilePreview(null);
@@ -169,9 +171,11 @@ export default function MessageInput({
         </div>
       )}
       <div className="flex items-center">
-        <Smile className="h-6 w-6 mr-3 text-gray-400 cursor-pointer hover:text-gray-200 flex-shrink-0" />
+        <Smile
+          className={`h-6 w-6 mr-3 cursor-pointer flex-shrink-0 ${styles.inputIcon}`}
+        />
         <div
-          className={`flex-1 bg-[#1a1a1a] rounded-full border border-[#222] flex items-center ${styles.fileInput}`}
+          className={`flex-1 rounded-full flex items-center ${styles.fileInput} ${styles.inputShell}`}
         >
           <input
             type="text"
@@ -179,10 +183,10 @@ export default function MessageInput({
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Message..."
-            className="flex-1 bg-transparent px-4 py-2 focus:outline-none"
+            className={`flex-1 bg-transparent px-4 py-2 focus:outline-none ${styles.inputText}`}
           />
           <button
-            className="mr-2 hover:text-gray-200 flex-shrink-0"
+            className={`mr-2 flex-shrink-0 ${styles.inputIcon}`}
             type="button"
             onClick={() =>
               fileInputRef &&
@@ -191,7 +195,7 @@ export default function MessageInput({
             }
           >
             <ImageIcon
-              className="h-5 w-5 text-gray-400"
+              className="h-5 w-5"
               style={{ cursor: "pointer" }}
             />
             <input
@@ -204,7 +208,7 @@ export default function MessageInput({
           </button>
         </div>
         <button
-          className="ml-3 text-gray-400 hover:text-gray-200 flex-shrink-0"
+          className={`ml-3 flex-shrink-0 ${styles.inputIcon}`}
           onClick={handleSendMessage}
         >
           <div className="flex items-center justify-center h-8 w-8">

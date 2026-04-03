@@ -336,7 +336,7 @@ export default function MessengerComponent({
     if (selectedUser && showMainChatModal) {
       return (
         <div
-          className={`flex h-full bg-[#0a0a0a] text-gray-200 ${styles.container} ${styles.modalContainer}`}
+          className={`flex h-full text-gray-200 ${styles.container} ${styles.modalContainer}`}
           style={{
             width: "100%",
             height: "100%",
@@ -377,7 +377,7 @@ export default function MessengerComponent({
     }
     return (
       <div
-        className={`flex h-full bg-[#0a0a0a] text-gray-200 ${styles.container} ${styles.modalContainer}`}
+        className={`flex h-full text-gray-200 ${styles.container} ${styles.modalContainer}`}
         style={{
           width: "100%",
           height: "100%",
@@ -407,7 +407,7 @@ export default function MessengerComponent({
 
   return (
     <div
-      className={`flex h-screen bg-[#0a0a0a] text-gray-200 ${styles.container}`}
+      className={`flex h-screen text-gray-200 ${styles.container}`}
     >
       <SiderBar
         availableUsers={availableUsers}

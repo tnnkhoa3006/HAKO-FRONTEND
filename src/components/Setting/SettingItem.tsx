@@ -1,5 +1,6 @@
 import React from "react";
 import { ChevronRight } from "lucide-react";
+import styles from "./Setting.module.scss";
 
 interface SettingItemProps {
   label: string | React.ReactNode;
@@ -12,12 +13,11 @@ export default function SettingItem({
 }: SettingItemProps) {
   return (
     <div
-      className={`flex items-center justify-between p-4 rounded-lg transition-colors
-        ${noHover ? "" : "hover:bg-gray-800 cursor-pointer"}`}
+      className={`${styles.settingItem} ${noHover ? styles.settingItemStatic : ""} ${!noHover ? "cursor-pointer" : ""}`}
     >
-      <div className="text-white text-sm w-full">{label}</div>
+      <div className={styles.settingLabel}>{label}</div>
       {typeof label === "string" && (
-        <ChevronRight size={18} className="text-gray-400 shrink-0" />
+        <ChevronRight size={18} className={styles.settingChevron} />
       )}
     </div>
   );

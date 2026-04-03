@@ -62,12 +62,21 @@ export default function AddStory({
               className={`relative w-16 h-16 mb-1 group-hover:scale-105 transition-transform duration-300 ${styles.storyRing}`}
             >
               <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-yellow-500 via-red-500 to-purple-500 p-0.5 group-hover:animate-pulse">
-                <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
-                  <Plus className="w-7 h-7 text-white group-hover:scale-110 transition-transform duration-300" />
+                <div
+                  className="w-full h-full rounded-full flex items-center justify-center"
+                  style={{ backgroundColor: "var(--story-core-bg)" }}
+                >
+                  <Plus
+                    className="w-7 h-7 group-hover:scale-110 transition-transform duration-300"
+                    style={{ color: "var(--foreground)" }}
+                  />
                 </div>
               </div>
             </div>
-            <span className="text-xs text-gray-400 group-hover:text-white transition-colors duration-300 font-semibold mt-1">
+            <span
+              className="text-xs transition-colors duration-300 font-semibold mt-1"
+              style={{ color: "var(--story-label)" }}
+            >
               Thêm tin mới
             </span>
           </div>

@@ -8,6 +8,7 @@
   height: 100dvh;
   padding: 32px 85px;
   margin-left: 40px;
+  background: var(--messenger-shell-bg);
 
   @media (max-width: 768px) {
     padding: 0;
@@ -41,7 +42,11 @@
 
 .sidebar {
   flex: 1;
-  background-color: var(--messenger-sidebar-bg);
+  background: var(--messenger-sidebar-surface);
+  border: 1px solid rgba(164, 186, 224, 0.18);
+  border-radius: 28px 0 0 28px;
+  box-shadow: var(--surface-shadow);
+  backdrop-filter: blur(20px);
 
   @media (max-width: 622px) {
     width: 100vw;
@@ -50,6 +55,8 @@
     margin: auto 0;
     background-color: var(--messenger-sidebar-mobile-bg);
     border: none;
+    border-radius: 0;
+    box-shadow: none;
   }
 }
 
@@ -57,6 +64,12 @@
   flex: 3.2;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
   overflow-x: hidden !important;
+  background: var(--messenger-main-surface) !important;
+  border: 1px solid rgba(164, 186, 224, 0.18);
+  border-left: none;
+  border-radius: 0 28px 28px 0;
+  box-shadow: var(--surface-shadow);
+  backdrop-filter: blur(20px);
 
   @media (max-width: 622px) {
     position: fixed;
@@ -72,6 +85,9 @@
     flex-direction: column;
     overflow: hidden;
     margin: auto 0;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
 
     .chatHeader {
       position: sticky;
@@ -79,7 +95,7 @@
       height: 60px;
       z-index: 998;
       flex-shrink: 0;
-      background-color: var(--messenger-chat-bg) !important;
+      background: var(--messenger-header-surface) !important;
     }
 
     .messageInput {
@@ -89,7 +105,7 @@
       z-index: 998;
       flex-shrink: 0;
       max-height: fit-content;
-      background-color: var(--messenger-chat-bg) !important;
+      background: var(--messenger-header-surface) !important;
     }
 
     .fileInput {
@@ -162,7 +178,6 @@
 .text {
   overflow-wrap: anywhere;
   white-space: normal;
-  // font-size: 17px;
 }
 
 .replyMessage {
@@ -297,6 +312,7 @@
   transition: all 0.2s ease-in-out;
   color: var(--messenger-text);
   backdrop-filter: blur(10px);
+  border-radius: 50%;
 
   &:active {
     transform: scale(0.95);
@@ -410,6 +426,10 @@
 }
 
 .searchInput {
+  background: var(--messenger-search-field) !important;
+  border: 1px solid rgba(164, 186, 224, 0.18);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+
   @media (max-width: 768px) {
     background-color: transparent !important;
     border: 1px solid var(--messenger-input-border);
@@ -417,9 +437,34 @@
 }
 
 .backButton {
+  border: 1px solid rgba(135, 161, 205, 0.14);
+  background: var(--surface-muted-hover) !important;
+
   @media (max-width: 768px) {
     background-color: transparent !important;
   }
+}
+
+.chevronDown {
+  color: var(--secondary-text);
+}
+
+.chatList {
+  padding-bottom: 14px;
+}
+
+.messages {
+  background: var(--messenger-chat-surface);
+}
+
+.chatHeader {
+  background: var(--messenger-header-surface);
+  border-bottom: 1px solid rgba(164, 186, 224, 0.16);
+}
+
+.messageInput {
+  background: var(--messenger-header-surface);
+  border-top: 1px solid rgba(164, 186, 224, 0.16);
 }
 
 .messageActionsPreview .messageActionBtn:hover,
@@ -430,4 +475,132 @@
   border-radius: unset; // bỏ border tròn nếu có
   transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
   border-radius: 50%;
+}
+
+.headerDivider {
+  border-bottom: 1px solid var(--divider-soft);
+}
+
+.iconButton {
+  background: var(--surface-muted-hover) !important;
+  border: 1px solid rgba(135, 161, 205, 0.14);
+  color: var(--messenger-text);
+}
+
+.titleText {
+  color: var(--messenger-text);
+}
+
+.searchIcon,
+.mutedText,
+.chevronDown {
+  color: var(--messenger-secondary-text);
+}
+
+.searchFieldText {
+  color: var(--messenger-text);
+
+  &::placeholder {
+    color: var(--messenger-secondary-text);
+  }
+}
+
+.clearSearchButton {
+  background: var(--messenger-search-clear-bg);
+  color: var(--messenger-search-clear-text);
+}
+
+.secondaryTabButton {
+  background: var(--messenger-tab-muted-bg);
+  color: var(--messenger-tab-muted-text);
+
+  &:hover {
+    background: var(--messenger-item-hover);
+  }
+}
+
+.chatRow {
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background: var(--messenger-item-hover);
+  }
+}
+
+.chatRowActive {
+  background: var(--messenger-item-hover);
+}
+
+.chatName {
+  color: var(--messenger-text);
+}
+
+.chatMessage {
+  color: var(--messenger-secondary-text);
+}
+
+.chatMessageUnread {
+  color: var(--messenger-text);
+  font-weight: 500;
+}
+
+.metaText {
+  color: var(--message-meta-text);
+}
+
+.divider {
+  border-color: var(--divider-soft);
+}
+
+.emptyIcon {
+  background: var(--messenger-empty-icon-bg);
+  color: var(--messenger-secondary-text);
+}
+
+.emptyTitle {
+  color: var(--messenger-empty-title);
+}
+
+.emptyText {
+  color: var(--messenger-empty-text);
+}
+
+.bubbleSelf {
+  background: var(--message-bubble-self);
+  color: #ffffff;
+}
+
+.bubbleOther {
+  background: var(--message-bubble-other);
+  color: var(--message-bubble-other-text);
+}
+
+.bubbleText {
+  color: inherit;
+}
+
+.replyPreview {
+  background: var(--message-preview-surface);
+  border: 1px solid var(--message-preview-border);
+}
+
+.inputShell {
+  background: var(--message-preview-surface);
+  border: 1px solid var(--message-preview-border);
+}
+
+.inputText {
+  color: var(--messenger-text);
+
+  &::placeholder {
+    color: var(--messenger-secondary-text);
+  }
+}
+
+.inputIcon {
+  color: var(--message-input-icon);
+
+  &:hover {
+    color: var(--message-input-icon-hover);
+  }
 }

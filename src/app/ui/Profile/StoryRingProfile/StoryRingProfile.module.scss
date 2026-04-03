@@ -4,7 +4,7 @@
 
   &.viewed {
     stroke-dasharray: 8 4;
-    stroke: rgba(255, 255, 255, 0.4);
+    stroke: var(--profile-ring-viewed);
     // Xóa dashAnimation từ đây, chỉ để lại movingDash
     animation: movingDash 3s linear infinite;
   }
@@ -54,13 +54,13 @@
 
   60% {
     stroke-dasharray: 5 10;
-    stroke: rgba(255, 255, 255, 0.6);
+    stroke: var(--profile-ring-viewed-strong);
     opacity: 0.6;
   }
 
   100% {
     stroke-dasharray: 8 4;
-    stroke: rgba(255, 255, 255, 0.4);
+    stroke: var(--profile-ring-viewed);
     opacity: 0.4;
   }
 }
@@ -78,13 +78,13 @@
 
   60% {
     stroke-dasharray: 3 5;
-    stroke: rgba(255, 255, 255, 0.6);
+    stroke: var(--profile-ring-viewed-strong);
     opacity: 0.6;
   }
 
   100% {
     stroke-dasharray: 4 2;
-    stroke: rgba(255, 255, 255, 0.4);
+    stroke: var(--profile-ring-viewed);
     opacity: 0.4;
   }
 }

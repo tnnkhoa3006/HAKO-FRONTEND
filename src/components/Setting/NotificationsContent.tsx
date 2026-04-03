@@ -7,7 +7,7 @@ export default function NotificationsContent() {
       <SettingItem label="Bài viết, tin và bình luận" />
       <SettingItem label="Tin nhắn" />
       <SettingItem label="Theo dõi và người theo dõi" />
-      <SettingItem label="Instagram Direct" />
+      <SettingItem label="Hộp thư HAKO" />
     </div>
   );
 }

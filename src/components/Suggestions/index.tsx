@@ -135,7 +135,7 @@ export default function Suggestions() {
                 {user.fullName || ""}
               </p>
             </div>
-            <button className={styles.followButton}>Chuyển</button>
+            <button className={styles.followButton}>Hồ sơ</button>
           </div>
         )}
 

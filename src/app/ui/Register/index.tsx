@@ -32,47 +32,43 @@ export default function Register({
   handleKeyDown,
 }: RegisterProps) {
   return (
-    <div
-      className={`flex min-h-screen items-center justify-center bg-black ${styles.container}`}
-    >
-      <div className="w-full max-w-sm">
-        <div
-          className={`mb-4 rounded bg-black p-8 ${styles.form}`}
-          style={{ marginTop: "10px" }}
-        >
+    <div className={`flex min-h-screen items-center justify-center ${styles.container}`}>
+      <div className={styles.wrapper}>
+        <div className={`mb-4 rounded p-8 ${styles.form}`} style={{ marginTop: "10px" }}>
+          <div className={styles.badge}>HAKO</div>
           <div
             className="mb-8 flex justify-center"
             style={{ userSelect: "none", pointerEvents: "none" }}
           >
             <Image
               src="/Images/logoLogin.png"
-              alt="Instagram"
+              alt="HAKO"
               width={175}
               height={51}
               priority
             />
           </div>
 
-          <p className="mb-6 text-center text-sm text-gray-400">
-            Đăng ký để xem ảnh và video từ bạn bè.
+          <p className={styles.subtitle}>
+            Tạo tài khoản để bắt đầu kết nối, chia sẻ và khám phá những cuộc trò chuyện mới trên HAKO.
           </p>
 
           <LoginGoogle mode="signup" />
 
-          <div className="relative my-4 flex items-center">
-            <div className="flex-grow border-t border-gray-700"></div>
-            <span className="mx-4 flex-shrink text-xs text-gray-400">HOẶC</span>
-            <div className="flex-grow border-t border-gray-700"></div>
+          <div className={styles.divider}>
+            <div className={styles.dividerLine}></div>
+            <span className={styles.dividerText}>HOẶC</span>
+            <div className={styles.dividerLine}></div>
           </div>
 
-          <div className="space-y-3">
+          <div className={styles.formStack}>
             <div>
               <input
                 type="email"
                 placeholder="Số di động hoặc email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded bg-black px-2 py-2 text-sm text-white focus:border-gray-500 focus:outline-none"
+                className={styles.input}
                 onKeyDown={handleKeyDown}
               />
             </div>
@@ -83,7 +79,7 @@ export default function Register({
                 placeholder="Tên đầy đủ"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                className="w-full rounded bg-black px-2 py-2 text-sm text-white focus:border-gray-500 focus:outline-none"
+                className={styles.input}
                 onKeyDown={handleKeyDown}
               />
             </div>
@@ -94,7 +90,7 @@ export default function Register({
                 placeholder="Tên người dùng"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full rounded bg-black px-2 py-2 text-sm text-white focus:border-gray-500 focus:outline-none"
+                className={styles.input}
                 onKeyDown={handleKeyDown}
               />
             </div>
@@ -105,46 +101,40 @@ export default function Register({
                 placeholder="Mật khẩu"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded bg-black px-2 py-2 text-sm text-white focus:border-gray-500 focus:outline-none"
+                className={styles.input}
                 onKeyDown={handleKeyDown}
               />
             </div>
 
             <div className="pt-2">
-              <button
-                onClick={handleRegister}
-                className="w-full rounded bg-blue-500 py-2 text-sm font-semibold text-white hover:bg-blue-600"
-              >
+              <button onClick={handleRegister} className={styles.submitButton}>
                 Đăng ký
               </button>
             </div>
 
-            {error && (
-              <div className="text-center text-xs text-red-500">{error}</div>
-            )}
+            {error && <div className={styles.error}>{error}</div>}
 
-            <div className="mt-3 text-center text-xs text-gray-400">
+            <div className={styles.legalText}>
               <p>
-                Những người dùng dịch vụ của chúng tôi có thể đã tải thông tin
-                liên hệ của bạn lên Instagram.{" "}
-                <a href="#" className="text-blue-500 hover:text-blue-400">
+                Những người dùng dịch vụ của chúng tôi có thể đã tải thông tin liên hệ của bạn lên HAKO.{" "}
+                <a href="#" className={styles.primaryLink}>
                   Tìm hiểu thêm
                 </a>
               </p>
             </div>
 
-            <div className="mt-3 text-center text-xs text-gray-400">
+            <div className={styles.legalText}>
               <p>
                 Bằng cách đăng ký, bạn đồng ý với{" "}
-                <a href="#" className="text-blue-500 hover:text-blue-400">
+                <a href="#" className={styles.primaryLink}>
                   Điều khoản
                 </a>
                 ,{" "}
-                <a href="#" className="text-blue-500 hover:text-blue-400">
+                <a href="#" className={styles.primaryLink}>
                   Chính sách quyền riêng tư
                 </a>{" "}
                 và{" "}
-                <a href="#" className="text-blue-500 hover:text-blue-400">
+                <a href="#" className={styles.primaryLink}>
                   Chính sách cookie
                 </a>{" "}
                 của chúng tôi.
@@ -153,15 +143,10 @@ export default function Register({
           </div>
         </div>
 
-        <div
-          className={`mt-4 rounded bg-black p-6 text-center ${styles.form2}`}
-        >
-          <p className="text-sm text-gray-400">
+        <div className={`mt-4 rounded p-6 text-center ${styles.form2}`}>
+          <p className={styles.switchText}>
             Bạn có tài khoản?{" "}
-            <Link
-              href="/accounts/login"
-              className="font-semibold text-blue-500"
-            >
+            <Link href="/accounts/login" className={styles.primaryLink}>
               Đăng nhập
             </Link>
           </p>

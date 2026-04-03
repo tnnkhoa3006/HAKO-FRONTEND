@@ -32,16 +32,28 @@ export default function MobileSidebar({
 
   return (
     <div
-      className={`fixed inset-0 z-50 transition-transform duration-300 bg-black md:hidden ${
+      className={`fixed inset-0 z-50 transition-transform duration-300 md:hidden ${
         mobileMenuOpen ? "translate-x-0" : "-translate-x-full"
       } ${styles.container}`}
+      style={{ backgroundColor: "var(--settings-mobile-bg)" }}
     >
-      <div className="flex items-center justify-between p-4 border-b border-[#333]">
-        <div className="flex items-center space-x-2">
+      <div
+        className="flex items-center justify-between p-4"
+        style={{ borderBottom: "1px solid var(--divider-soft)" }}
+      >
+        <div
+          className="flex items-center space-x-2"
+          style={{ color: "var(--foreground)" }}
+        >
           <Settings size={24} />
-          <h1 className="text-xl font-semibold">Cài đặt</h1>
+          <h1
+            className="text-xl font-semibold"
+            style={{ color: "var(--foreground)" }}
+          >
+            Cài đặt
+          </h1>
         </div>
-        <button onClick={handleClose} className="text-white">
+        <button onClick={handleClose} style={{ color: "var(--foreground)" }}>
           <X size={24} />
         </button>
       </div>
@@ -54,17 +66,31 @@ export default function MobileSidebar({
               setActiveTab(tab.id);
               setMobileMenuOpen(false);
             }}
-            className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-colors ${
-              activeTab === tab.id ? "bg-gray-800" : "hover:bg-gray-800"
-            }`}
+            className="flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-colors"
+            style={{
+              background:
+                activeTab === tab.id
+                  ? "var(--surface-muted-hover)"
+                  : "transparent",
+            }}
           >
             <span
-              className={activeTab === tab.id ? "text-white" : "text-gray-400"}
+              style={{
+                color:
+                  activeTab === tab.id
+                    ? "var(--foreground)"
+                    : "var(--secondary-text)",
+              }}
             >
               {tab.icon}
             </span>
             <span
-              className={activeTab === tab.id ? "text-white" : "text-gray-400"}
+              style={{
+                color:
+                  activeTab === tab.id
+                    ? "var(--foreground)"
+                    : "var(--secondary-text)",
+              }}
             >
               {tab.label}
             </span>

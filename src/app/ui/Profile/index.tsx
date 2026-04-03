@@ -111,11 +111,22 @@ export default function Profile({ user: initialUser }: { user: User }) {
       {showChoiceModal && (
         <div
           className="fixed inset-0 z-[997] flex items-center justify-center"
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.6)" }}
+          style={{ backgroundColor: "var(--profile-overlay)" }}
         >
-          <div className="bg-white rounded-lg shadow-xl min-w-[280px] max-w-[320px] mx-4 overflow-hidden">
+          <div
+            className="rounded-[24px] min-w-[280px] max-w-[320px] mx-4 overflow-hidden border"
+            style={{
+              background: "var(--profile-modal-surface)",
+              borderColor: "rgba(164, 186, 224, 0.18)",
+              boxShadow: "var(--surface-shadow)",
+            }}
+          >
             <button
-              className="w-full py-3 px-4 text-left flex items-center gap-3 text-gray-900 font-medium hover:bg-gray-50 transition-colors duration-150 border-b border-gray-200"
+              className="w-full py-3 px-4 text-left flex items-center gap-3 font-medium transition-colors duration-150 border-b"
+              style={{
+                color: "var(--foreground)",
+                borderColor: "rgba(135, 161, 205, 0.14)",
+              }}
               onClick={async () => {
                 setShowChoiceModal(false);
                 if (!isStoryLoading) {
@@ -125,7 +136,8 @@ export default function Profile({ user: initialUser }: { user: User }) {
             >
               <div className="w-8 h-8 flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-gray-700"
+                  className="w-5 h-5"
+                  style={{ color: "var(--foreground)" }}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -141,7 +153,11 @@ export default function Profile({ user: initialUser }: { user: User }) {
               Xem tin
             </button>
             <button
-              className="w-full py-3 px-4 text-left flex items-center gap-3 text-gray-900 font-medium hover:bg-gray-50 transition-colors duration-150 border-b border-gray-200"
+              className="w-full py-3 px-4 text-left flex items-center gap-3 font-medium transition-colors duration-150 border-b"
+              style={{
+                color: "var(--foreground)",
+                borderColor: "rgba(135, 161, 205, 0.14)",
+              }}
               onClick={() => {
                 setShowChoiceModal(false);
                 setShowAvatarModal(true);
@@ -149,7 +165,8 @@ export default function Profile({ user: initialUser }: { user: User }) {
             >
               <div className="w-8 h-8 flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-gray-700"
+                  className="w-5 h-5"
+                  style={{ color: "var(--foreground)" }}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -165,12 +182,14 @@ export default function Profile({ user: initialUser }: { user: User }) {
               Tải ảnh đại diện
             </button>
             <button
-              className="w-full py-3 px-4 text-left flex items-center gap-3 text-gray-600 font-medium hover:bg-gray-50 transition-colors duration-150"
+              className="w-full py-3 px-4 text-left flex items-center gap-3 font-medium transition-colors duration-150"
+              style={{ color: "var(--secondary-text)" }}
               onClick={() => setShowChoiceModal(false)}
             >
               <div className="w-8 h-8 flex items-center justify-center">
                 <svg
-                  className="w-5 h-5 text-gray-600"
+                  className="w-5 h-5"
+                  style={{ color: "var(--secondary-text)" }}
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"

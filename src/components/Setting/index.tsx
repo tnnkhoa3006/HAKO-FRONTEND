@@ -21,18 +21,16 @@ export default function Setting() {
   const router = useRouter();
   const { handleLogout, isLoggingOut, logoutError } = useLogout();
 
-  // Chỉ chạy một lần khi component mount để check mobile
   useEffect(() => {
     const isMobile = window.innerWidth < 768;
     if (isMobile) {
-      setActiveTab(""); // Không active tab nào trên mobile
-      setMobileMenuOpen(true); // Mở sidebar sẵn
+      setActiveTab("");
+      setMobileMenuOpen(true);
     }
     setIsInitialized(true);
   }, []);
 
   const handleBack = () => {
-    // Nếu đang ở mobile và chưa mở sidebar thì mở sidebar, clear tab
     if (window.innerWidth < 768 && !mobileMenuOpen) {
       setMobileMenuOpen(true);
       setActiveTab("");
@@ -66,57 +64,48 @@ export default function Setting() {
         return <NotificationsContent />;
       default:
         return (
-          <div className="flex items-center justify-center h-40 text-gray-400">
-            Chưa có nội dung cho tab này
+          <div className={styles.helperText}>
+            Chưa có nội dung cho tab này.
           </div>
         );
     }
   };
 
-  // Modal đăng xuất
   const LogoutModal = () => {
     if (!showLogoutModal) return null;
 
     return (
-      <div
-        className={`fixed inset-0 bg-black/70 flex items-center justify-center z-50 px-4 ${styles.container}`}
-      >
-        <div className="bg-gray-800 rounded-xl max-w-md w-full shadow-2xl transform transition-all animate-fade-in">
-          <div className="flex items-center justify-between p-5 border-b border-gray-700">
-            <div className="flex items-center space-x-3">
-              <LogOut size={22} className="text-red-500" />
-              <h3 className="text-xl font-semibold">Đăng xuất tài khoản</h3>
+      <div className={styles.logoutOverlay}>
+        <div className={styles.logoutCard}>
+          <div className={styles.logoutHeader}>
+            <div className={styles.logoutTitle}>
+              <LogOut size={22} className="text-red-400" />
+              <h3>Đăng xuất tài khoản</h3>
             </div>
             <button
               onClick={() => setShowLogoutModal(false)}
-              className="text-gray-400 hover:text-white transition-colors"
+              className={styles.backButton}
             >
-              <X size={20} />
+              <X size={18} />
             </button>
           </div>
 
-          <div className="p-6">
-            <p className="mb-6 text-gray-300">
-              Bạn có chắc chắn muốn đăng xuất khỏi tài khoản của mình?
-            </p>
+          <div className={styles.logoutBody}>
+            <p>Bạn có chắc chắn muốn đăng xuất khỏi tài khoản của mình?</p>
 
-            {logoutError && (
-              <div className="mb-4 p-3 bg-red-900/50 border border-red-700 rounded-md text-red-200">
-                {logoutError}
-              </div>
-            )}
+            {logoutError && <div className={styles.errorBox}>{logoutError}</div>}
 
-            <div className="flex space-x-3 justify-end">
+            <div className={styles.logoutActions}>
               <button
                 onClick={() => setShowLogoutModal(false)}
-                className="px-4 py-2 rounded-md border border-gray-600 hover:bg-gray-700 transition-colors"
+                className={styles.ghostButton}
               >
                 Hủy
               </button>
               <button
                 onClick={onLogout}
                 disabled={isLoggingOut}
-                className="bg-gray-800 hover:bg-red-700 text-white px-4 py-2 rounded-md transition-colors disabled:bg-gray-600 disabled:cursor-not-allowed flex items-center"
+                className={styles.dangerButton}
               >
                 {isLoggingOut ? "Đang đăng xuất..." : "Đăng xuất"}
               </button>
@@ -127,14 +116,12 @@ export default function Setting() {
     );
   };
 
-  // Không render gì cho đến khi đã initialize xong
   if (!isInitialized) {
     return null;
   }
 
   return (
-    <div className="flex flex-col md:flex-row text-white min-h-screen">
-      {/* Mobile Header */}
+    <div className={styles.shell}>
       <MobileHeader
         activeTab={activeTab}
         tabs={tabs}
@@ -142,7 +129,6 @@ export default function Setting() {
         handleBack={handleBack}
       />
 
-      {/* Mobile Sidebar */}
       <MobileSidebar
         mobileMenuOpen={mobileMenuOpen}
         setMobileMenuOpen={setMobileMenuOpen}
@@ -151,73 +137,44 @@ export default function Setting() {
         tabs={tabs}
       />
 
-      {/* Desktop Sidebar */}
-      <div className="hidden md:block md:w-1/4 lg:w-1/5 border-r border-[#333] p-4">
-        {/* Top section: Back on the left, Settings + Title on the right */}
-        <div className="flex items-center justify-between mb-6">
-          {/* Left: Back */}
-          <div className="text-white">
-            <button onClick={handleBack} className="text-white cursor-pointer">
-              <ArrowLeft size={20} />
-            </button>
-          </div>
+      <div className={styles.desktopSidebar}>
+        <div className={styles.desktopHeader}>
+          <button onClick={handleBack} className={styles.backButton}>
+            <ArrowLeft size={20} />
+          </button>
 
-          {/* Right: Settings icon + Title */}
-          <div className="flex items-center space-x-2">
-            <Settings size={24} className="text-white" />
-            <h1 className="text-xl font-semibold text-white">Cài đặt</h1>
+          <div className={styles.desktopHeaderTitle}>
+            <Settings size={22} />
+            <h1>Cài đặt</h1>
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="space-y-1">
+        <div className={styles.tabList}>
           {tabs.map((tab) => (
             <div
               key={tab.id}
               onClick={() => handleTabClick(tab.id)}
-              className={`flex items-center space-x-3 p-3 rounded-lg cursor-pointer transition-colors ${
+              className={`${styles.tabItem} ${
                 activeTab === tab.id && tab.id !== "logout"
-                  ? "bg-gray-800"
-                  : "hover:bg-gray-800"
-              } ${tab.id === "logout" ? "text-gray-400" : ""}`}
+                  ? styles.tabItemActive
+                  : ""
+              } ${tab.id === "logout" ? styles.tabItemLogout : ""}`}
             >
-              <span
-                className={
-                  activeTab === tab.id && tab.id !== "logout"
-                    ? "text-white"
-                    : tab.id === "logout"
-                    ? ""
-                    : "text-gray-400"
-                }
-              >
-                {tab.icon}
-              </span>
-              <span
-                className={
-                  activeTab === tab.id && tab.id !== "logout"
-                    ? "text-white"
-                    : tab.id === "logout"
-                    ? ""
-                    : "text-gray-400"
-                }
-              >
-                {tab.label}
-              </span>
+              <span>{tab.icon}</span>
+              <span>{tab.label}</span>
             </div>
           ))}
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="w-full md:w-3/4 lg:w-4/5 p-4 md:p-6">
-        <h2 className="hidden md:block text-xl font-semibold mb-6">
+      <div className={styles.mainContent}>
+        <h2 className={styles.sectionTitle}>
           {tabs.find((tab) => tab.id === activeTab)?.label}
         </h2>
 
         {renderTabContent()}
       </div>
 
-      {/* Modal Đăng xuất */}
       <LogoutModal />
     </div>
   );

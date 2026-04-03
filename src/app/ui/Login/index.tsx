@@ -23,32 +23,35 @@ export default function Login({
   handleKeyDown,
 }: LoginProps) {
   return (
-    <div
-      className={`flex min-h-[80vh] items-center justify-center bg-black ${styles.container}`}
-    >
-      <div className="w-full max-w-sm">
-        <div className={`mb-4 rounded bg-black p-8 ${styles.form}`}>
+    <div className={`flex min-h-[80vh] items-center justify-center ${styles.container}`}>
+      <div className={styles.wrapper}>
+        <div className={`mb-4 rounded p-8 ${styles.form}`}>
+          <div className={styles.badge}>HAKO</div>
           <div
             className="mb-8 flex justify-center"
             style={{ userSelect: "none", pointerEvents: "none" }}
           >
             <Image
               src="/Images/logoLogin.png"
-              alt="Instagram"
+              alt="HAKO"
               width={175}
               height={51}
               priority
             />
           </div>
 
-          <div className="space-y-4">
+          <p className={styles.subtitle}>
+            Chào mừng quay lại. Đăng nhập để tiếp tục trò chuyện, chia sẻ và theo dõi cộng đồng trên HAKO.
+          </p>
+
+          <div className={styles.formStack}>
             <div>
               <input
                 type="text"
                 placeholder="Số điện thoại, tên người dùng hoặc email"
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
-                className="w-full rounded bg-black px-2 py-2 text-sm text-white focus:border-gray-500 focus:outline-none"
+                className={styles.input}
                 onKeyDown={handleKeyDown}
               />
             </div>
@@ -59,52 +62,37 @@ export default function Login({
                 placeholder="Mật khẩu"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full rounded bg-black px-2 py-2 text-sm text-white focus:border-gray-500 focus:outline-none"
+                className={styles.input}
                 onKeyDown={handleKeyDown}
               />
             </div>
 
-            <button
-              onClick={handleLogin}
-              className="w-full rounded bg-blue-500 py-2 text-sm font-semibold text-white hover:bg-blue-600"
-            >
+            <button onClick={handleLogin} className={styles.submitButton}>
               Đăng nhập
             </button>
 
-            {error && (
-              <div className="text-center text-xs text-red-500">{error}</div>
-            )}
+            {error && <div className={styles.error}>{error}</div>}
 
-            <div className="relative my-4 flex items-center">
-              <div className="flex-grow border-t border-gray-700"></div>
-              <span className="mx-4 flex-shrink text-xs text-gray-400">
-                HOẶC
-              </span>
-              <div className="flex-grow border-t border-gray-700"></div>
+            <div className={styles.divider}>
+              <div className={styles.dividerLine}></div>
+              <span className={styles.dividerText}>HOẶC</span>
+              <div className={styles.dividerLine}></div>
             </div>
 
             <LoginGoogle mode="signin" />
 
             <div className="text-center">
-              <a
-                href="#"
-                className="text-xs font-medium text-blue-500 hover:text-blue-400"
-              >
+              <a href="#" className={styles.secondaryLink}>
                 Quên mật khẩu?
               </a>
             </div>
           </div>
         </div>
 
-        <div
-          className={`mt-4 rounded bg-black p-6 text-center ${styles.form2}`}
-        >
-          <p className="text-sm text-gray-400">
+        <div className={`mt-4 rounded p-6 text-center ${styles.form2}`}>
+          <p className={styles.switchText}>
             Bạn chưa có tài khoản?{" "}
-            <Link
-              href="/accounts/register"
-              className="font-semibold text-blue-500"
-            >
+            <Link href="/accounts/register" className={styles.primaryLink}>
               Đăng ký
             </Link>
           </p>

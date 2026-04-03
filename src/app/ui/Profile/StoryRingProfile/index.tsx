@@ -116,7 +116,7 @@ export default function StoryRingProfile({
           fill="none"
           stroke={
             internalViewed
-              ? "rgba(255, 255, 255, 0.3)"
+              ? "var(--profile-ring-viewed)"
               : `url(#storyGradient-large-${animationKey})`
           }
           strokeWidth={isMobile ? "3" : "1.5"}
@@ -129,7 +129,10 @@ export default function StoryRingProfile({
         />
       </svg>
 
-      <div className="w-full h-full rounded-full bg-black flex items-center justify-center cursor-pointer">
+      <div
+        className="w-full h-full rounded-full flex items-center justify-center cursor-pointer"
+        style={{ backgroundColor: "var(--story-core-bg)" }}
+      >
         {children}
       </div>
     </div>

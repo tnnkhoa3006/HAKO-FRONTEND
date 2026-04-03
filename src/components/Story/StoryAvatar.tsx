@@ -110,9 +110,9 @@ const StoryAvatar: React.FC<StoryAvatarProps> = ({
           }
         >
           <div
-            className={`${avatarSizes[usedSize].avatar} rounded-full overflow-hidden bg-black flex ${avatarPadding}`}
-            style={
-              variant === "messenger"
+            className={`${avatarSizes[usedSize].avatar} rounded-full overflow-hidden flex ${avatarPadding}`}
+            style={{
+              ...(variant === "messenger"
                 ? {
                     position: "absolute",
                     top: 5,
@@ -125,8 +125,9 @@ const StoryAvatar: React.FC<StoryAvatarProps> = ({
                     position: "absolute",
                     top: currentRingOffset,
                     left: currentRingOffset,
-                  }
-            }
+                  }),
+              backgroundColor: "var(--story-core-bg)",
+            }}
           >
             <Image
               src={author?.profilePicture || "/api/placeholder/60/60"}
@@ -143,8 +144,13 @@ const StoryAvatar: React.FC<StoryAvatarProps> = ({
       {/* Nếu là messenger thì không hiển thị username */}
       {showUsername && variant !== "messenger" && (
         <div className="flex items-center justify-center space-x-1 max-w-20 w-full mt-2">
-          <span className="text-white text-xs truncate">{author?.username || "Người dùng"}</span>
-          {author.checkMark && (
+          <span
+            className="text-xs truncate"
+            style={{ color: "var(--story-label)" }}
+          >
+            {author?.username || "Người dùng"}
+          </span>
+          {author?.checkMark && (
             <svg
               aria-label="Đã xác minh"
               fill="rgb(0, 149, 246)"

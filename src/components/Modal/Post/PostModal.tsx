@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import styles from "./PostModal.module.scss";
 import { X } from "lucide-react";
@@ -35,6 +36,7 @@ export default function PostModal({
 }: PostModalProps) {
   const { fromNow } = useTime();
   const [showSettings, setShowSettings] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const videoRef = useRef<HTMLVideoElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
   const previousUrl = useRef<string>("");
@@ -118,6 +120,11 @@ export default function PostModal({
       };
     }
   }, [onClose, detail]);
+
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
 
   // Toggle settings modal
   const toggleSettings = () => {
@@ -321,7 +328,7 @@ export default function PostModal({
   }
 
   // Nếu là chế độ modal, render với overlay và close button
-  return (
+  const modalContent = (
     <div className={styles.modalOverlay}>
       <button className={styles.closeButton} onClick={onClose}>
         <X size={24} />
@@ -338,4 +345,10 @@ export default function PostModal({
       )}
     </div>
   );
+
+  if (!isMounted) {
+    return null;
+  }
+
+  return createPortal(modalContent, document.body);
 }

@@ -122,7 +122,7 @@ export default function StoryRing({
           fill="none"
           stroke={
             internalViewed
-              ? "rgba(255, 255, 255, 0.3)"
+              ? "var(--story-ring-viewed)"
               : `url(#storyGradient-${size}-${animationKey})`
           }
           strokeWidth={currentSize.strokeWidth}
@@ -133,7 +133,10 @@ export default function StoryRing({
         />
       </svg>
 
-      <div className="w-full h-full rounded-full bg-black flex items-center justify-center cursor-pointer">
+      <div
+        className="w-full h-full rounded-full flex items-center justify-center cursor-pointer"
+        style={{ backgroundColor: "var(--story-core-bg)" }}
+      >
         {children}
       </div>
     </div>

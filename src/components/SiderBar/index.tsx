@@ -145,21 +145,23 @@ export default function SiderBar() {
         className={`${styles.sidebar} ${collapsed ? styles.collapsed : ""}`}
       >
         <div className={styles.logo}>
-          <Link href="/">
+          <Link href="/" className={styles.logoLink}>
             {collapsed ? (
               <Image
                 src="/Images/instagram.png"
-                alt="Logo"
-                width={30}
-                height={30}
+                alt="HAKO"
+                width={40}
+                height={40}
+                className={styles.logoIconCollapsed}
                 priority
               />
             ) : (
               <Image
                 src="/Images/logoLogin.png"
-                alt="Logo"
+                alt="HAKO"
                 width={120}
                 height={40}
+                className={styles.logoIconExpanded}
                 priority
               />
             )}

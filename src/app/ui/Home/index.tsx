@@ -123,6 +123,12 @@ const PostItem = memo(
     format: (num: number) => string;
     handleLikeRealtime: (postId: string, isLike: boolean) => void;
   }) => {
+    const author = post.author;
+    const authorUsername = author?.username || "Người dùng";
+    const authorProfilePicture =
+      author?.profilePicture || "/api/placeholder/40/40";
+    const hasAuthorProfile = Boolean(author?._id || author?.username);
+
     return (
       <div
         ref={(el) => {
@@ -136,12 +142,16 @@ const PostItem = memo(
         <div className="flex items-center gap-3 p-3 justify-between">
           {/* Avatar */}
           <div
-            onClick={() => onAvatarClick(post.author)}
-            className="cursor-pointer"
+            onClick={() => {
+              if (hasAuthorProfile) {
+                onAvatarClick(author);
+              }
+            }}
+            className={hasAuthorProfile ? "cursor-pointer" : "cursor-default"}
           >
-            {post.hasStories ? (
+            {post.hasStories && hasAuthorProfile ? (
               <StoryAvatar
-                author={post.author}
+                author={author}
                 hasStories={true}
                 size="small"
               />
@@ -149,10 +159,12 @@ const PostItem = memo(
               <Image
                 onClick={(e) => {
                   e.stopPropagation();
-                  onUserClick(post.author?.username || "");
+                  if (author?.username) {
+                    onUserClick(author.username);
+                  }
                 }}
-                src={post.author?.profilePicture || "/api/placeholder/40/40"}
-                alt={post.author?.username || "avatar"}
+                src={authorProfilePicture}
+                alt={authorUsername}
                 width={40}
                 height={40}
                 className="rounded-full object-cover w-10 h-10"
@@ -168,12 +180,14 @@ const PostItem = memo(
                 className="hover:underline cursor-pointer flex items-center gap-1.5"
                 onClick={(e) => {
                   e.stopPropagation();
-                  onUserClick(post.author?.username || "");
+                  if (author?.username) {
+                    onUserClick(author.username);
+                  }
                 }}
               >
-                {post.author?.username || "Người dùng"}
+                {authorUsername}
 
-                {post.author.checkMark && (
+                {author?.checkMark && (
                   <svg
                     aria-label="Đã xác minh"
                     fill="rgb(0, 149, 246)"
@@ -285,7 +299,7 @@ const PostItem = memo(
             className={`font-semibold mr-2 cursor-pointer hover:underline`}
             style={{ color: "var(--post-text)" }}
           >
-            {post.author?.username || "Người dùng"}
+            {authorUsername}
           </span>
           <ShortenCaption text={post.caption} maxLines={2} className="w-full" />
         </div>
@@ -335,6 +349,7 @@ export default function HomeUi({
   const isAnyModalOpen = useRef(false);
 
   const handleAvatarClick = async (author: AuthorType) => {
+    if (!author?._id) return;
     await openStory(author, 0);
   };
 
@@ -549,7 +564,7 @@ export default function HomeUi({
   return (
     <div
       className={`${styles.homeContainerResponsiveBg} max-w-xl mx-auto font-sans`}
-      style={{ color: "#fff" }}
+      style={{ color: "var(--post-text)" }}
     >
       {posts.map((post) => (
         <div key={post._id} className="mb-0 sm:mb-8">

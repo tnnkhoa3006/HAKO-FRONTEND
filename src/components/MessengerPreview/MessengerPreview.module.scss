@@ -1,5 +1,30 @@
 .messengerPreview {
+  background:
+    linear-gradient(135deg, rgba(34, 52, 80, 0.95), rgba(24, 39, 61, 0.92));
+  border: 1px solid rgba(164, 186, 224, 0.18);
+  box-shadow: var(--surface-shadow);
+  backdrop-filter: blur(18px);
+  color: var(--foreground);
+  transition:
+    transform 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 22px 36px rgba(2, 7, 16, 0.3);
+  }
+
   @media (max-width: 769px) {
     display: none;
   }
+}
+
+.previewLabel {
+  color: var(--foreground);
+}
+
+.previewAvatar {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(164, 186, 224, 0.18);
 }

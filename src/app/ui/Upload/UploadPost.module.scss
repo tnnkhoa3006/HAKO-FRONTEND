@@ -5,14 +5,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 50;
+  z-index: 1200;
   background-color: rgba(0, 0, 0, 0);
   transition: all 0.4s ease-in-out;
   opacity: 0;
   pointer-events: none;
 
   &.visible {
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: var(--overlay-backdrop);
     opacity: 1;
     pointer-events: all;
   }
@@ -25,7 +25,7 @@
 
 // Main Modal - Dynamic sizing based on step
 .modal {
-  background-color: #1a1a1a;
+  background-color: var(--modal-surface);
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
@@ -92,8 +92,8 @@
   justify-content: space-between;
   padding: 0;
   height: 46px;
-  border-bottom: 1px solid #000;
-  background-color: #000;
+  border-bottom: 1px solid var(--modal-header-border);
+  background-color: var(--modal-header-bg);
   position: relative;
   flex-shrink: 0;
 }
@@ -103,7 +103,7 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  color: #a3a3a3;
+  color: var(--modal-muted);
   background: none;
   border: none;
   cursor: pointer;
@@ -112,7 +112,7 @@
   transition: color 0.2s;
 
   &:hover {
-    color: white;
+    color: var(--modal-text);
   }
 }
 
@@ -148,7 +148,7 @@
 }
 
 .headerTitle {
-  color: white;
+  color: var(--modal-text);
   font-size: 16px;
   text-align: center;
   flex: 1;
@@ -246,7 +246,7 @@
   .captionPanel {
     flex: none;
     border-left: none;
-    border-top: 1px solid #363636;
+    border-top: 1px solid var(--modal-header-border);
     min-width: auto;
     max-width: none;
   }
@@ -289,13 +289,13 @@
       z-index: 10;
       background: none;
       border: none;
-      color: #a3a3a3;
+      color: var(--modal-muted);
       padding: 8px;
       border-radius: 50%;
       transition: color 0.2s;
 
       &:hover {
-        color: white;
+        color: var(--modal-text);
       }
     }
   }
