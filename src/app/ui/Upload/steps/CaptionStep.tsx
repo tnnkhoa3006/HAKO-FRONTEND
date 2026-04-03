@@ -1,16 +1,20 @@
 import Image from "next/image";
-import { useState } from "react";
-import styles from "./CaptionStep.module.scss";
-import { UploadPostProps } from "..";
-import { useUser } from "@/app/hooks/useUser";
-
+import { useRef, useState } from "react";
 import {
-  MapPin,
-  UserPlus,
-  ChevronRight,
-  Smile,
   Accessibility,
-} from "lucide-react"; // Import Lucide icons
+  ChevronRight,
+  MapPin,
+  Smile,
+  UserPlus,
+} from "lucide-react";
+import EmojiPicker from "@/components/EmojiPicker";
+import { useUser } from "@/app/hooks/useUser";
+import { UploadPostProps } from "..";
+import styles from "./CaptionStep.module.scss";
+import {
+  focusAndRestoreSelection,
+  insertTextAtCursor,
+} from "@/utils/insertTextAtCursor";
 
 export default function CaptionStep({
   mediaType,
@@ -32,9 +36,21 @@ export default function CaptionStep({
   | "isUploading"
 > & { croppedMediaPreview?: string | null }) {
   const [isFacebookShareEnabled, setIsFacebookShareEnabled] = useState(true);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { user } = useUser();
 
-  console.log(user);
+  const handleEmojiSelect = (emoji: string) => {
+    const { nextValue, cursorPosition } = insertTextAtCursor(
+      textareaRef.current,
+      caption,
+      emoji
+    );
+
+    setCaption(nextValue);
+    setShowEmojiPicker(false);
+    focusAndRestoreSelection(textareaRef.current, cursorPosition);
+  };
 
   return (
     <div className={styles.captionContent}>
@@ -51,6 +67,7 @@ export default function CaptionStep({
             />
           </div>
         )}
+
         {mediaType === "video" && mediaPreview && (
           <div className={styles.captionImageWrapper}>
             <video
@@ -67,6 +84,7 @@ export default function CaptionStep({
           </div>
         )}
       </div>
+
       <div className={styles.captionPanel}>
         <div className={styles.captionUserInfo}>
           <div className={styles.captionAvatar}>
@@ -80,7 +98,9 @@ export default function CaptionStep({
           </div>
           <span className={styles.captionUsername}>{username}</span>
         </div>
+
         <textarea
+          ref={textareaRef}
           value={caption}
           onChange={(e) => setCaption(e.target.value)}
           placeholder="Viết chú thích..."
@@ -88,8 +108,26 @@ export default function CaptionStep({
           rows={5}
           maxLength={2200}
         />
+
         <div className={styles.textareaFooter}>
-          <Smile size={20} color="#a3a3a3" className={styles.emojiIcon} />
+          <div className={styles.emojiPickerAnchor}>
+            <button
+              type="button"
+              className={styles.emojiButton}
+              onClick={() => setShowEmojiPicker((prev) => !prev)}
+              aria-label="Open emoji picker"
+            >
+              <Smile size={20} className={styles.emojiIcon} />
+            </button>
+
+            {showEmojiPicker && (
+              <EmojiPicker
+                onSelect={handleEmojiSelect}
+                onClose={() => setShowEmojiPicker(false)}
+              />
+            )}
+          </div>
+
           <span className={styles.captionCounter}>{caption.length}/2,200</span>
         </div>
 
@@ -103,6 +141,7 @@ export default function CaptionStep({
             <UserPlus size={20} color="#a3a3a3" />
           </div>
         </div>
+
         <div className={styles.shareSection}>
           <span className={styles.shareSectionTitle}>Chia sẻ lên</span>
           <div className={styles.shareOption}>
@@ -119,7 +158,7 @@ export default function CaptionStep({
                 className={`${styles.shareIcon} rounded-full`}
               />
               <div className="flex flex-col">
-                <span className="font-medium">Tô Văn Lộc</span>
+                <span className="font-medium">HAKO</span>
                 <span className="text-sm text-gray-500">
                   Facebook • Tùy chỉnh
                 </span>
@@ -135,6 +174,7 @@ export default function CaptionStep({
             </div>
           </div>
         </div>
+
         <div className={styles.captionOption}>
           <span>Trợ năng</span>
           <Accessibility size={20} color="#a3a3a3" />

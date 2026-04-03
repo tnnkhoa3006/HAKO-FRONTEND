@@ -336,6 +336,15 @@
   color: var(--icon-color);
   cursor: pointer;
   margin-right: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.emojiPickerAnchor {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
 
 .commentInput {

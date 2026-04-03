@@ -1,19 +1,25 @@
 import {
-  FormEvent,
   ChangeEvent,
-  useState,
+  FormEvent,
   useCallback,
   useEffect,
+  useRef,
+  useState,
 } from "react";
+import Image from "next/image";
+import { Smile, X } from "lucide-react";
 import { VscSend } from "react-icons/vsc";
 import { useDispatch, useSelector } from "react-redux";
+import EmojiPicker from "@/components/EmojiPicker";
+import styles from "@/components/Modal/Post/PostModal.module.scss";
+import { useUser } from "@/app/hooks/useUser";
 import { AppDispatch, RootState } from "@/store";
 import { addComment } from "@/store/comment";
-import styles from "@/components/Modal/Post/PostModal.module.scss";
-import { X } from "lucide-react";
 import { Post } from "@/types/home.type";
-import Image from "next/image";
-import { useUser } from "@/app/hooks/useUser";
+import {
+  focusAndRestoreSelection,
+  insertTextAtCursor,
+} from "@/utils/insertTextAtCursor";
 
 interface ReplyData {
   commentId: string;
@@ -41,13 +47,14 @@ export default function CommentInput({
   replyTo,
   onReplyCancel,
   inputStyle,
-  detail = false, // Thêm prop detail để xác định chế độ detail
+  detail = false,
 }: CommentInputProps & { detail?: boolean }) {
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useUser();
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  // Local state for comment input
   const [commentText, setCommentText] = useState(externalComment || "");
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const loading = useSelector(
     (state: RootState) =>
@@ -59,70 +66,83 @@ export default function CommentInput({
       (state.comments as RootState["comments"]).error[`add_${post._id}`]
   );
 
-  // Determine if we're currently submitting
   const isCurrentlySubmitting = isSubmitting || loading;
 
-  // Effect to handle reply mode
   useEffect(() => {
     if (replyTo) {
-      const mentionText = `@${replyTo.username} `;
-      setCommentText(mentionText);
-    } else {
-      // Only clear if we're not externally controlled
-      if (externalComment === undefined) {
-        setCommentText("");
-      }
+      setCommentText(`@${replyTo.username} `);
+      return;
+    }
+
+    if (externalComment === undefined) {
+      setCommentText("");
     }
   }, [replyTo, externalComment]);
 
-  // Handle input change
+  const inputValue =
+    externalComment !== undefined ? externalComment : commentText;
+
+  const updateInputValue = useCallback(
+    (value: string) => {
+      setCommentText(value);
+
+      if (externalHandleChange) {
+        externalHandleChange({
+          target: { value },
+          currentTarget: { value },
+        } as ChangeEvent<HTMLInputElement>);
+      }
+    },
+    [externalHandleChange]
+  );
+
   const handleInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
 
-      // If we're in reply mode, ensure the mention stays
       if (replyTo) {
         const mentionText = `@${replyTo.username} `;
         if (!value.startsWith(mentionText)) {
-          // If user tries to delete the mention, restore it
-          setCommentText(mentionText);
+          updateInputValue(mentionText);
           return;
         }
       }
 
-      setCommentText(value);
-
-      // Call external handler if provided
-      if (externalHandleChange) {
-        externalHandleChange(e);
-      }
+      updateInputValue(value);
     },
-    [externalHandleChange, replyTo]
+    [replyTo, updateInputValue]
   );
 
-  // Handle submit with Redux - MODIFIED to include mention in the actual comment text
+  const handleEmojiSelect = (emoji: string) => {
+    const { nextValue, cursorPosition } = insertTextAtCursor(
+      inputRef.current,
+      inputValue,
+      emoji
+    );
+
+    updateInputValue(nextValue);
+    setShowEmojiPicker(false);
+    focusAndRestoreSelection(inputRef.current, cursorPosition);
+  };
+
   const handleReduxSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    if (commentText.trim().length === 0 || isCurrentlySubmitting) {
+    if (inputValue.trim().length === 0 || isCurrentlySubmitting) {
       return;
     }
 
-    // For replies, we keep the full text including the mention
-    let actualCommentText = commentText.trim();
+    const actualCommentText = inputValue.trim();
 
     if (replyTo) {
       const mentionText = `@${replyTo.username} `;
-      // Check if there's actual content after the mention
       if (actualCommentText.startsWith(mentionText)) {
         const contentAfterMention = actualCommentText
           .slice(mentionText.length)
           .trim();
         if (contentAfterMention.length === 0) {
-          return; // Don't submit if only mention text
+          return;
         }
-        // Keep the full text with mention for display purposes
-        actualCommentText = actualCommentText;
       }
     }
 
@@ -136,32 +156,21 @@ export default function CommentInput({
         })
       ).unwrap();
 
-      // Clear input and reply state after successful submission
       setCommentText("");
-      if (onReplyCancel) {
-        onReplyCancel();
-      }
-    } catch (error) {
-      console.error("Failed to add comment:", error);
+      setShowEmojiPicker(false);
+      onReplyCancel?.();
+    } catch (submitError) {
+      console.error("Failed to add comment:", submitError);
     }
   };
 
-  // Use custom handler if provided, otherwise use Redux handler
   const submitHandler = handleSubmitComment || handleReduxSubmit;
-
-  // Use external comment value if controlled from parent
-  const inputValue =
-    externalComment !== undefined ? externalComment : commentText;
-  const inputChangeHandler = externalHandleChange || handleInputChange;
-
-  // Calculate if we can submit
   const canSubmit = replyTo
     ? inputValue.length > `@${replyTo.username} `.length
     : inputValue.trim().length > 0;
 
   return (
     <div>
-      {/* Reply indicator */}
       {replyTo && (
         <div
           style={{
@@ -215,13 +224,30 @@ export default function CommentInput({
           )}
         </div>
 
-        <input
+        <div className={styles.emojiPickerAnchor}>
+          <button
+            type="button"
+            className={styles.emojiButton}
+            onClick={() => setShowEmojiPicker((prev) => !prev)}
+            aria-label="Open emoji picker"
+          >
+            <Smile size={18} />
+          </button>
+
+          {showEmojiPicker && (
+            <EmojiPicker
+              onSelect={handleEmojiSelect}
+              onClose={() => setShowEmojiPicker(false)}
+            />
+          )}
+        </div>
+
+          <input
+          ref={inputRef}
           type="text"
-          placeholder={
-            replyTo ? `Trả lời @${replyTo.username}...` : "Bình luận..."
-          }
+          placeholder={replyTo ? `Trả lời @${replyTo.username}...` : "Bình luận..."}
           value={inputValue}
-          onChange={inputChangeHandler}
+          onChange={handleInputChange}
           className={styles.commentInput}
           disabled={isCurrentlySubmitting}
           autoFocus={!!replyTo}

@@ -1,7 +1,12 @@
-import { SendHorizontal } from "lucide-react";
+import { SendHorizontal, Smile } from "lucide-react";
+import { useRef, useState } from "react";
 import { GoHeart, GoHeartFill } from "react-icons/go";
-import { useState } from "react";
+import EmojiPicker from "@/components/EmojiPicker";
 import styles from "@/components/Modal/Story/StoryModal.module.scss";
+import {
+  focusAndRestoreSelection,
+  insertTextAtCursor,
+} from "@/utils/insertTextAtCursor";
 
 export default function InputStory({
   message,
@@ -15,14 +20,47 @@ export default function InputStory({
   handleKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
 }) {
   const [isLiked, setIsLiked] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const handleHeartClick = () => {
     setIsLiked(!isLiked);
   };
 
+  const handleEmojiSelect = (emoji: string) => {
+    const { nextValue, cursorPosition } = insertTextAtCursor(
+      inputRef.current,
+      message,
+      emoji
+    );
+
+    setMessage(nextValue);
+    setShowEmojiPicker(false);
+    focusAndRestoreSelection(inputRef.current, cursorPosition);
+  };
+
   return (
     <div className="flex items-center w-full bg-transparent gap-3">
+      <div className="relative">
+        <button
+          type="button"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-[#333] bg-[#1a1a1a] text-white transition-colors hover:border-[#4b5563]"
+          onClick={() => setShowEmojiPicker((prev) => !prev)}
+          aria-label="Open emoji picker"
+        >
+          <Smile size={18} />
+        </button>
+
+        {showEmojiPicker && (
+          <EmojiPicker
+            onSelect={handleEmojiSelect}
+            onClose={() => setShowEmojiPicker(false)}
+          />
+        )}
+      </div>
+
       <input
+        ref={inputRef}
         type="text"
         value={message}
         onChange={(e) => setMessage(e.target.value)}

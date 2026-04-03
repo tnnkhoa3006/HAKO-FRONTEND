@@ -1,0 +1,108 @@
+.popover {
+  position: fixed;
+  width: min(320px, 72vw);
+  padding: 12px;
+  border-radius: 18px;
+  border: 1px solid var(--border-color);
+  background: var(--surface-base);
+  box-shadow: var(--surface-shadow);
+  backdrop-filter: blur(18px);
+  z-index: 1305;
+}
+
+.alignLeft {
+  left: 0;
+}
+
+.alignRight {
+  right: 0;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--secondary-text);
+  text-transform: uppercase;
+}
+
+.anchor {
+  position: absolute;
+  inset: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.closeButton {
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--secondary-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease, color 0.2s ease;
+
+  &:hover {
+    background: var(--surface-muted-hover);
+    color: var(--foreground);
+  }
+}
+
+.pickerShell {
+  overflow: hidden;
+  border-radius: 16px;
+
+  :global(.EmojiPickerReact) {
+    --epr-bg-color: transparent;
+    --epr-category-label-bg-color: transparent;
+    --epr-hover-bg-color: var(--surface-muted-hover);
+    --epr-focus-bg-color: var(--surface-muted-hover);
+    --epr-text-color: var(--foreground);
+    --epr-search-border-color: var(--border-color);
+    --epr-search-input-bg-color: var(--input-bg);
+    --epr-search-input-text-color: var(--foreground);
+    --epr-picker-border-color: transparent;
+    --epr-preview-border-color: transparent;
+    --epr-highlight-color: var(--accent-color);
+    --epr-category-icon-active-color: var(--accent-color);
+    --epr-category-icon-inactive-color: var(--secondary-text);
+    --epr-emoji-size: 24px;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  :global(.EmojiPickerReact .epr-search-container input) {
+    color: var(--foreground);
+  }
+
+  :global(.EmojiPickerReact .epr-search-container input::placeholder) {
+    color: var(--secondary-text);
+  }
+
+  :global(.EmojiPickerReact .epr-category-nav),
+  :global(.EmojiPickerReact .epr-body),
+  :global(.EmojiPickerReact .epr-emoji-category-content) {
+    scrollbar-color: var(--secondary-text) transparent;
+  }
+}
+
+@media (max-width: 768px) {
+  .popover {
+    width: min(280px, calc(100vw - 32px));
+    padding: 10px;
+  }
+}

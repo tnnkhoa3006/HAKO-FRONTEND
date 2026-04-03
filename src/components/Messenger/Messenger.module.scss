@@ -604,3 +604,17 @@
     color: var(--message-input-icon-hover);
   }
 }
+
+.emojiPickerAnchor {
+  position: relative;
+}
+
+.emojiTrigger {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}

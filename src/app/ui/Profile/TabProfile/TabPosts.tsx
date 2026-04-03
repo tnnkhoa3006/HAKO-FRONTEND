@@ -1,17 +1,14 @@
-import { usePost } from "@/app/hooks/usePost";
-import Image from "next/image";
-import { Camera } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getUserPosts } from "@/server/posts";
-import { User } from "@/types/user.type";
+import Image from "next/image";
+import { Camera, Play } from "lucide-react";
+import { usePost } from "@/app/hooks/usePost";
 import PostModal from "@/components/Modal/Post/PostModal";
+import { getUserPosts } from "@/server/posts";
+import { Post as HomePost } from "@/types/home.type";
+import { User } from "@/types/user.type";
 
-type Post = {
-  _id: string;
-  fileUrl: string;
-};
+type ProfilePost = Pick<HomePost, "_id" | "fileUrl" | "type">;
 
-// Skeleton component
 const PostSkeleton = () => (
   <div
     className="relative aspect-square rounded-lg animate-pulse"
@@ -32,11 +29,10 @@ export default function TabPosts({ user }: { user: User }) {
     setIsModalOpen,
     setSelectedPost,
   } = usePost();
-  const [posts, setPosts] = useState<Post[]>([]);
+  const [posts, setPosts] = useState<ProfilePost[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isPostLoading, setIsPostLoading] = useState(false);
 
-  // Lấy số lượng posts thực tế từ user
   const postsCount = user?.posts?.length ?? 0;
 
   useEffect(() => {
@@ -46,11 +42,10 @@ export default function TabPosts({ user }: { user: User }) {
         const data = await getUserPosts({
           userId: user._id,
           username: user.username,
-          type: "image",
         });
         setPosts(data);
       } catch (error) {
-        console.error("Lỗi khi lấy bài đăng:", error);
+        console.error("Loi khi lay bai dang:", error);
       } finally {
         setIsLoading(false);
       }
@@ -75,25 +70,21 @@ export default function TabPosts({ user }: { user: User }) {
   return (
     <div className="mt-5">
       {isLoading ? (
-        // Skeleton loading state - hiển thị đúng số lượng posts
         postsCount === 0 ? (
-          // Nếu không có posts thì hiển thị một vài skeleton mặc định
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             {Array.from({ length: 3 }).map((_, index) => (
               <PostSkeleton key={index} />
             ))}
           </div>
         ) : (
-          // Hiển thị skeleton theo đúng số lượng posts
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
             {Array.from({ length: postsCount }).map((_, index) => (
               <PostSkeleton key={index} />
             ))}
           </div>
         )
-      ) : postsCount === 0 ? (
-        // Empty state
-        <div className="flex flex-col justify-center items-center text-center p-10">
+      ) : posts.length === 0 ? (
+        <div className="flex flex-col items-center justify-center p-10 text-center">
           <div className="mb-4" style={{ color: "var(--secondary-text)" }}>
             <Camera size={50} />
           </div>
@@ -101,28 +92,51 @@ export default function TabPosts({ user }: { user: User }) {
             className="text-xl font-semibold"
             style={{ color: "var(--profile-text)" }}
           >
-            Chưa có ảnh
+            Chưa có bài viết
           </h2>
           <p style={{ color: "var(--secondary-text)" }}>
-            Khi người dùng chia sẻ ảnh, ảnh sẽ hiển thị tại đây
+            Khi người dùng chia sẻ ảnh hoặc video, bài viết sẽ hiển thị tại đây
           </p>
         </div>
       ) : (
-        // Posts grid
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
           {posts.map((post) => (
             <div
               key={post._id}
-              className="relative aspect-square cursor-pointer hover:opacity-80 transition-opacity"
+              className="relative aspect-square cursor-pointer overflow-hidden rounded-lg transition-opacity hover:opacity-90"
               onClick={() => handleClick(post._id)}
             >
-              <Image
-                src={post.fileUrl}
-                alt="Post"
-                className="w-full h-full rounded-lg object-cover"
-                width={300}
-                height={300}
-              />
+              {post.type === "video" ? (
+                <>
+                  <video
+                    src={post.fileUrl}
+                    className="w-full h-full object-cover"
+                    muted
+                    playsInline
+                    preload="metadata"
+                  />
+                  <div className="pointer-events-none absolute right-3 top-3">
+                    <div
+                      className="flex h-8 w-8 items-center justify-center rounded-full"
+                      style={{
+                        backgroundColor: "rgba(15, 23, 42, 0.52)",
+                        backdropFilter: "blur(6px)",
+                      }}
+                    >
+                      <Play size={16} className="ml-0.5 text-white fill-white" />
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <Image
+                  src={post.fileUrl}
+                  alt="Post"
+                  className="w-full h-full object-cover"
+                  width={300}
+                  height={300}
+                />
+              )}
+
               {isPostLoading &&
                 selectedPost &&
                 selectedPost._id === post._id && (
@@ -130,7 +144,7 @@ export default function TabPosts({ user }: { user: User }) {
                     className="absolute inset-0 flex items-center justify-center rounded-lg"
                     style={{ backgroundColor: "var(--overlay-backdrop)" }}
                   >
-                    <div className="w-8 h-8 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <div className="h-8 w-8 animate-spin rounded-full border-4 border-white border-t-transparent"></div>
                   </div>
                 )}
             </div>

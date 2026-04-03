@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import { SendHorizontal, Smile, Image as ImageIcon } from "lucide-react";
 import styles from "./Messenger.module.scss";
 import InputStory from "../Modal/Story/StoryInput";
 import { ReplyMessageDisplayText, ReplyMessageBubble } from "./ReplyMessage";
 import type { User, Message } from "@/types/user.type";
 import Image from "next/image";
+import EmojiPicker from "@/components/EmojiPicker";
+import {
+  focusAndRestoreSelection,
+  insertTextAtCursor,
+} from "@/utils/insertTextAtCursor";
 
 export type MessageInputProps = {
   message: string;
@@ -46,6 +51,9 @@ export default function MessageInput({
   fileInputRef,
   replyToMediaType,
 }: MessageInputProps) {
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
   if (inputStory) {
     // Giao diện tối giản cho story: input ở giữa, heart icon, send button
     return (
@@ -69,6 +77,18 @@ export default function MessageInput({
     } else {
       setFilePreview(null);
     }
+  };
+
+  const handleEmojiSelect = (emoji: string) => {
+    const { nextValue, cursorPosition } = insertTextAtCursor(
+      inputRef.current,
+      message,
+      emoji
+    );
+
+    setMessage(nextValue);
+    setShowEmojiPicker(false);
+    focusAndRestoreSelection(inputRef.current, cursorPosition);
   };
 
   return (
@@ -171,13 +191,28 @@ export default function MessageInput({
         </div>
       )}
       <div className="flex items-center">
-        <Smile
-          className={`h-6 w-6 mr-3 cursor-pointer flex-shrink-0 ${styles.inputIcon}`}
-        />
+        <div className={`relative mr-3 flex-shrink-0 ${styles.emojiPickerAnchor}`}>
+          <button
+            type="button"
+            className={`${styles.emojiTrigger} ${styles.inputIcon}`}
+            onClick={() => setShowEmojiPicker((prev) => !prev)}
+            aria-label="Open emoji picker"
+          >
+            <Smile className="h-6 w-6" />
+          </button>
+
+          {showEmojiPicker && (
+            <EmojiPicker
+              onSelect={handleEmojiSelect}
+              onClose={() => setShowEmojiPicker(false)}
+            />
+          )}
+        </div>
         <div
           className={`flex-1 rounded-full flex items-center ${styles.fileInput} ${styles.inputShell}`}
         >
           <input
+            ref={inputRef}
             type="text"
             value={message}
             onChange={(e) => setMessage(e.target.value)}
