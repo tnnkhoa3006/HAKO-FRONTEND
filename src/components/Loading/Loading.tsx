@@ -22,7 +22,7 @@ const Loading = () => {
       {/* Logo Meta ở dưới */}
       <div className="absolute bottom-16 animate-pulse">
         <Image
-          src="/Images/fromMeta.webp"
+          src="/Images/fromHako.png"
           alt="Meta"
           width={100}
           height={100}
