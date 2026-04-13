@@ -28,7 +28,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({
       // Nếu không truyền username thì lấy từ localStorage
       const finalUsername = username || localStorage.getItem("username");
       if (!finalUsername) {
-        throw new Error("Không tìm thấy username trong localStorage");
+        setUser(null);
+        return;
       }
       const response = await getUser(finalUsername);
       setUser(response.user);

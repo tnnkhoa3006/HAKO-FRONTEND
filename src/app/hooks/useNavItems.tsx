@@ -7,6 +7,7 @@ import { GoHeartFill, GoHeart } from "react-icons/go";
 import { PiMessengerLogo } from "react-icons/pi";
 import { RiMessengerFill } from "react-icons/ri";
 import { FiMenu } from "react-icons/fi";
+import { Shield } from "lucide-react";
 
 import { useUser } from "./useUser";
 
@@ -631,6 +632,18 @@ export const useNavItems = (actionStates: ActionStates = {}): NavItem[] => {
       type: "action",
       className: "item7",
     },
+    ...(user?.role === "admin"
+      ? [
+          {
+            label: "Quản trị",
+            icon: <Shield size={24} strokeWidth={1.75} />,
+            ActiveIcon: <Shield size={24} strokeWidth={2.25} />,
+            href: "/admin",
+            type: "link" as const,
+            className: "item-admin",
+          },
+        ]
+      : []),
     {
       label: "Trang cá nhân",
       icon: user?.profilePicture || (
@@ -664,6 +677,8 @@ export const useNavItems = (actionStates: ActionStates = {}): NavItem[] => {
     } else {
       // Special logic for profile: active if pathname matches /[username]
       if (item.label === "Trang cá nhân" && pathname === `/${id}`) {
+        active = true;
+      } else if (item.label === "Quản trị" && pathname === "/admin") {
         active = true;
       } else {
         active = item.href === pathname;

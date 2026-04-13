@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "../globals.css";
-import SiderBar from "@/components/SiderBar";
-import Footer from "@/components/Footer";
+import AppShell from "@/components/AppShell";
 import ClientProviders from "@/components/ClientProviders";
 import NotificationPermissionRequester from "@/components/NotificationPermissionRequester";
 import GlobalMessengerNotificationListener from "@/components/GlobalMessengerNotificationListener";
@@ -36,13 +35,7 @@ export default function RootLayout({
         <ClientProviders>
           <NotificationPermissionRequester />
           <GlobalMessengerNotificationListener />
-          <div style={{ display: "flex", minHeight: "100vh" }}>
-            <SiderBar />
-            <div style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-              <main style={{ flex: 1 }}>{children}</main>
-              <Footer type="home" />
-            </div>
-          </div>
+          <AppShell>{children}</AppShell>
         </ClientProviders>
       </body>
     </html>

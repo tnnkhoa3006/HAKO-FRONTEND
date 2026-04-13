@@ -74,6 +74,8 @@ const notificationText = (type: string) => {
       return "đã trả lời bình luận của bạn";
     case "follow":
       return "đã theo dõi bạn";
+    case "system":
+      return "gửi thông báo:";
     default:
       return "có hoạt động mới";
   }
@@ -83,6 +85,7 @@ type NotificationType = {
   post: { _id: string } | boolean;
   _id: string;
   type: string;
+  message?: string | null;
   fromUser?: {
     username?: string;
     profilePicture?: string;
@@ -317,6 +320,11 @@ export default function Notification({}: { onClose?: () => void } = {}) {
                                 {n.comment.text}
                               </p>
                             )}
+                          {n.type === "system" && n.message && (
+                            <p className="text-xs text-gray-200 mt-1 whitespace-pre-wrap">
+                              {n.message}
+                            </p>
+                          )}
 
                           {/* Timestamp */}
                           <p className="text-xs text-gray-500 mt-1">

@@ -24,6 +24,7 @@ export default function LoginGoogle({ mode = "signin" }: LoginGoogleProps) {
       const user = await googleLogin(payload);
       localStorage.setItem("id", user.id);
       localStorage.setItem("username", user.username);
+      localStorage.setItem("role", user.role ?? "user");
       router.push("/");
     } catch (error) {
       if (error instanceof Error) {

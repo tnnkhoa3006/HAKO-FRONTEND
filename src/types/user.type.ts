@@ -18,6 +18,7 @@ export interface User {
   following: string[];
   isPrivate: boolean;
   authType: string;
+  role?: "user" | "admin";
   createdAt: string;
   updatedAt: string;
   posts?: string[];

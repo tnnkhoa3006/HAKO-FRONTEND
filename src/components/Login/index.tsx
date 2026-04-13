@@ -17,6 +17,7 @@ export default function LoginComponent() {
       const user: User = await login({ identifier, password });
       localStorage.setItem("id", user.id);
       localStorage.setItem("username", user.username);
+      localStorage.setItem("role", user.role ?? "user");
       router.push("/");
     } catch (err: unknown) {
       if (err instanceof Error) {
