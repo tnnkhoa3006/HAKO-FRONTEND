@@ -1,0 +1,81 @@
+.panel {
+  color: var(--messenger-text);
+}
+
+.title {
+  color: var(--messenger-text);
+}
+
+.spinner {
+  border-color: transparent;
+  border-bottom-color: var(--messenger-text);
+}
+
+.subText {
+  color: var(--messenger-secondary-text);
+}
+
+.unreadBadge {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.mutedIcon {
+  color: var(--messenger-secondary-text);
+}
+
+.groupTitle {
+  color: var(--messenger-secondary-text);
+}
+
+.groupLine {
+  background: linear-gradient(
+    to right,
+    var(--divider-soft),
+    rgba(0, 0, 0, 0)
+  );
+}
+
+.groupCount {
+  color: var(--message-meta-text);
+}
+
+.notificationItem {
+  background: transparent;
+
+  &:hover {
+    background: var(--messenger-item-hover);
+  }
+}
+
+.notificationUnread {
+  background: var(--messenger-item-hover);
+}
+
+.avatarInteractive {
+  &:hover {
+    box-shadow: 0 0 0 2px var(--divider-soft);
+  }
+}
+
+.messageText {
+  color: var(--messenger-text);
+}
+
+.usernameInteractive {
+  &:hover {
+    color: var(--accent-color);
+  }
+}
+
+.messageSubText {
+  color: var(--messenger-secondary-text);
+}
+
+.unreadDot {
+  background: var(--accent-color);
+}
+
+.timeText {
+  color: var(--message-meta-text);
+}

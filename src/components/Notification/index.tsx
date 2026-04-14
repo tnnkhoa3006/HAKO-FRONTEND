@@ -7,6 +7,7 @@ import { socketService } from "../../server/socket";
 import Image from "next/image";
 import { useHandleUserClick } from "../../utils/useHandleUserClick";
 import { useRouter } from "next/navigation";
+import styles from "./Notification.module.scss";
 
 function formatTimeAgo(dateString: string) {
   const date = new Date(dateString);
@@ -152,11 +153,13 @@ export default function Notification({}: { onClose?: () => void } = {}) {
 
   if (loading) {
     return (
-      <div className="p-4">
-        <h1 className="text-xl font-bold text-white mb-4">Thông báo</h1>
+      <div className={`p-4 ${styles.panel}`}>
+        <h1 className={`text-xl font-bold mb-4 ${styles.title}`}>Thông báo</h1>
         <div className="flex items-center justify-center py-6">
-          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-          <p className="ml-3 text-gray-400 text-sm">Đang tải...</p>
+          <div
+            className={`animate-spin rounded-full h-5 w-5 border-b-2 ${styles.spinner}`}
+          ></div>
+          <p className={`ml-3 text-sm ${styles.subText}`}>Đang tải...</p>
         </div>
       </div>
     );
@@ -164,8 +167,8 @@ export default function Notification({}: { onClose?: () => void } = {}) {
 
   if (error) {
     return (
-      <div className="p-4">
-        <h1 className="text-xl font-bold text-white mb-4">Thông báo</h1>
+      <div className={`p-4 ${styles.panel}`}>
+        <h1 className={`text-xl font-bold mb-4 ${styles.title}`}>Thông báo</h1>
         <div className="text-center py-6">
           <div className="text-red-400 text-2xl mb-2">⚠️</div>
           <p className="text-red-400 text-sm">{error}</p>
@@ -175,11 +178,13 @@ export default function Notification({}: { onClose?: () => void } = {}) {
   }
 
   return (
-    <div className="p-4 max-w-lg mx-auto">
+    <div className={`p-4 max-w-lg mx-auto ${styles.panel}`}>
       <div className="flex items-center justify-between mb-4">
-        <h1 className="text-xl font-bold text-white">Thông báo</h1>
+        <h1 className={`text-xl font-bold ${styles.title}`}>Thông báo</h1>
         {unreadCount > 0 && (
-          <div className="bg-red-500 text-white text-xs font-medium px-2 py-1 rounded-full min-w-[20px] text-center">
+          <div
+            className={`text-xs font-medium px-2 py-1 rounded-full min-w-[20px] text-center ${styles.unreadBadge}`}
+          >
             {unreadCount}
           </div>
         )}
@@ -187,8 +192,8 @@ export default function Notification({}: { onClose?: () => void } = {}) {
 
       {notifications.length === 0 ? (
         <div className="text-center py-8">
-          <div className="text-gray-500 text-3xl mb-2">🔔</div>
-          <p className="text-gray-400 text-sm">Bạn chưa có thông báo nào.</p>
+          <div className={`text-3xl mb-2 ${styles.mutedIcon}`}>🔔</div>
+          <p className={`text-sm ${styles.subText}`}>Bạn chưa có thông báo nào.</p>
         </div>
       ) : (
         <div ref={listRef} className="space-y-4">
@@ -197,11 +202,13 @@ export default function Notification({}: { onClose?: () => void } = {}) {
               <div key={timeCategory}>
                 {/* Time Category Header */}
                 <div className="flex items-center mb-3">
-                  <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide">
+                  <h2
+                    className={`text-sm font-semibold uppercase tracking-wide ${styles.groupTitle}`}
+                  >
                     {timeCategory}
                   </h2>
-                  <div className="flex-1 h-px bg-gradient-to-r from-gray-600 to-transparent ml-3"></div>
-                  <span className="text-xs text-gray-500 ml-2">
+                  <div className={`flex-1 h-px ml-3 ${styles.groupLine}`}></div>
+                  <span className={`text-xs ml-2 ${styles.groupCount}`}>
                     {groupNotifications.length}
                   </span>
                 </div>
@@ -231,10 +238,8 @@ export default function Notification({}: { onClose?: () => void } = {}) {
 
                     const notificationItem = (
                       <div
-                        className={`group flex items-center gap-3 p-3 rounded-lg transition-all duration-200 hover:bg-white/5 ${
-                          !n.isRead
-                            ? "bg-blue-500/10" // Đã bỏ border-l-2 border-blue-400
-                            : ""
+                        className={`group flex items-center gap-3 p-3 rounded-lg transition-all duration-200 ${styles.notificationItem} ${
+                          !n.isRead ? styles.notificationUnread : ""
                         }`}
                         onClick={
                           n.type === "comment" ||
@@ -264,7 +269,7 @@ export default function Notification({}: { onClose?: () => void } = {}) {
                             height={36}
                             className={`rounded-full object-cover ${
                               n.type !== "follow"
-                                ? "cursor-pointer hover:ring-2 hover:ring-white/20"
+                                ? `cursor-pointer ${styles.avatarInteractive}`
                                 : ""
                             } transition-all duration-200`}
                             onClick={() => {
@@ -281,11 +286,13 @@ export default function Notification({}: { onClose?: () => void } = {}) {
                         {/* Content */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between">
-                            <p className="text-sm text-white leading-tight">
+                            <p
+                              className={`text-sm leading-tight ${styles.messageText}`}
+                            >
                               <span
                                 className={`font-medium${
                                   n.type !== "follow"
-                                    ? " cursor-pointer hover:text-blue-400 transition-colors"
+                                    ? ` cursor-pointer transition-colors ${styles.usernameInteractive}`
                                     : ""
                                 }`}
                                 onClick={() => {
@@ -302,32 +309,38 @@ export default function Notification({}: { onClose?: () => void } = {}) {
                               >
                                 {n.fromUser?.username || "Người dùng"}
                               </span>
-                              <span className="text-gray-300 ml-1">
+                              <span className={`ml-1 ${styles.messageSubText}`}>
                                 {notificationText(n.type)}
                               </span>
                             </p>
 
                             {/* Unread indicator */}
                             {!n.isRead && (
-                              <div className="w-2 h-2 bg-blue-400 rounded-full flex-shrink-0"></div>
+                              <div
+                                className={`w-2 h-2 rounded-full flex-shrink-0 ${styles.unreadDot}`}
+                              ></div>
                             )}
                           </div>
 
                           {/* Comment preview */}
                           {(n.type === "comment" || n.type === "reply") &&
                             n.comment?.text && (
-                              <p className="text-xs text-gray-400 italic mt-1 truncate">
+                              <p
+                                className={`text-xs italic mt-1 truncate ${styles.subText}`}
+                              >
                                 {n.comment.text}
                               </p>
                             )}
                           {n.type === "system" && n.message && (
-                            <p className="text-xs text-gray-200 mt-1 whitespace-pre-wrap">
+                            <p
+                              className={`text-xs mt-1 whitespace-pre-wrap ${styles.messageSubText}`}
+                            >
                               {n.message}
                             </p>
                           )}
 
                           {/* Timestamp */}
-                          <p className="text-xs text-gray-500 mt-1">
+                          <p className={`text-xs mt-1 ${styles.timeText}`}>
                             {formatTimeAgo(n.createdAt)}
                           </p>
                         </div>

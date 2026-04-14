@@ -10,6 +10,7 @@ import { usePathname } from "next/navigation";
 import UploadPost from "../Modal/Post/UpLoadPost";
 import SlidePanel from "@/components/SlidePanel";
 import Notification from "../Notification";
+import SearchPanel from "./SearchPanel";
 
 export default function SiderBar() {
   const pathname = usePathname();
@@ -287,11 +288,7 @@ export default function SiderBar() {
         onClose={() => setIsSearchOpen(false)}
         type="search"
       >
-        {/* Placeholder for Search Component - bạn sẽ tạo component riêng */}
-        <div style={{ padding: "20px", color: "white" }}>
-          <h2>Tìm kiếm</h2>
-          <p>Search content will go here</p>
-        </div>
+        <SearchPanel onClose={() => setIsSearchOpen(false)} />
       </SlidePanel>
 
       {/* Notification Panel */}

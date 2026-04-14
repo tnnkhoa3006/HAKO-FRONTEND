@@ -15,10 +15,9 @@
   top: 0;
   left: 78px;
   height: 100vh;
-  background:
-    linear-gradient(180deg, rgba(34, 52, 80, 0.98), rgba(24, 39, 61, 0.98));
-  border-right: 1px solid rgba(164, 186, 224, 0.18);
-  box-shadow: 24px 0 50px rgba(2, 7, 16, 0.28);
+  background: var(--messenger-sidebar-surface);
+  border-right: 1px solid var(--divider-soft);
+  box-shadow: var(--surface-shadow);
   backdrop-filter: blur(24px);
   transform: translateX(-100%);
   transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -44,10 +43,10 @@
   right: 14px;
   width: 36px;
   height: 36px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(164, 186, 224, 0.18);
+  background: var(--surface-muted);
+  border: 1px solid var(--divider-soft);
   border-radius: 50%;
-  color: #fff;
+  color: var(--messenger-text);
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
@@ -58,7 +57,7 @@
   transition: all 0.2s ease;
 
   &:hover {
-    background: rgba(102, 217, 255, 0.12);
+    background: var(--messenger-item-hover);
     transform: scale(1.05);
   }
 
@@ -86,11 +85,11 @@
   }
 
   &::-webkit-scrollbar-thumb {
-    background: rgba(135, 161, 205, 0.3);
+    background: var(--divider-soft);
     border-radius: 999px;
 
     &:hover {
-      background: rgba(135, 161, 205, 0.45);
+      background: var(--messenger-secondary-text);
     }
   }
 }
