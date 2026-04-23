@@ -374,7 +374,7 @@ export default function MessengerComponent({
   }, [showMainChatModal]);
 
   if (isLargeScreen && (isModal || preview)) {
-    if (selectedUser && showMainChatModal) {
+    if ((selectedUser || selectedGroup) && showMainChatModal) {
       return (
         <div
           className={`flex h-full text-gray-200 ${styles.container} ${styles.modalContainer}`}

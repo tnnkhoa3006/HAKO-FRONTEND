@@ -130,6 +130,7 @@ const PostItem = memo(
     showRelatedOverlay?: boolean;
     onCloseRelatedOverlay?: () => void;
   }) => {
+    const [showAiSummary, setShowAiSummary] = useState(false);
     const author = post.author;
     const authorUsername = author?.username || "Người dùng";
     const authorProfilePicture =
@@ -317,6 +318,28 @@ const PostItem = memo(
             {authorUsername}
           </span>
           <ShortenCaption text={post.caption} maxLines={2} className="w-full" />
+
+          {post.aiSummary && (
+            <div className={styles.aiSummaryWrapper}>
+              <button
+                className={`${styles.aiSummaryToggle} ${showAiSummary ? styles.active : ""}`}
+                onClick={() => setShowAiSummary(!showAiSummary)}
+              >
+                <div className={styles.aiSparkleIcon}>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
+                  </svg>
+                </div>
+                <span>{showAiSummary ? "Ẩn tóm tắt" : "Tóm tắt thông minh"}</span>
+              </button>
+
+              {showAiSummary && (
+                <div className={styles.aiSummaryContainer}>
+                  <p className={styles.aiSummaryText}>{post.aiSummary}</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
         <button
           className={`px-3 pt-1 pb-2 text-sm text-[#8e8e8e] cursor-pointer hover:underline ${styles.commentInput}`}

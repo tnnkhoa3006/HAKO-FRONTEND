@@ -45,6 +45,7 @@ export default function PostModal({
   const [objectFit, setObjectFit] = useState<"contain" | "cover">("contain");
   const { format } = useCount();
   const [showRelated, setShowRelated] = useState(false);
+  const [showAiSummary, setShowAiSummary] = useState(false);
   const { handleLikeRealtime, posts } = usePostContext();
 
   // Lấy post mới nhất từ context nếu có
@@ -277,6 +278,28 @@ export default function PostModal({
                 maxLines={1}
                 className={styles.caption}
               />
+
+              {post.aiSummary && (
+                <div className={styles.aiSummaryWrapper}>
+                  <button
+                    className={`${styles.aiSummaryToggle} ${showAiSummary ? styles.active : ""}`}
+                    onClick={() => setShowAiSummary(!showAiSummary)}
+                  >
+                    <div className={styles.aiSparkleIcon}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L14.5 9.5L22 12L14.5 14.5L12 22L9.5 14.5L2 12L9.5 9.5L12 2Z" />
+                      </svg>
+                    </div>
+                    <span>{showAiSummary ? "Ẩn tóm tắt" : "Tóm tắt thông minh"}</span>
+                  </button>
+
+                  {showAiSummary && (
+                    <div className={styles.aiSummaryContainer}>
+                      <p className={styles.aiSummaryText}>{post.aiSummary}</p>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
           <button className={styles.moreButton} onClick={toggleSettings}>
