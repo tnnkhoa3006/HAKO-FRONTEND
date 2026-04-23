@@ -3,7 +3,6 @@ import Image from "next/image";
 import { X, MoreVertical, UserPlus, Shield, ShieldAlert, UserMinus } from "lucide-react";
 import { Group } from "@/types/messenger.types";
 import { User } from "@/types/user.type";
-import styles from "./Messenger.module.scss";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addGroupMembersThunk, removeGroupMemberThunk, updateGroupRoleThunk } from "@/store/messengerSlice";
 import AddGroupMembersModal from "./AddGroupMembersModal";

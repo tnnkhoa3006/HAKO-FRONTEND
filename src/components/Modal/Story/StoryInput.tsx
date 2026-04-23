@@ -22,6 +22,7 @@ export default function InputStory({
   const [isLiked, setIsLiked] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const emojiButtonRef = useRef<HTMLButtonElement>(null);
 
   const handleHeartClick = () => {
     setIsLiked(!isLiked);
@@ -43,6 +44,7 @@ export default function InputStory({
     <div className="flex items-center w-full bg-transparent gap-3">
       <div className="relative">
         <button
+          ref={emojiButtonRef}
           type="button"
           className="flex h-9 w-9 items-center justify-center rounded-full border border-[#333] bg-[#1a1a1a] text-white transition-colors hover:border-[#4b5563]"
           onClick={() => setShowEmojiPicker((prev) => !prev)}
@@ -55,6 +57,7 @@ export default function InputStory({
           <EmojiPicker
             onSelect={handleEmojiSelect}
             onClose={() => setShowEmojiPicker(false)}
+            anchorElement={emojiButtonRef.current}
           />
         )}
       </div>

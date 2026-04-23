@@ -80,14 +80,14 @@ export default function InteractionButton({
       <div className={styles.leftButtons}>
         <button className={styles.actionButton} onClick={handleLike}>
           {liked ? (
-            <GoHeartFill size={26} style={{ color: "red" }} />
+            <GoHeartFill size={24} style={{ color: "red" }} />
           ) : (
-            <GoHeart size={26} />
+            <GoHeart size={24} />
           )}
           <span className={styles.count}>{format(totalLikes)}</span>
         </button>
         <button className={styles.actionButton} onClick={onClick}>
-          <FaRegComment size={22} />
+          <FaRegComment size={24} />
           {TotalComment && (
             <span className={styles.count}>{format(TotalComment)}</span>
           )}

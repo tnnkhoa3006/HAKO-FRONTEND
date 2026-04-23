@@ -11,6 +11,7 @@ import Comment from "@/app/ui/Comment";
 import CommentInput from "@/app/ui/CommentInput";
 import InteractionButton from "@/app/ui/InteractionButton";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
+import OverlayRelatedPosts from "../../Post/OverlayRelatedPosts";
 import { useCount } from "@/app/hooks/useCount";
 import { usePostContext } from "@/contexts/PostContext";
 import ShortenCaption from "@/components/ShortenCaption";
@@ -43,6 +44,7 @@ export default function PostModal({
   const [replyTo, setReplyTo] = useState<ReplyData | null>(null);
   const [objectFit, setObjectFit] = useState<"contain" | "cover">("contain");
   const { format } = useCount();
+  const [showRelated, setShowRelated] = useState(false);
   const { handleLikeRealtime, posts } = usePostContext();
 
   // Lấy post mới nhất từ context nếu có
@@ -132,6 +134,11 @@ export default function PostModal({
   };
 
   const handleSettingAction = async (action: string) => {
+    if (action === "related_posts") {
+      setShowRelated(true);
+      setShowSettings(false);
+      return;
+    }
     if (action === "delete") {
       try {
         await deletePostById(post._id); // Gọi API xóa bài viết
@@ -210,6 +217,13 @@ export default function PostModal({
             onLoadedMetadata={handleVideoLoadedMetadata}
           />
         ) : null}
+
+        {showRelated && (
+          <OverlayRelatedPosts
+            postId={post._id}
+            onClose={() => setShowRelated(false)}
+          />
+        )}
       </div>
 
       {/* Phần thông tin và tương tác */}

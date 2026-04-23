@@ -79,7 +79,7 @@ export const addGroupMembersThunk = createAsyncThunk(
   "messenger/addGroupMembers",
   async ({ groupId, members }: { groupId: string; members: string[] }) => {
     const response = await addGroupMembersAPI(groupId, members);
-    return response.group as Group;
+    return response as Group;
   }
 );
 
@@ -87,7 +87,7 @@ export const removeGroupMemberThunk = createAsyncThunk(
   "messenger/removeGroupMember",
   async ({ groupId, memberId }: { groupId: string; memberId: string }) => {
     const response = await removeGroupMemberAPI(groupId, memberId);
-    return response.group as Group;
+    return response as Group;
   }
 );
 
@@ -95,7 +95,7 @@ export const updateGroupRoleThunk = createAsyncThunk(
   "messenger/updateGroupRole",
   async ({ groupId, memberId, role }: { groupId: string; memberId: string; role: 'coAdmin' | 'member' }) => {
     const response = await updateGroupRoleAPI(groupId, memberId, role);
-    return response.group as Group;
+    return response as Group;
   }
 );
 

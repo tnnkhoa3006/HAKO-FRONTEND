@@ -55,6 +55,7 @@ export default function CommentInput({
 
   const [commentText, setCommentText] = useState(externalComment || "");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const emojiButtonRef = useRef<HTMLButtonElement>(null);
 
   const loading = useSelector(
     (state: RootState) =>
@@ -226,6 +227,7 @@ export default function CommentInput({
 
         <div className={styles.emojiPickerAnchor}>
           <button
+            ref={emojiButtonRef}
             type="button"
             className={styles.emojiButton}
             onClick={() => setShowEmojiPicker((prev) => !prev)}
@@ -238,6 +240,7 @@ export default function CommentInput({
             <EmojiPicker
               onSelect={handleEmojiSelect}
               onClose={() => setShowEmojiPicker(false)}
+              anchorElement={emojiButtonRef.current}
             />
           )}
         </div>

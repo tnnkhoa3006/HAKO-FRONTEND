@@ -2,6 +2,7 @@
 "use client";
 
 import type { Message } from "@/types/user.type";
+import type { Group } from "@/types/messenger.types";
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
@@ -57,7 +58,7 @@ export const getRecentChats = async (): Promise<RecentChat[]> => {
   return response.json();
 };
 
-export const getGroups = async (): Promise<any[]> => {
+export const getGroups = async (): Promise<Group[]> => {
   const token = getAuthToken();
   if (!token) throw new Error("Không có token xác thực");
 
@@ -75,7 +76,7 @@ export const getGroups = async (): Promise<any[]> => {
   return data.groups;
 };
 
-export const createGroup = async (name: string, members: string[]): Promise<any> => {
+export const createGroup = async (name: string, members: string[]): Promise<Group> => {
   const token = getAuthToken();
   if (!token) throw new Error("Không có token xác thực");
 
@@ -92,10 +93,11 @@ export const createGroup = async (name: string, members: string[]): Promise<any>
     throw new Error("Không thể tạo nhóm");
   }
 
-  return response.json();
+  const data = await response.json();
+  return data.group;
 };
 
-export const addGroupMembersAPI = async (groupId: string, members: string[]): Promise<any> => {
+export const addGroupMembersAPI = async (groupId: string, members: string[]): Promise<Group> => {
   const token = getAuthToken();
   if (!token) throw new Error("Không có token xác thực");
 
@@ -109,10 +111,11 @@ export const addGroupMembersAPI = async (groupId: string, members: string[]): Pr
   });
 
   if (!response.ok) throw new Error("Không thể thêm thành viên");
-  return response.json();
+  const data = await response.json();
+  return data.group;
 };
 
-export const removeGroupMemberAPI = async (groupId: string, memberId: string): Promise<any> => {
+export const removeGroupMemberAPI = async (groupId: string, memberId: string): Promise<Group> => {
   const token = getAuthToken();
   if (!token) throw new Error("Không có token xác thực");
 
@@ -124,10 +127,11 @@ export const removeGroupMemberAPI = async (groupId: string, memberId: string): P
   });
 
   if (!response.ok) throw new Error("Không thể xóa thành viên");
-  return response.json();
+  const data = await response.json();
+  return data.group;
 };
 
-export const updateGroupRoleAPI = async (groupId: string, memberId: string, role: 'coAdmin' | 'member'): Promise<any> => {
+export const updateGroupRoleAPI = async (groupId: string, memberId: string, role: 'coAdmin' | 'member'): Promise<Group> => {
   const token = getAuthToken();
   if (!token) throw new Error("Không có token xác thực");
 
@@ -141,7 +145,8 @@ export const updateGroupRoleAPI = async (groupId: string, memberId: string, role
   });
 
   if (!response.ok) throw new Error("Không thể phân quyền");
-  return response.json();
+  const data = await response.json();
+  return data.group;
 };
 
 // Lấy danh sách người dùng có thể nhắn tin

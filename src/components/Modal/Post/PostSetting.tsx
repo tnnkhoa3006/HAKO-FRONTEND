@@ -31,6 +31,7 @@ const DEFAULT_POST_MENU_ITEMS: MenuItem[] = [
   { id: 7, label: "Sao chép liên kết", action: "copy_link" },
   { id: 8, label: "Nhúng", action: "embed" },
   { id: 9, label: "Giới thiệu về tài khoản này", action: "about_account" },
+  { id: 11, label: "Bài viết liên quan", action: "related_posts" },
   { id: 10, label: "Hủy", action: "cancel" },
 ];
 
@@ -43,6 +44,7 @@ const OTHER_POST_MENU_ITEMS: MenuItem[] = [
   { id: 5, label: "Sao chép liên kết", action: "copy_link" },
   { id: 6, label: "Nhúng", action: "embed" },
   { id: 7, label: "Giới thiệu về tài khoản này", action: "about_account" },
+  { id: 9, label: "Bài viết liên quan", action: "related_posts" },
   { id: 8, label: "Hủy", action: "cancel" },
 ];
 

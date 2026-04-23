@@ -1,7 +1,6 @@
 .messengerPreview {
-  background:
-    linear-gradient(135deg, rgba(34, 52, 80, 0.95), rgba(24, 39, 61, 0.92));
-  border: 1px solid rgba(164, 186, 224, 0.18);
+  background: var(--surface-strong);
+  border: 1px solid var(--border-color);
   box-shadow: var(--surface-shadow);
   backdrop-filter: blur(18px);
   color: var(--foreground);
@@ -25,6 +24,6 @@
 }
 
 .previewAvatar {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(164, 186, 224, 0.18);
+  background: var(--surface-muted);
+  border: 1px solid var(--border-color);
 }

@@ -25,4 +25,6 @@ export interface Post {
   totalComments: number;
   isLike?: boolean;
   hasStories?: boolean;
+  aiTopics?: string[];
+  aiSummary?: string;
 }

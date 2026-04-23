@@ -4,7 +4,6 @@ import { useState, useMemo } from "react";
 import { X, Search, Check } from "lucide-react";
 import { User } from "@/types/user.type";
 import Image from "next/image";
-import styles from "./Messenger.module.scss";
 
 interface AddGroupMembersModalProps {
   availableUsers: User[];

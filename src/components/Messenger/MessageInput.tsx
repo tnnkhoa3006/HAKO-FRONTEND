@@ -53,6 +53,7 @@ export default function MessageInput({
 }: MessageInputProps) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const emojiButtonRef = useRef<HTMLButtonElement>(null);
 
   if (inputStory) {
     // Giao diện tối giản cho story: input ở giữa, heart icon, send button
@@ -193,6 +194,7 @@ export default function MessageInput({
       <div className="flex items-center">
         <div className={`relative mr-3 flex-shrink-0 ${styles.emojiPickerAnchor}`}>
           <button
+            ref={emojiButtonRef}
             type="button"
             className={`${styles.emojiTrigger} ${styles.inputIcon}`}
             onClick={() => setShowEmojiPicker((prev) => !prev)}
@@ -205,6 +207,7 @@ export default function MessageInput({
             <EmojiPicker
               onSelect={handleEmojiSelect}
               onClose={() => setShowEmojiPicker(false)}
+              anchorElement={emojiButtonRef.current}
             />
           )}
         </div>

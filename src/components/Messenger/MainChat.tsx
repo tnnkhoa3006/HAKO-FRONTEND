@@ -424,7 +424,7 @@ export default function MainChat({
               // Chỉ render tin nhắn thuộc về cuộc hội thoại này
               if (!isOtherUser && !isCurrentUser) return null;
 
-              const senderUser = msgSenderId === userId ? null : availableUsers.find(u => u._id === msgSenderId) || (selectedGroup ? selectedGroup.members.find((m: any) => m._id === msgSenderId) : selectedUser);
+              const senderUser = msgSenderId === userId ? null : availableUsers.find(u => u._id === msgSenderId) || (selectedGroup ? selectedGroup.members.find((m: User) => m._id === msgSenderId) : selectedUser);
 
               return (
                 <div

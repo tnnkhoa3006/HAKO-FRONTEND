@@ -9,6 +9,7 @@ import Comment from "../Comment";
 import { useTime } from "@/app/hooks/useTime";
 import { useCount } from "@/app/hooks/useCount";
 import { BiDotsHorizontalRounded } from "react-icons/bi";
+import OverlayRelatedPosts from "@/components/Post/OverlayRelatedPosts";
 import { useStory } from "@/contexts/StoryContext";
 import StoryAvatar from "@/components/Story/StoryAvatar";
 import { usePostContext } from "@/contexts/PostContext";
@@ -22,6 +23,8 @@ interface HomeUiProps {
   posts: Post[];
   onLikeRealtime: (postId: string, isLike: boolean) => void;
   onOpenPostModal?: (post: Post, videoTime?: number) => void;
+  relatedOverlayPostId?: string | null;
+  onCloseRelatedOverlay?: () => void;
 }
 
 // Skeleton Loading Component
@@ -108,6 +111,8 @@ const PostItem = memo(
     fromNow,
     format,
     handleLikeRealtime,
+    showRelatedOverlay,
+    onCloseRelatedOverlay,
   }: {
     post: Post;
     onOpenComments: (post: Post, e: React.MouseEvent) => void;
@@ -122,6 +127,8 @@ const PostItem = memo(
     fromNow: (date: string) => string;
     format: (num: number) => string;
     handleLikeRealtime: (postId: string, isLike: boolean) => void;
+    showRelatedOverlay?: boolean;
+    onCloseRelatedOverlay?: () => void;
   }) => {
     const author = post.author;
     const authorUsername = author?.username || "Người dùng";
@@ -266,6 +273,14 @@ const PostItem = memo(
               }}
             />
           ) : null}
+
+          {showRelatedOverlay && (
+            <OverlayRelatedPosts
+              postId={post._id}
+              onClose={onCloseRelatedOverlay || (() => {})}
+            />
+          )}
+
         </div>
 
         <div
@@ -328,6 +343,8 @@ export default function HomeUi({
   isMobileView, // nhận từ cha
   onOpenMobileComment, // callback từ cha
   onOpenPostSettings, // thêm prop này
+  relatedOverlayPostId,
+  onCloseRelatedOverlay,
 }: HomeUiProps & {
   isMobileView?: boolean;
   onOpenMobileComment?: (post: Post, videoTime?: number) => void;
@@ -582,6 +599,9 @@ export default function HomeUi({
             fromNow={fromNow}
             format={format}
             handleLikeRealtime={onLikeRealtime}
+            showRelatedOverlay={relatedOverlayPostId === post._id}
+            onCloseRelatedOverlay={onCloseRelatedOverlay}
+
           />
         </div>
       ))}

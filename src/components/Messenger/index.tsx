@@ -280,7 +280,7 @@ export default function MessengerComponent({
 
         console.log("[Messenger] Sending media message:", msgPayload);
         socketService.emitUploadMediaComplete(mediaPayload);
-        socketService.sendMessage(msgPayload as any);
+        socketService.sendMessage(msgPayload);
         
         setFile(null);
         setFilePreview(null);
@@ -295,7 +295,7 @@ export default function MessengerComponent({
         message,
         replyTo: replyToId,
       };
-      socketService.sendMessage(msgPayload as any);
+      socketService.sendMessage(msgPayload);
     }
     dispatch(setMessage(""));
     dispatch({ type: "messenger/clearReplyTo" });

@@ -20,23 +20,25 @@ type EmojiPickerProps = {
   onSelect: (emoji: string) => void;
   onClose: () => void;
   align?: "left" | "right";
+  anchorElement?: HTMLElement | null;
 };
 
 export default function EmojiPicker({
   onSelect,
   onClose,
   align = "left",
+  anchorElement,
 }: EmojiPickerProps) {
-  const anchorRef = useRef<HTMLDivElement>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const { theme } = useTheme();
   const [position, setPosition] = useState({ top: 0, left: 0, ready: false });
 
   useEffect(() => {
     const updatePosition = () => {
-      if (!anchorRef.current || !popoverRef.current) return;
+      const targetAnchor = anchorElement;
+      if (!targetAnchor || !popoverRef.current) return;
 
-      const anchorRect = anchorRef.current.getBoundingClientRect();
+      const anchorRect = targetAnchor.getBoundingClientRect();
       const popoverRect = popoverRef.current.getBoundingClientRect();
       const spacing = 10;
 
@@ -69,14 +71,14 @@ export default function EmojiPicker({
       window.removeEventListener("resize", updatePosition);
       window.removeEventListener("scroll", updatePosition, true);
     };
-  }, [align]);
+  }, [align, anchorElement]);
 
   useEffect(() => {
     const handlePointerDown = (event: MouseEvent) => {
       const target = event.target as Node;
       if (
         !popoverRef.current?.contains(target) &&
-        !anchorRef.current?.contains(target)
+        !anchorElement?.contains(target)
       ) {
         onClose();
       }
@@ -95,7 +97,8 @@ export default function EmojiPicker({
       document.removeEventListener("mousedown", handlePointerDown);
       document.removeEventListener("keydown", handleEscape);
     };
-  }, [onClose]);
+  }, [onClose, anchorElement]);
+
 
   const pickerContent = (
     <div
@@ -141,14 +144,5 @@ export default function EmojiPicker({
     </div>
   );
 
-  if (typeof document === "undefined") {
-    return <div ref={anchorRef} className={styles.anchor} />;
-  }
-
-  return (
-    <>
-      <div ref={anchorRef} className={styles.anchor} />
-      {createPortal(pickerContent, document.body)}
-    </>
-  );
+  return createPortal(pickerContent, document.body);
 }

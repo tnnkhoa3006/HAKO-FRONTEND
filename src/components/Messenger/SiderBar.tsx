@@ -4,6 +4,7 @@ import Image from "next/image";
 import styles from "./Messenger.module.scss";
 import { ChevronDown, Edit, Search, X, ArrowLeft } from "lucide-react";
 import type { User } from "@/types/user.type";
+import type { Group } from "@/types/messenger.types";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useCheckOnline } from "@/app/hooks/useCheckOnline";
@@ -366,7 +367,7 @@ export default function SiderBar({
     }
   };
 
-  const handleGroupClick = (group: any) => {
+  const handleGroupClick = (group: Group) => {
     dispatch(setSelectedGroup(group));
     setShowMainChat(true);
     // You could redirect to group chat if you update useChatRedirect to support groups
@@ -575,7 +576,7 @@ export default function SiderBar({
             <>
               {activeTab === "groups" && (
                 <>
-                  {groups.filter(g => g.name.toLowerCase().includes(searchQuery.toLowerCase())).map((group: any) => {
+                  {groups.filter(g => g.name.toLowerCase().includes(searchQuery.toLowerCase())).map((group: Group) => {
                     const isGroupSelected = selectedGroup && selectedGroup._id === group._id;
                     return (
                       <div

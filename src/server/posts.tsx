@@ -192,3 +192,18 @@ export const likePost = async (postId: string) => {
 
   return res.json();
 };
+
+export const getRelatedPosts = async (postId: string, limit: number = 5) => {
+  const res = await fetch(`${BASE_URL}/${postId}/related?limit=${limit}`, {
+    headers: createAuthHeaders(),
+  });
+
+  if (!res.ok) {
+    const error = await res.json();
+    throw error;
+  }
+
+  const data = await res.json();
+  return data.posts;
+};
+

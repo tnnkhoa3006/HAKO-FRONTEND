@@ -246,7 +246,13 @@ export default function Home() {
     handleCloseMobileComment();
   };
 
-  const postSettingModal = usePostSettingModal(handlePostDeleted);
+  const [relatedOverlayPostId, setRelatedOverlayPostId] = useState<string | null>(
+    null
+  );
+
+  const postSettingModal = usePostSettingModal(handlePostDeleted, (postId) => {
+    setRelatedOverlayPostId(postId);
+  });
 
   // Khi modal mở, body không cuộn được
   useEffect(() => {
@@ -320,6 +326,8 @@ export default function Home() {
               isMobileView={isMobileView}
               onOpenMobileComment={handleOpenMobileComment}
               onOpenPostSettings={postSettingModal.handleOpenPostSettings}
+              relatedOverlayPostId={relatedOverlayPostId}
+              onCloseRelatedOverlay={() => setRelatedOverlayPostId(null)}
             />
           )}
           // itemHeight={600}

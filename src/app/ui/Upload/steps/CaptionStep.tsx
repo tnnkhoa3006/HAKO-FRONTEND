@@ -38,6 +38,7 @@ export default function CaptionStep({
   const [isFacebookShareEnabled, setIsFacebookShareEnabled] = useState(true);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const emojiButtonRef = useRef<HTMLButtonElement>(null);
   const { user } = useUser();
 
   const handleEmojiSelect = (emoji: string) => {
@@ -112,6 +113,7 @@ export default function CaptionStep({
         <div className={styles.textareaFooter}>
           <div className={styles.emojiPickerAnchor}>
             <button
+              ref={emojiButtonRef}
               type="button"
               className={styles.emojiButton}
               onClick={() => setShowEmojiPicker((prev) => !prev)}
@@ -124,6 +126,7 @@ export default function CaptionStep({
               <EmojiPicker
                 onSelect={handleEmojiSelect}
                 onClose={() => setShowEmojiPicker(false)}
+                anchorElement={emojiButtonRef.current}
               />
             )}
           </div>
