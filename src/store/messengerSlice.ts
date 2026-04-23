@@ -1,7 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { getAvailableUsers, getMessagesWithPagination, getUserStatus } from "@/server/messenger";
+import { getAvailableUsers, getMessagesWithPagination, getUserStatus, getGroups, addGroupMembersAPI, removeGroupMemberAPI, updateGroupRoleAPI } from "@/server/messenger";
 import { Message, User } from "@/types/user.type";
-import { MessengerState } from "@/types/messenger.types";
+import { MessengerState, Group } from "@/types/messenger.types";
 import { createRef } from "react";
 
 const PAGE_SIZE = 20;
@@ -50,19 +50,53 @@ export const fetchAvailableUsers = createAsyncThunk(
 );
 
 export const fetchMessages = createAsyncThunk(
-  "messenger/fetchMessages",
-  async ({
-    userId,
-    before,
-    replace = false,
-  }: {
-    userId: string;
-    before?: string;
-    replace?: boolean;
-  }) => {
-    const res = await getMessagesWithPagination(userId, before, PAGE_SIZE);
-    return { ...res, before, replace };
-  }
+  "messenger/fetchMessages",
+  async ({
+    userId,
+    before,
+    replace = false,
+    isGroup = false,
+  }: {
+    userId: string;
+    before?: string;
+    replace?: boolean;
+    isGroup?: boolean;
+  }) => {
+    const res = await getMessagesWithPagination(userId, before, PAGE_SIZE, isGroup);
+    return { ...res, before, replace };
+  }
+);
+
+export const fetchGroups = createAsyncThunk(
+  "messenger/fetchGroups",
+  async () => {
+    const response = await getGroups();
+    return response as Group[];
+  }
+);
+
+export const addGroupMembersThunk = createAsyncThunk(
+  "messenger/addGroupMembers",
+  async ({ groupId, members }: { groupId: string; members: string[] }) => {
+    const response = await addGroupMembersAPI(groupId, members);
+    return response.group as Group;
+  }
+);
+
+export const removeGroupMemberThunk = createAsyncThunk(
+  "messenger/removeGroupMember",
+  async ({ groupId, memberId }: { groupId: string; memberId: string }) => {
+    const response = await removeGroupMemberAPI(groupId, memberId);
+    return response.group as Group;
+  }
+);
+
+export const updateGroupRoleThunk = createAsyncThunk(
+  "messenger/updateGroupRole",
+  async ({ groupId, memberId, role }: { groupId: string; memberId: string; role: 'coAdmin' | 'member' }) => {
+    const response = await updateGroupRoleAPI(groupId, memberId, role);
+    return response.group as Group;
+  }
 );
 
 export const checkOnline = createAsyncThunk(
@@ -80,10 +114,12 @@ type ConversationCache = {
 };
 
 const initialState: MessengerState & { conversations: Record<string, ConversationCache> } = {
-  availableUsers: [],
-  selectedUser: null,
-  messages: [],
-  message: "",
+  availableUsers: [],
+  selectedUser: null,
+  groups: [],
+  selectedGroup: null,
+  messages: [],
+  message: "",
   loading: false,
   loadingMore: false,
   hasMore: true,
@@ -106,9 +142,10 @@ const messengerSlice = createSlice({
   name: "messenger",
   initialState,
   reducers: {
-    setSelectedUser: (state, action: PayloadAction<User | null>) => {
+    setSelectedUser: (state, action: PayloadAction<User | null>) => {
       const newSelectedUser = action.payload;
       const previousSelectedUserId = state.selectedUser?._id;
+      const previousSelectedGroupId = state.selectedGroup?._id;
 
       if (previousSelectedUserId) {
         state.conversations[previousSelectedUserId] = {
@@ -116,9 +153,16 @@ const messengerSlice = createSlice({
           before: state.before,
           hasMore: state.hasMore,
         };
+      } else if (previousSelectedGroupId) {
+        state.conversations[`group_${previousSelectedGroupId}`] = {
+          messages: state.messages,
+          before: state.before,
+          hasMore: state.hasMore,
+        };
       }
 
       state.selectedUser = newSelectedUser;
+      state.selectedGroup = null; // Clear selected group when user is selected
       state.replyTo = null;
 
       if (newSelectedUser) {
@@ -144,7 +188,54 @@ const messengerSlice = createSlice({
         state.hasMore = true;
         state.showMainChat = false;
       }
-    },
+    },
+    setSelectedGroup: (state, action: PayloadAction<Group | null>) => {
+      const newSelectedGroup = action.payload;
+      const previousSelectedUserId = state.selectedUser?._id;
+      const previousSelectedGroupId = state.selectedGroup?._id;
+
+      if (previousSelectedUserId) {
+        state.conversations[previousSelectedUserId] = {
+          messages: state.messages,
+          before: state.before,
+          hasMore: state.hasMore,
+        };
+      } else if (previousSelectedGroupId) {
+        state.conversations[`group_${previousSelectedGroupId}`] = {
+          messages: state.messages,
+          before: state.before,
+          hasMore: state.hasMore,
+        };
+      }
+
+      state.selectedGroup = newSelectedGroup;
+      state.selectedUser = null; // Clear selected user when group is selected
+      state.replyTo = null;
+
+      if (newSelectedGroup) {
+        const cachedConversation = state.conversations[`group_${newSelectedGroup._id}`];
+
+        if (cachedConversation) {
+          state.messages = cachedConversation.messages;
+          state.before = cachedConversation.before;
+          state.hasMore = cachedConversation.hasMore;
+          state.loading = false;
+          state.loadingMore = false;
+        } else {
+          state.messages = [];
+          state.before = undefined;
+          state.hasMore = true;
+          state.loading = false;
+          state.loadingMore = false;
+        }
+        state.showMainChat = true;
+      } else {
+        state.messages = [];
+        state.before = undefined;
+        state.hasMore = true;
+        state.showMainChat = false;
+      }
+    },
     setMessage: (state, action: PayloadAction<string>) => {
       state.message = action.payload;
     },
@@ -250,16 +341,47 @@ const messengerSlice = createSlice({
         state.userStatus = action.payload;
         state.checkingStatus = false;
       })
-      .addCase(checkOnline.rejected, (state) => {
-        state.userStatus = null;
-        state.checkingStatus = false;
-      });
+      .addCase(checkOnline.rejected, (state) => {
+        state.userStatus = null;
+        state.checkingStatus = false;
+      })
+      .addCase(fetchGroups.fulfilled, (state, action) => {
+        state.groups = action.payload;
+      })
+      .addCase(addGroupMembersThunk.fulfilled, (state, action) => {
+        if (state.selectedGroup && state.selectedGroup._id === action.payload._id) {
+          state.selectedGroup = action.payload;
+        }
+        const index = state.groups.findIndex(g => g._id === action.payload._id);
+        if (index !== -1) {
+          state.groups[index] = action.payload;
+        }
+      })
+      .addCase(removeGroupMemberThunk.fulfilled, (state, action) => {
+        if (state.selectedGroup && state.selectedGroup._id === action.payload._id) {
+          state.selectedGroup = action.payload;
+        }
+        const index = state.groups.findIndex(g => g._id === action.payload._id);
+        if (index !== -1) {
+          state.groups[index] = action.payload;
+        }
+      })
+      .addCase(updateGroupRoleThunk.fulfilled, (state, action) => {
+        if (state.selectedGroup && state.selectedGroup._id === action.payload._id) {
+          state.selectedGroup = action.payload;
+        }
+        const index = state.groups.findIndex(g => g._id === action.payload._id);
+        if (index !== -1) {
+          state.groups[index] = action.payload;
+        }
+      });
   },
 });
 
 export const {
-  setSelectedUser,
-  setMessage,
+  setSelectedUser,
+  setSelectedGroup,
+  setMessage,
   addMessage,
   setShowMainChat,
   setInCall,

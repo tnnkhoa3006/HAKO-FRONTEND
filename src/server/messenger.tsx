@@ -57,6 +57,93 @@ export const getRecentChats = async (): Promise<RecentChat[]> => {
   return response.json();
 };
 
+export const getGroups = async (): Promise<any[]> => {
+  const token = getAuthToken();
+  if (!token) throw new Error("Không có token xác thực");
+
+  const response = await fetch(`${BASE_URL}/groups`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Không thể lấy danh sách nhóm");
+  }
+
+  const data = await response.json();
+  return data.groups;
+};
+
+export const createGroup = async (name: string, members: string[]): Promise<any> => {
+  const token = getAuthToken();
+  if (!token) throw new Error("Không có token xác thực");
+
+  const response = await fetch(`${BASE_URL}/groups`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ name, members }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Không thể tạo nhóm");
+  }
+
+  return response.json();
+};
+
+export const addGroupMembersAPI = async (groupId: string, members: string[]): Promise<any> => {
+  const token = getAuthToken();
+  if (!token) throw new Error("Không có token xác thực");
+
+  const response = await fetch(`${BASE_URL}/groups/${groupId}/members`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ members }),
+  });
+
+  if (!response.ok) throw new Error("Không thể thêm thành viên");
+  return response.json();
+};
+
+export const removeGroupMemberAPI = async (groupId: string, memberId: string): Promise<any> => {
+  const token = getAuthToken();
+  if (!token) throw new Error("Không có token xác thực");
+
+  const response = await fetch(`${BASE_URL}/groups/${groupId}/members/${memberId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) throw new Error("Không thể xóa thành viên");
+  return response.json();
+};
+
+export const updateGroupRoleAPI = async (groupId: string, memberId: string, role: 'coAdmin' | 'member'): Promise<any> => {
+  const token = getAuthToken();
+  if (!token) throw new Error("Không có token xác thực");
+
+  const response = await fetch(`${BASE_URL}/groups/${groupId}/role`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ memberId, role }),
+  });
+
+  if (!response.ok) throw new Error("Không thể phân quyền");
+  return response.json();
+};
+
 // Lấy danh sách người dùng có thể nhắn tin
 export const getAvailableUsers = async (): Promise<AvailableUser[]> => {
   // Sửa lại kiểu trả về nếu API trả về mảng
@@ -111,16 +198,17 @@ export const getMessages = async (
 
 // Lấy tin nhắn với phân trang kiểu infinite scroll (dùng before, limit)
 export const getMessagesWithPagination = async (
-  userId: string,
+  userId: string, // now acts as targetId
   before?: string, // ISO date string hoặc undefined
-  limit = 20
+  limit = 20,
+  isGroup = false
 ): Promise<{
   messages: Message[];
   hasMore: boolean;
   oldestTimestamp: string | null;
 }> => {
   const token = getAuthToken();
-  let url = `${BASE_URL}/messenger/getMessagesWithPagination/${userId}?limit=${limit}`;
+  let url = `${BASE_URL}/messenger/getMessagesWithPagination/${userId}?limit=${limit}&isGroup=${isGroup}`;
   if (before) {
     url += `&before=${encodeURIComponent(before)}`;
   }
@@ -142,10 +230,11 @@ export const getMessagesWithPagination = async (
 
 // Gửi tin nhắn qua REST API
 export const sendMessage = async (
-  receiverId: string,
+  receiverId: string | null,
   message: string,
   file?: File,
-  replyTo?: string
+  replyTo?: string,
+  groupId?: string
 ): Promise<{ message: Message }> => {
   const token = getAuthToken();
   if (!token) throw new Error("Không có token xác thực");
@@ -153,7 +242,8 @@ export const sendMessage = async (
   if (file) {
     // Gửi file qua FormData
     const formData = new FormData();
-    formData.append("receiverId", receiverId);
+    if (receiverId) formData.append("receiverId", receiverId);
+    if (groupId) formData.append("groupId", groupId);
     formData.append("message", message);
     if (replyTo) formData.append("replyTo", replyTo);
     formData.append("file", file);
@@ -183,6 +273,7 @@ export const sendMessage = async (
       credentials: "include",
       body: JSON.stringify({
         receiverId,
+        groupId,
         message,
         ...(replyTo ? { replyTo } : {}),
       }),

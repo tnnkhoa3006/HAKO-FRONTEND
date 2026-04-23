@@ -40,8 +40,9 @@ export interface Message {
   content: string;
   senderId: string;
   sender?: User;
-  receiverId: string;
+  receiverId?: string;
   receiver?: User;
+  groupId?: string;
   read: boolean;
   createdAt: string;
   updatedAt: string;

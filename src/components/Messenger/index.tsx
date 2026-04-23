@@ -10,6 +10,7 @@ import {
   fetchAvailableUsers,
   fetchMessages,
   setSelectedUser,
+  setSelectedGroup,
   setMessage,
   addMessage,
   setShowMainChat,
@@ -37,6 +38,8 @@ export default function MessengerComponent({
   const {
     availableUsers,
     selectedUser,
+    selectedGroup,
+    groups,
     messages,
     message,
     loading,
@@ -67,24 +70,25 @@ export default function MessengerComponent({
       _id?: string;
       senderId: string;
       receiverId?: string;
+      groupId?: string;
       message: string;
       createdAt?: string;
       updatedAt?: string;
       isRead?: boolean;
       timestamp?: string;
       replyTo?:
-        | string
-        | null
-        | {
-            _id: string;
-            senderId?: { _id: string } | string;
-            receiverId?: { _id: string } | string;
-            message?: string;
-            createdAt?: string;
-            updatedAt?: string;
-            isRead?: boolean;
-            replyTo?: string | null;
-          };
+      | string
+      | null
+      | {
+        _id: string;
+        senderId?: { _id: string } | string;
+        receiverId?: { _id: string } | string;
+        message?: string;
+        createdAt?: string;
+        updatedAt?: string;
+        isRead?: boolean;
+        replyTo?: string | null;
+      };
       mediaUrl?: string;
       mediaType?: "image" | "video" | "file";
       isOwnMessage?: boolean;
@@ -102,12 +106,12 @@ export default function MessengerComponent({
       const id = msg._id || msg.timestamp || "";
       const createdAt = msg.createdAt || msg.timestamp || "";
       const updatedAt = msg.updatedAt || msg.timestamp || "";
-
       const convertedMsg: Message = {
         id,
         _id: id,
         senderId: msg.senderId,
         receiverId: msg.receiverId ?? "",
+        groupId: msg.groupId,
         content: msg.message,
         createdAt,
         updatedAt,
@@ -120,11 +124,12 @@ export default function MessengerComponent({
       };
 
       if (
-        selectedUser &&
-        ((convertedMsg.senderId === selectedUser._id &&
-          convertedMsg.receiverId === userId) ||
-          (convertedMsg.senderId === userId &&
-            convertedMsg.receiverId === selectedUser._id))
+        (selectedUser &&
+          ((convertedMsg.senderId === selectedUser._id &&
+            convertedMsg.receiverId === userId) ||
+            (convertedMsg.senderId === userId &&
+              convertedMsg.receiverId === selectedUser._id))) ||
+        (selectedGroup && convertedMsg.groupId === selectedGroup._id)
       ) {
         dispatch(addMessage(convertedMsg));
       }
@@ -142,6 +147,13 @@ export default function MessengerComponent({
           ) {
             senderName = selectedUser.username;
           }
+          
+          if (msg.groupId) {
+             const foundGroup = groups.find(g => g._id === msg.groupId);
+             if (foundGroup) {
+               senderName += ` (Nhóm: ${foundGroup.name})`;
+             }
+          }
         }
         notify("Tin nhắn mới", {
           body: `Bạn có tin nhắn mới từ ${senderName}`,
@@ -156,6 +168,8 @@ export default function MessengerComponent({
     };
   }, [
     selectedUser,
+    selectedGroup,
+    groups,
     userId,
     dispatch,
     messages,
@@ -193,10 +207,21 @@ export default function MessengerComponent({
           userId: selectedUser._id,
           before: undefined,
           replace: true,
+          isGroup: false,
+        })
+      );
+    } else if (selectedGroup?._id && userId && messages.length === 0 && hasMore) {
+      setLastFetchReplace(true);
+      dispatch(
+        fetchMessages({
+          userId: selectedGroup._id,
+          before: undefined,
+          replace: true,
+          isGroup: true,
         })
       );
     }
-  }, [selectedUser?._id, userId, dispatch, messages.length, hasMore]);
+  }, [selectedUser?._id, selectedGroup?._id, userId, dispatch, messages.length, hasMore]);
 
   const replyTo = useAppSelector((state) => state.messenger.replyTo);
 
@@ -218,7 +243,7 @@ export default function MessengerComponent({
   }, [dispatch]);
 
   const handleSendMessage = async () => {
-    if ((!message.trim() && !file) || !selectedUser || !userId) return;
+    if ((!message.trim() && !file) || (!selectedUser && !selectedGroup) || !userId) return;
     let replyToId: string | undefined = undefined;
     if (replyTo) {
       if (typeof replyTo === "string") {
@@ -235,49 +260,42 @@ export default function MessengerComponent({
       const reader = new FileReader();
       reader.onload = () => {
         const base64 = reader.result as string;
-        console.log("[Messenger] Sending media message:", {
-          senderId: userId,
-          receiverId: selectedUser._id,
-          message: message || "",
-          tempId: Date.now().toString(),
-          replyTo: replyToId,
-          media: base64,
-          mediaType: file.type.startsWith("image/") ? "image" : "video",
-        });
-        socketService.emitUploadMediaComplete({
+        
+        const mediaPayload = {
           messageId: Date.now().toString(),
           media: base64,
           mediaType: file.type.startsWith("image/") ? "image" : "video",
-        });
-        socketService.sendMessage({
+        } as const;
+
+        const msgPayload = {
           senderId: userId,
-          receiverId: selectedUser._id,
+          receiverId: selectedGroup ? undefined : selectedUser?._id,
+          groupId: selectedGroup?._id,
           message: message || "",
           tempId: Date.now().toString(),
           replyTo: replyToId,
           media: base64,
           mediaType: file.type.startsWith("image/") ? "image" : "video",
-        });
+        } as const;
+
+        console.log("[Messenger] Sending media message:", msgPayload);
+        socketService.emitUploadMediaComplete(mediaPayload);
+        socketService.sendMessage(msgPayload as any);
+        
         setFile(null);
         setFilePreview(null);
         if (fileInputRef.current) fileInputRef.current.value = "";
       };
       reader.readAsDataURL(file);
     } else {
-      if (replyToId) {
-        socketService.sendMessage({
-          senderId: userId,
-          receiverId: selectedUser._id,
-          message,
-          replyTo: replyToId,
-        });
-      } else {
-        socketService.sendMessage({
-          senderId: userId,
-          receiverId: selectedUser._id,
-          message,
-        });
-      }
+      const msgPayload = {
+        senderId: userId,
+        receiverId: selectedGroup ? undefined : selectedUser?._id,
+        groupId: selectedGroup?._id,
+        message,
+        replyTo: replyToId,
+      };
+      socketService.sendMessage(msgPayload as any);
     }
     dispatch(setMessage(""));
     dispatch({ type: "messenger/clearReplyTo" });
@@ -292,24 +310,47 @@ export default function MessengerComponent({
   const before = useAppSelector((state) => state.messenger.before);
 
   const handleLoadMore = () => {
-    if (!loadingMore && hasMore && selectedUser && before) {
-      setLastFetchReplace(false);
-      dispatch(
-        fetchMessages({
-          userId: selectedUser._id,
-          before,
-          replace: false,
-        })
-      );
+    if (!loadingMore && hasMore && before) {
+      if (selectedUser) {
+        setLastFetchReplace(false);
+        dispatch(
+          fetchMessages({
+            userId: selectedUser._id,
+            before,
+            replace: false,
+            isGroup: false,
+          })
+        );
+      } else if (selectedGroup) {
+        setLastFetchReplace(false);
+        dispatch(
+          fetchMessages({
+            userId: selectedGroup._id,
+            before,
+            replace: false,
+            isGroup: true,
+          })
+        );
+      }
     }
   };
 
   useEffect(() => {
     return () => {
       dispatch(setSelectedUser(null));
+      dispatch(setSelectedGroup(null));
       dispatch(resetMessagesState());
     };
   }, [dispatch]);
+
+  // Join group rooms
+  useEffect(() => {
+    if (groups && groups.length > 0) {
+      groups.forEach((group) => {
+        socketService.joinGroupRoom(group._id);
+      });
+    }
+  }, [groups]);
 
   const [isLargeScreen, setIsLargeScreen] = useState(
     typeof window !== "undefined" ? window.innerWidth > 768 : true
@@ -350,6 +391,7 @@ export default function MessengerComponent({
         >
           <MainChat
             selectedUser={selectedUser}
+            selectedGroup={selectedGroup}
             messages={messages}
             message={message}
             setMessage={(msg) => dispatch(setMessage(msg))}
@@ -418,6 +460,7 @@ export default function MessengerComponent({
       />
       <MainChat
         selectedUser={selectedUser}
+        selectedGroup={selectedGroup}
         messages={messages}
         message={message}
         setMessage={(msg) => dispatch(setMessage(msg))}

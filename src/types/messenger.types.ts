@@ -1,10 +1,23 @@
 // src/types/messenger.types.ts
 import { User, Message } from "./user.type";
 
+export interface Group {
+  _id: string;
+  name: string;
+  avatar?: string;
+  admin: User | string;
+  coAdmins?: User[] | string[];
+  members: User[];
+  createdAt: string;
+  updatedAt: string;
+}
+
 // Cập nhật trong MessengerState.type.ts
 export interface MessengerState {
   availableUsers: User[];
   selectedUser: User | null;
+  groups: Group[];
+  selectedGroup: Group | null;
   messages: Message[];
   message: string;
   loading: boolean;

@@ -18,6 +18,10 @@ import StoryAvatar from "@/components/Story/StoryAvatar";
 import { SiderBarSkeleton, SearchResultsSkeleton } from "@/Skeleton/siderbar";
 import { useChatRedirect } from "@/app/hooks/useChatRedirect";
 import { useRecentChatsStore } from "@/store/recentChatsStore";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { fetchGroups, setSelectedGroup, setSelectedUser as setSelectedUserRedux } from "@/store/messengerSlice";
+import CreateGroupModal from "./CreateGroupModal";
+import { createGroup } from "@/server/messenger";
 
 type UserWithStory = User & { hasStory?: boolean };
 
@@ -61,6 +65,8 @@ export default function SiderBar({
   const [isSearchFocused, setIsSearchFocused] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isSearching, setIsSearching] = useState(false);
+  const [activeTab, setActiveTab] = useState<"direct" | "groups">("direct");
+  const [showCreateGroupModal, setShowCreateGroupModal] = useState(false);
   const router = useRouter();
   const redirectToChat = useChatRedirect();
   const currentUserIdRef = useRef<string | null>(null);
@@ -70,6 +76,14 @@ export default function SiderBar({
   // Zustand store
   const { recentChats, setRecentChats, updateRecentChat } =
     useRecentChatsStore();
+
+  const dispatch = useAppDispatch();
+  const groups = useAppSelector((state) => state.messenger.groups);
+  const selectedGroup = useAppSelector((state) => state.messenger.selectedGroup);
+
+  useEffect(() => {
+    dispatch(fetchGroups());
+  }, [dispatch]);
 
   useEffect(() => {
     let idFromStorage: string | null = null;
@@ -344,10 +358,29 @@ export default function SiderBar({
   };
 
   const handleUserClick = (user: User) => {
-    setSelectedUser(user);
+    setSelectedUser(user); // Triggers index.tsx logic (if any)
+    dispatch(setSelectedUserRedux(user)); // Update Redux state
     setShowMainChat(true);
     if (!preview) {
       redirectToChat(user._id);
+    }
+  };
+
+  const handleGroupClick = (group: any) => {
+    dispatch(setSelectedGroup(group));
+    setShowMainChat(true);
+    // You could redirect to group chat if you update useChatRedirect to support groups
+  };
+
+  const handleCreateGroupSubmit = async (name: string, members: string[]) => {
+    try {
+      await createGroup(name, members);
+      setShowCreateGroupModal(false);
+      dispatch(fetchGroups());
+      setActiveTab("groups");
+    } catch (error) {
+      console.error("Failed to create group", error);
+      alert("Không thể tạo nhóm");
     }
   };
 
@@ -431,17 +464,16 @@ export default function SiderBar({
 
   return (
     <div
-      className={`flex flex-col ${
-        preview ? "w-full" : "w-full"
-      } ${styles.sidebar}`}
+      className={`flex flex-col ${preview ? "w-full" : "w-full"
+        } ${styles.sidebar}`}
       style={
         preview
           ? {
-              width: "100%",
-              minWidth: 0,
-              maxWidth: "100%",
-              background: "var(--messenger-sidebar-bg)",
-            }
+            width: "100%",
+            minWidth: 0,
+            maxWidth: "100%",
+            background: "var(--messenger-sidebar-bg)",
+          }
           : {}
       }
     >
@@ -456,9 +488,8 @@ export default function SiderBar({
             <ArrowLeft className="h-5 w-5" />
           </button>
           <h1
-            className={`font-bold text-[1.25rem] ${styles.titleText}${
-              preview ? " !text-lg" : ""
-            }`}
+            className={`font-bold text-[1.25rem] ${styles.titleText}${preview ? " !text-lg" : ""
+              }`}
             style={preview ? { fontSize: "1.1rem" } : {}}
           >
             {username}
@@ -475,18 +506,27 @@ export default function SiderBar({
           </button>
         ) : (
           <div
+            onClick={() => setShowCreateGroupModal(true)}
             className={`w-9 h-9 rounded-full flex items-center justify-center cursor-pointer transition-colors ${styles.backButton} ${styles.iconButton}`}
+            title="Tạo nhóm mới"
           >
             <Edit className="h-4 w-4" />
           </div>
         )}
       </div>
 
+      {showCreateGroupModal && (
+        <CreateGroupModal
+          availableUsers={availableUsers}
+          onClose={() => setShowCreateGroupModal(false)}
+          onSubmit={handleCreateGroupSubmit}
+        />
+      )}
+
       <div className="px-4 py-3">
         <div
-          className={`relative flex items-center rounded-full px-3 py-2 transition-all ${
-            styles.searchInput
-          } ${isSearchFocused ? "ring-1 ring-blue-500" : ""}`}
+          className={`relative flex items-center rounded-full px-3 py-2 transition-all ${styles.searchInput
+            } ${isSearchFocused ? "ring-1 ring-blue-500" : ""}`}
         >
           <Search
             className={`h-4 w-4 mr-2 flex-shrink-0 ${styles.searchIcon}`}
@@ -513,13 +553,17 @@ export default function SiderBar({
 
       <div className={`overflow-y-auto ${styles.chatList}`}>
         <div className="flex px-4 pb-2">
-          <button className="flex-1 py-2 px-4 mx-1 rounded-full text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 transition-colors">
-            Hộp thư
+          <button 
+            onClick={() => setActiveTab("direct")}
+            className={`flex-1 py-2 px-4 mx-1 rounded-full text-sm font-medium transition-colors ${activeTab === "direct" ? "text-white bg-blue-600 hover:bg-blue-700" : styles.secondaryTabButton}`}
+          >
+            Cá nhân
           </button>
           <button
-            className={`flex-1 py-2 px-4 mx-1 rounded-full text-sm font-medium transition-colors ${styles.secondaryTabButton}`}
+            onClick={() => setActiveTab("groups")}
+            className={`flex-1 py-2 px-4 mx-1 rounded-full text-sm font-medium transition-colors ${activeTab === "groups" ? "text-white bg-blue-600 hover:bg-blue-700" : styles.secondaryTabButton}`}
           >
-            Tin nhắn chờ
+            Nhóm
           </button>
         </div>
 
@@ -529,7 +573,44 @@ export default function SiderBar({
             <SearchResultsSkeleton />
           ) : (
             <>
-              {filteredChats.length > 0 && (
+              {activeTab === "groups" && (
+                <>
+                  {groups.filter(g => g.name.toLowerCase().includes(searchQuery.toLowerCase())).map((group: any) => {
+                    const isGroupSelected = selectedGroup && selectedGroup._id === group._id;
+                    return (
+                      <div
+                        key={group._id}
+                        className={`flex items-center p-2 cursor-pointer rounded-lg transition-colors mb-1 ${styles.chatRow} ${isGroupSelected ? styles.chatRowActive : ""}`}
+                        onClick={() => handleGroupClick(group)}
+                      >
+                        <div className="w-12 h-12 rounded-full mr-3 relative flex-shrink-0">
+                          {group.avatar ? (
+                            <Image src={group.avatar} alt={group.name} layout="fill" objectFit="cover" className="rounded-full" />
+                          ) : (
+                            <div className="w-full h-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center text-white font-semibold text-lg rounded-full">
+                              {group.name.charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className={`truncate font-medium ${styles.chatName}`}>{group.name}</p>
+                          <span className={`text-sm truncate flex-1 ${styles.chatMessage}`}>
+                            {group.members.length} thành viên
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                  {groups.length === 0 && (
+                    <div className="flex flex-col items-center justify-center py-12 text-center">
+                      <p className={`font-medium ${styles.emptyTitle}`}>Bạn chưa tham gia nhóm nào</p>
+                      <button onClick={() => setShowCreateGroupModal(true)} className="mt-2 text-blue-500 hover:underline text-sm">Tạo nhóm ngay</button>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {activeTab === "direct" && filteredChats.length > 0 && (
                 <>
                   {filteredChats.map((chat) => {
                     if (!chat.user) return null;
@@ -548,9 +629,8 @@ export default function SiderBar({
                     return (
                       <div
                         key={chat.user._id}
-                        className={`flex items-center p-2 cursor-pointer rounded-lg transition-colors mb-1 ${styles.chatRow} ${
-                          isChatSelected ? styles.chatRowActive : ""
-                        }`}
+                        className={`flex items-center p-2 cursor-pointer rounded-lg transition-colors mb-1 ${styles.chatRow} ${isChatSelected ? styles.chatRowActive : ""
+                          }`}
                       >
                         <div className="w-12 h-12 rounded-full mr-3 relative flex-shrink-0">
                           {hasStory ? (
@@ -590,11 +670,10 @@ export default function SiderBar({
                         >
                           <div className="flex items-center gap-1.5 mb-0.5">
                             <p
-                              className={`truncate font-medium ${
-                                hasUnreadMessage
+                              className={`truncate font-medium ${hasUnreadMessage
                                   ? `${styles.chatName} font-semibold`
                                   : styles.chatName
-                              }`}
+                                }`}
                             >
                               {chat.user.username}
                             </p>
@@ -618,11 +697,10 @@ export default function SiderBar({
 
                           <div className="flex items-center justify-between">
                             <span
-                              className={`text-sm truncate flex-1 mr-2 ${
-                                hasUnreadMessage
+                              className={`text-sm truncate flex-1 mr-2 ${hasUnreadMessage
                                   ? styles.chatMessageUnread
                                   : styles.chatMessage
-                              }`}
+                                }`}
                             >
                               {formatMessage(chat)}
                             </span>
@@ -644,7 +722,7 @@ export default function SiderBar({
                 </>
               )}
 
-              {filteredAvailableUsers.length > 0 && (
+              {activeTab === "direct" && filteredAvailableUsers.length > 0 && (
                 <>
                   {searchQuery && filteredChats.length === 0 && (
                     <hr className={`my-2 ${styles.divider}`} />
@@ -657,9 +735,8 @@ export default function SiderBar({
                     return (
                       <div
                         key={user._id}
-                        className={`flex items-center p-2 cursor-pointer rounded-lg transition-colors mb-1 ${styles.chatRow} ${
-                          isChatSelected ? styles.chatRowActive : ""
-                        }`}
+                        className={`flex items-center p-2 cursor-pointer rounded-lg transition-colors mb-1 ${styles.chatRow} ${isChatSelected ? styles.chatRowActive : ""
+                          }`}
                         onClick={() => handleUserClick(user)}
                       >
                         <div className="w-12 h-12 rounded-full mr-3 relative flex-shrink-0">
@@ -729,7 +806,7 @@ export default function SiderBar({
                 </>
               )}
 
-              {filteredChats.length === 0 &&
+              {activeTab === "direct" && filteredChats.length === 0 &&
                 filteredAvailableUsers.length === 0 && (
                   <>
                     {searchQuery ? (

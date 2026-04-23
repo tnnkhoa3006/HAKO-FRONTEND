@@ -37,6 +37,8 @@ export type MessageData = {
 
 type GenericMessagePayload = {
   senderId: string;
+  receiverId?: string;
+  groupId?: string;
   message: string;
   timestamp: string;
 };
@@ -113,9 +115,15 @@ export const socketService = {
     currentSocket.emit("joinUserRoom", userId);
   },
 
+  joinGroupRoom: (groupId: string) => {
+    const currentSocket = socketService.getSocket();
+    currentSocket.emit("joinGroupRoom", groupId);
+  },
+
   sendMessage: (data: {
     senderId: string;
-    receiverId: string;
+    receiverId?: string;
+    groupId?: string;
     message: string;
     tempId?: string;
     replyTo?: string | null;

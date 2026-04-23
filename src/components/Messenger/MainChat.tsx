@@ -5,6 +5,7 @@ import { HiOutlineFaceSmile } from "react-icons/hi2";
 import { IoMdMore } from "react-icons/io";
 import styles from "./Messenger.module.scss";
 import type { User, Message } from "@/types/user.type";
+import { Group } from "@/types/messenger.types";
 import { useEffect, useRef, useState, useCallback } from "react";
 import Call from "./call";
 import { useTime } from "@/app/hooks/useTime";
@@ -24,6 +25,7 @@ import {
   MessageSkeletonRightShort,
   TypingSkeleton,
 } from "@/Skeleton/messenger";
+import GroupMembersModal from "./GroupMembersModal";
 import dynamic from "next/dynamic";
 const ImageVideoPreview = dynamic(
   () => import("@/components/Preview/ImageVideo"),
@@ -32,6 +34,7 @@ const ImageVideoPreview = dynamic(
 
 export type MainChatProps = {
   selectedUser: (User & { hasStory?: boolean }) | null;
+  selectedGroup?: Group | null;
   messages: Message[];
   message: string;
   setMessage: (msg: string) => void;
@@ -57,6 +60,7 @@ export type MainChatProps = {
 
 export default function MainChat({
   selectedUser,
+  selectedGroup,
   messages,
   message,
   setMessage,
@@ -90,6 +94,7 @@ export default function MainChat({
     src: string;
     type: "image" | "video";
   } | null>(null);
+  const [showGroupMembers, setShowGroupMembers] = useState(false);
 
   const { formatTime } = useTime();
   const handleUserClick = useHandleUserClick();
@@ -163,31 +168,31 @@ export default function MainChat({
     loading,
   ]);
 
-  const prevUserIdRef = useRef<string | null>(null);
+  const prevTargetIdRef = useRef<string | null>(null);
   const prevLoadingRef = useRef<boolean>(true);
 
   useEffect(() => {
-    const prevUserId = prevUserIdRef.current;
+    const prevTargetId = prevTargetIdRef.current;
     const prevLoading = prevLoadingRef.current;
-    const currentUserId = selectedUser?._id || null;
+    const currentTargetId = selectedGroup?._id || selectedUser?._id || null;
 
     if (
       messagesEndRef.current &&
-      currentUserId &&
+      currentTargetId &&
       messages.length > 0 &&
-      (prevUserId !== currentUserId || (prevLoading && !loading))
+      (prevTargetId !== currentTargetId || (prevLoading && !loading))
     ) {
       messagesEndRef.current.scrollIntoView({ behavior: "auto" });
       setIsInitialLoad(false);
       setPreviousMessageCount(messages.length);
     }
-    if (prevUserId !== currentUserId) {
+    if (prevTargetId !== currentTargetId) {
       setIsInitialLoad(true);
       setPreviousMessageCount(0);
     }
-    prevUserIdRef.current = currentUserId;
+    prevTargetIdRef.current = currentTargetId;
     prevLoadingRef.current = loading;
-  }, [selectedUser?._id, loading, messages.length]);
+  }, [selectedUser?._id, selectedGroup?._id, loading, messages.length]);
 
   const getActivityStatus = (user: User) => {
     if (!user) return "";
@@ -244,7 +249,48 @@ export default function MainChat({
       <div
         className={`flex justify-between items-center p-4 position-relative ${styles.chatHeader}`}
       >
-        {selectedUser ? (
+        {selectedGroup ? (
+          <>
+            <div className="flex items-center">
+              <button
+                className={styles.backBtn}
+                onClick={() => {
+                  if (preview) {
+                    setShowMainChat(false);
+                  } else {
+                    setShowMainChat(false);
+                    window.history.back();
+                  }
+                }}
+                style={{
+                  marginRight: 8,
+                  display: preview ? "block" : "none",
+                }}
+              >
+                <ArrowLeft className="h-6 w-6" />
+              </button>
+              <div className="w-10 h-10 rounded-full mr-4 relative flex-shrink-0">
+                {selectedGroup.avatar ? (
+                  <Image src={selectedGroup.avatar} alt={selectedGroup.name} layout="fill" objectFit="cover" className="rounded-full" />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-green-500 to-teal-600 flex items-center justify-center text-white font-semibold text-lg rounded-full">
+                    {selectedGroup.name.charAt(0).toUpperCase()}
+                  </div>
+                )}
+              </div>
+              <div onClick={() => setShowGroupMembers(true)} className="cursor-pointer hover:opacity-80 transition-opacity">
+                <div className="flex items-center gap-2">
+                  <p className={`font-medium ${styles.text2} ${styles.username} ${styles.chatName}`}>
+                    {selectedGroup.name}
+                  </p>
+                </div>
+                <p className={`text-xs ${styles.text2} ${styles.chatMessage}`}>
+                  {selectedGroup.members.length} thành viên
+                </p>
+              </div>
+            </div>
+          </>
+        ) : selectedUser ? (
           <>
             <div className="flex items-center">
               <button
@@ -324,7 +370,7 @@ export default function MainChat({
       </div>
 
       {/* Messages */}
-      {selectedUser ? (
+      {selectedUser || selectedGroup ? (
         <div
           className={`flex-1 overflow-y-auto overflow-x-hidden p-4 ${styles.messages}`}
           ref={messagesContainerRef}
@@ -369,13 +415,16 @@ export default function MainChat({
               const msgReceiverId = getId(msg.receiverId);
               const isCurrentUser = msgSenderId === userId;
               const isOtherUser =
-                selectedUser &&
-                (msgSenderId === selectedUser._id ||
-                  msgReceiverId === selectedUser._id);
+                (selectedUser &&
+                  (msgSenderId === selectedUser._id ||
+                    msgReceiverId === selectedUser._id)) ||
+                (selectedGroup && msg.groupId === selectedGroup._id);
               const messageKey = generateMessageKey(msg, index);
 
               // Chỉ render tin nhắn thuộc về cuộc hội thoại này
               if (!isOtherUser && !isCurrentUser) return null;
+
+              const senderUser = msgSenderId === userId ? null : availableUsers.find(u => u._id === msgSenderId) || (selectedGroup ? selectedGroup.members.find((m: any) => m._id === msgSenderId) : selectedUser);
 
               return (
                 <div
@@ -387,14 +436,15 @@ export default function MainChat({
                 >
                   <div className="max-w-md relative flex">
                     {/* Avatar chỉ hiển thị cho tin nhắn của người khác */}
-                    {!isCurrentUser && (
+                    {!isCurrentUser && senderUser && (
                       <div
                         className={`w-8 h-8 rounded-full overflow-hidden mr-3 relative flex-shrink-0 self-end ${styles.avatarContainer}`}
+                        title={senderUser.username}
                       >
-                        {selectedUser.profilePicture ? (
+                        {senderUser.profilePicture ? (
                           <Image
-                            src={selectedUser.profilePicture}
-                            alt={selectedUser.username}
+                            src={senderUser.profilePicture}
+                            alt={senderUser.username}
                             fill
                             className="object-cover"
                           />
@@ -406,7 +456,7 @@ export default function MainChat({
                               color: "var(--messenger-text)",
                             }}
                           >
-                            {selectedUser.username.charAt(0).toUpperCase()}
+                            {senderUser.username.charAt(0).toUpperCase()}
                           </div>
                         )}
                       </div>
@@ -414,6 +464,10 @@ export default function MainChat({
 
                     {/* Container cho nội dung tin nhắn */}
                     <div className={`flex-1 ${styles.action}`}>
+                      {/* Name in Group */}
+                      {!isCurrentUser && selectedGroup && senderUser && (
+                         <div className="text-xs text-gray-400 mb-1 ml-1">{senderUser.username}</div>
+                      )}
                       {/* Message Actions */}
                       {!preview && (
                         <div
@@ -837,6 +891,15 @@ export default function MainChat({
           src={previewMedia.src}
           type={previewMedia.type}
           onClose={() => setPreviewMedia(null)}
+        />
+      )}
+
+      {selectedGroup && (
+        <GroupMembersModal
+          isOpen={showGroupMembers}
+          onClose={() => setShowGroupMembers(false)}
+          group={selectedGroup}
+          handleUserClick={handleUserClick}
         />
       )}
     </div>
