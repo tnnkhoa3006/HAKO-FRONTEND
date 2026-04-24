@@ -136,7 +136,9 @@ export default function SiderBar({
         ...newChatData,
         user: {
           ...newChatData.user,
-          isOnline: isUserOnline(newChatData.user._id),
+          isOnline: newChatData.user.isBot
+            ? true
+            : isUserOnline(newChatData.user._id),
         },
       });
     },
@@ -192,7 +194,8 @@ export default function SiderBar({
           username: chatPartnerUser.username || "Unknown User",
           profilePicture: chatPartnerUser.profilePicture || "",
           checkMark: chatPartnerUser.checkMark || false,
-          isOnline: isUserOnline(chatPartnerId),
+          isBot: chatPartnerUser.isBot || false,
+          isOnline: chatPartnerUser.isBot ? true : isUserOnline(chatPartnerId),
           lastActive: String(
             chatPartnerUser.lastActive || new Date().toISOString()
           ),
@@ -258,9 +261,13 @@ export default function SiderBar({
       try {
         setIsLoading(true);
         const chats = await getRecentChats();
-        const filtered = chats.filter(
-          (chat) => chat.user && chat.user._id !== userId
-        );
+        const filtered = chats
+          .filter((chat) => chat.user && chat.user._id !== userId)
+          .sort((a, b) => {
+            if (a.user.isBot && !b.user.isBot) return -1;
+            if (!a.user.isBot && b.user.isBot) return 1;
+            return 0;
+          });
         setRecentChats(filtered);
       } catch (error) {
         console.error("Error fetching recent chats:", error);
@@ -335,6 +342,7 @@ export default function SiderBar({
       username: chat.user.username,
       profilePicture: chat.user.profilePicture ?? "",
       checkMark: chat.user.checkMark ?? false,
+      isBot: (chat.user as ExtendedUser).isBot ?? false,
       lastActive: chat.user.lastActive ?? "",
       lastOnline: chat.user.lastOnline ?? "",
       id: chat.user._id,
@@ -435,24 +443,36 @@ export default function SiderBar({
     }
   }, [searchQuery]);
 
-  const filteredChats = recentChats.filter((chat) => {
-    const currentId = currentUserIdRef.current;
-    return (
-      chat.user &&
-      chat.user._id !== currentId &&
-      chat.user.username.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  });
+  const filteredChats = [...recentChats]
+    .filter((chat) => {
+      const currentId = currentUserIdRef.current;
+      return (
+        chat.user &&
+        chat.user._id !== currentId &&
+        chat.user.username.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    })
+    .sort((a, b) => {
+      if (a.user.isBot && !b.user.isBot) return -1;
+      if (!a.user.isBot && b.user.isBot) return 1;
+      return 0;
+    });
 
   const chatUserIds = recentChats.map((chat) => chat.user._id);
-  const filteredAvailableUsers = availableUsers.filter((user) => {
-    const currentId = currentUserIdRef.current;
-    return (
-      user._id !== currentId &&
-      !chatUserIds.includes(user._id) &&
-      user.username.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  });
+  const filteredAvailableUsers = [...availableUsers]
+    .filter((user) => {
+      const currentId = currentUserIdRef.current;
+      return (
+        user._id !== currentId &&
+        !chatUserIds.includes(user._id) &&
+        user.username.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+    })
+    .sort((a, b) => {
+      if (a.isBot && !b.isBot) return -1;
+      if (!a.isBot && b.isBot) return 1;
+      return a.username.localeCompare(b.username);
+    });
 
   const handleBackClick = () => {
     router.push("/");
@@ -617,7 +637,7 @@ export default function SiderBar({
                     if (!chat.user) return null;
                     const isChatSelected =
                       selectedUser && selectedUser._id === chat.user._id;
-                    const isOnline = chat.user.isOnline ?? false;
+                    const isOnline = chat.user.isBot ? true : chat.user.isOnline ?? false;
                     const hasUnreadMessage =
                       chat.lastMessage &&
                       !chat.lastMessage.isOwnMessage &&
@@ -731,7 +751,7 @@ export default function SiderBar({
                   {filteredAvailableUsers.map((user) => {
                     const isChatSelected =
                       selectedUser && selectedUser._id === user._id;
-                    const isOnline = isUserOnline(user._id);
+                    const isOnline = user.isBot ? true : isUserOnline(user._id);
                     const hasStory = user.hasStory === true;
                     return (
                       <div

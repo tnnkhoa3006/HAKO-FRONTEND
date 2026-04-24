@@ -5,6 +5,7 @@ interface RecentChatsState {
   recentChats: RecentChat[];
   setRecentChats: (chats: RecentChat[]) => void;
   updateRecentChat: (chat: RecentChat) => void;
+  removeRecentChat: (userId: string) => void;
   clearRecentChats: () => void;
 }
 
@@ -24,5 +25,9 @@ export const useRecentChatsStore = create<RecentChatsState>((set) => ({
         return { recentChats: [chat, ...state.recentChats] };
       }
     }),
+  removeRecentChat: (userId) =>
+    set((state) => ({
+      recentChats: state.recentChats.filter((chat) => chat.user._id !== userId),
+    })),
   clearRecentChats: () => set({ recentChats: [] }),
 }));

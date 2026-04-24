@@ -15,8 +15,11 @@ import {
   addMessage,
   setShowMainChat,
   resetMessagesState,
+  clearConversation,
 } from "@/store/messengerSlice";
 import { useNotification } from "@/utils/useNotification";
+import { deleteConversationMessages } from "@/server/messenger";
+import { useRecentChatsStore } from "@/store/recentChatsStore";
 
 import SiderBar from "./SiderBar";
 import MainChat from "./MainChat";
@@ -48,6 +51,7 @@ export default function MessengerComponent({
     showMainChat,
   } = useAppSelector((state) => state.messenger);
   const { notify } = useNotification();
+  const removeRecentChat = useRecentChatsStore((state) => state.removeRecentChat);
 
   const searchParams = useSearchParams();
   const [userId, setUserId] = useState("");
@@ -55,6 +59,8 @@ export default function MessengerComponent({
   const [filePreview, setFilePreview] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [lastFetchReplace, setLastFetchReplace] = useState(false);
+  const [isBotThinking, setIsBotThinking] = useState(false);
+  const [isClearingBotHistory, setIsClearingBotHistory] = useState(false);
 
   // State để kiểm soát việc hiển thị thông báo khi đã đóng modal
   const [isClosed, setIsClosed] = useState(false);
@@ -92,6 +98,7 @@ export default function MessengerComponent({
       mediaUrl?: string;
       mediaType?: "image" | "video" | "file";
       isOwnMessage?: boolean;
+      botPayload?: Message["botPayload"];
     }) => {
       let replyToValue: string | null = null;
       if (msg.replyTo) {
@@ -121,7 +128,16 @@ export default function MessengerComponent({
         mediaUrl: msg.mediaUrl,
         mediaType: msg.mediaType,
         isOwnMessage: msg.isOwnMessage,
+        botPayload: msg.botPayload ?? null,
       };
+
+      if (
+        selectedUser?.isBot &&
+        convertedMsg.senderId === selectedUser._id &&
+        convertedMsg.receiverId === userId
+      ) {
+        setIsBotThinking(false);
+      }
 
       if (
         (selectedUser &&
@@ -177,6 +193,12 @@ export default function MessengerComponent({
     availableUsers,
     isClosed,
   ]);
+
+  useEffect(() => {
+    if (!selectedUser?.isBot) {
+      setIsBotThinking(false);
+    }
+  }, [selectedUser?._id, selectedUser?.isBot]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
@@ -242,8 +264,10 @@ export default function MessengerComponent({
     };
   }, [dispatch]);
 
-  const handleSendMessage = async () => {
-    if ((!message.trim() && !file) || (!selectedUser && !selectedGroup) || !userId) return;
+  const handleSendMessage = async (overrideMessage?: string) => {
+    const outgoingMessage = (overrideMessage ?? message).trim();
+    if ((!outgoingMessage && !file) || (!selectedUser && !selectedGroup) || !userId) return;
+    const shouldShowBotThinking = !!selectedUser?.isBot && !selectedGroup;
     let replyToId: string | undefined = undefined;
     if (replyTo) {
       if (typeof replyTo === "string") {
@@ -257,6 +281,9 @@ export default function MessengerComponent({
       }
     }
     if (file) {
+      if (shouldShowBotThinking) {
+        setIsBotThinking(true);
+      }
       const reader = new FileReader();
       reader.onload = () => {
         const base64 = reader.result as string;
@@ -271,7 +298,7 @@ export default function MessengerComponent({
           senderId: userId,
           receiverId: selectedGroup ? undefined : selectedUser?._id,
           groupId: selectedGroup?._id,
-          message: message || "",
+          message: outgoingMessage || "",
           tempId: Date.now().toString(),
           replyTo: replyToId,
           media: base64,
@@ -288,17 +315,43 @@ export default function MessengerComponent({
       };
       reader.readAsDataURL(file);
     } else {
+      if (shouldShowBotThinking) {
+        setIsBotThinking(true);
+      }
       const msgPayload = {
         senderId: userId,
         receiverId: selectedGroup ? undefined : selectedUser?._id,
         groupId: selectedGroup?._id,
-        message,
+        message: outgoingMessage,
         replyTo: replyToId,
       };
       socketService.sendMessage(msgPayload);
     }
     dispatch(setMessage(""));
     dispatch({ type: "messenger/clearReplyTo" });
+  };
+
+  const handleClearBotHistory = async () => {
+    if (!selectedUser?.isBot || isClearingBotHistory) return;
+
+    const shouldDelete = window.confirm(
+      "Ban co chac muon xoa toan bo lich su chat voi HakoBot khong?"
+    );
+
+    if (!shouldDelete) return;
+
+    try {
+      setIsClearingBotHistory(true);
+      await deleteConversationMessages(selectedUser._id);
+      dispatch(clearConversation({ userId: selectedUser._id, isGroup: false }));
+      removeRecentChat(selectedUser._id);
+      setIsBotThinking(false);
+    } catch (error) {
+      console.error("Failed to clear bot history:", error);
+      window.alert("Khong the xoa lich su chat voi HakoBot luc nay.");
+    } finally {
+      setIsClearingBotHistory(false);
+    }
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -413,6 +466,9 @@ export default function MessengerComponent({
             fileInputRef={fileInputRef}
             preview={true}
             replace={lastFetchReplace}
+            isBotThinking={isBotThinking}
+            isClearingBotHistory={isClearingBotHistory}
+            onClearBotHistory={handleClearBotHistory}
           />
         </div>
       );
@@ -481,6 +537,9 @@ export default function MessengerComponent({
         setFilePreview={setFilePreview}
         fileInputRef={fileInputRef}
         replace={lastFetchReplace}
+        isBotThinking={isBotThinking}
+        isClearingBotHistory={isClearingBotHistory}
+        onClearBotHistory={handleClearBotHistory}
       />
     </div>
   );

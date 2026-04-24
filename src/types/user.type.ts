@@ -32,6 +32,44 @@ export interface User {
   lastActiveTime?: string;
   lastOnlineTime?: string;
   hasStories?: boolean;
+  isBot?: boolean;
+}
+
+export interface BotSuggestion {
+  label: string;
+  prompt: string;
+}
+
+export interface BotSearchResultPost {
+  _id: string;
+  link: string;
+  caption: string;
+  excerpt: string;
+  type: "image" | "video" | "text";
+  fileUrl?: string;
+  createdAt: string;
+  aiTopics?: string[];
+  author: {
+    _id: string;
+    username: string;
+    fullName?: string;
+    profilePicture?: string;
+    checkMark?: boolean;
+    isBot?: boolean;
+  };
+}
+
+export interface BotPayload {
+  type: string;
+  topic?: string;
+  query?: string;
+  topics?: string[];
+  offset?: number;
+  nextOffset?: number;
+  total?: number;
+  hasMore?: boolean;
+  suggestions?: string[] | BotSuggestion[];
+  posts?: BotSearchResultPost[];
 }
 
 export interface Message {
@@ -52,6 +90,7 @@ export interface Message {
   mediaType?: "image" | "video" | "file";
   isOwnMessage?: boolean;
   tempId?: string; // Add this line for optimistic update and deduplication
+  botPayload?: BotPayload | null;
 }
 
 export interface UploadAvatarResponse {

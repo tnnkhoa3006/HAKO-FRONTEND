@@ -14,7 +14,7 @@ import {
 export type MessageInputProps = {
   message: string;
   setMessage: (value: string) => void;
-  handleSendMessage: () => void;
+  handleSendMessage: (overrideMessage?: string) => void;
   handleKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   inputStory?: boolean;
   // --- Reply feature ---
@@ -220,7 +220,7 @@ export default function MessageInput({
             onChange={(e) => setMessage(e.target.value)}
             onKeyPress={handleKeyPress}
             placeholder="Message..."
-            className={`flex-1 bg-transparent px-4 py-2 focus:outline-none ${styles.inputText}`}
+            className={`flex-1 bg-transparent px-2 py-2 focus:outline-none ${styles.inputText}`}
           />
           <button
             className={`mr-2 flex-shrink-0 ${styles.inputIcon}`}
@@ -246,7 +246,7 @@ export default function MessageInput({
         </div>
         <button
           className={`ml-3 flex-shrink-0 ${styles.inputIcon}`}
-          onClick={handleSendMessage}
+          onClick={() => handleSendMessage()}
         >
           <div className="flex items-center justify-center h-8 w-8">
             {message || file ? (

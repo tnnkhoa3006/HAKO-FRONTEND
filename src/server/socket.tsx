@@ -2,6 +2,7 @@
 "use client";
 
 import { io, Socket } from "socket.io-client";
+import type { BotPayload } from "@/types/user.type";
 
 // --- Type Definitions (from your "after" code) ---
 export type MessageData = {
@@ -13,6 +14,7 @@ export type MessageData = {
     username: string;
     profilePicture?: string;
     checkMark?: boolean;
+    isBot?: boolean;
     lastActive?: string;
     lastOnline?: string;
     _id?: string;
@@ -33,6 +35,7 @@ export type MessageData = {
         createdAt: string;
       }
     | null;
+  botPayload?: BotPayload | null;
 };
 
 type GenericMessagePayload = {

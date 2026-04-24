@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Trash2 } from "lucide-react";
 import { MdOutlineReply } from "react-icons/md";
 import { HiOutlineFaceSmile } from "react-icons/hi2";
 import { IoMdMore } from "react-icons/io";
@@ -15,6 +15,7 @@ import { OnlineIndicator } from "@/components/OnlineIndicator";
 import StoryAvatar from "@/components/Story/StoryAvatar";
 import { useHandleUserClick } from "@/utils/useHandleUserClick";
 import MessageInput from "./MessageInput";
+import MessageBubble from "./MessageBubble";
 import { ReplyMessageDisplayText, ReplyMessageBubble } from "./ReplyMessage";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { clearReplyTo, setReplyTo } from "@/store/messengerSlice";
@@ -38,7 +39,7 @@ export type MainChatProps = {
   messages: Message[];
   message: string;
   setMessage: (msg: string) => void;
-  handleSendMessage: () => void;
+  handleSendMessage: (overrideMessage?: string) => void;
   handleKeyPress: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   loading: boolean;
   userId: string;
@@ -56,6 +57,9 @@ export type MainChatProps = {
   fileInputRef?: React.RefObject<HTMLInputElement | null>;
   preview?: boolean;
   replace?: boolean;
+  isBotThinking?: boolean;
+  isClearingBotHistory?: boolean;
+  onClearBotHistory?: () => void;
 };
 
 export default function MainChat({
@@ -82,6 +86,9 @@ export default function MainChat({
   fileInputRef,
   preview = false,
   replace = false,
+  isBotThinking = false,
+  isClearingBotHistory = false,
+  onClearBotHistory,
 }: MainChatProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
@@ -196,6 +203,7 @@ export default function MainChat({
 
   const getActivityStatus = (user: User) => {
     if (!user) return "";
+    if (user.isBot) return "Tro ly AI cua Hako";
     return timeOffline;
   };
 
@@ -229,6 +237,14 @@ export default function MainChat({
       messagesEndRef.current.scrollIntoView({ behavior: "auto" });
     }
   }, [replace, messages.length]);
+
+  useEffect(() => {
+    if (isBotThinking && messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [isBotThinking]);
+
+  const isSelectedBot = !!selectedUser?.isBot;
 
   return (
     <div
@@ -320,7 +336,7 @@ export default function MainChat({
                   initialIndex={0}
                 />
                 <OnlineIndicator
-                  isOnline={isUserOnline(selectedUser._id)}
+                  isOnline={isSelectedBot || isUserOnline(selectedUser._id)}
                   className="absolute bottom-[-5] right-[-8px]"
                 />
               </div>
@@ -357,12 +373,28 @@ export default function MainChat({
                 </p>
               </div>
             </div>
-            <Call
-              userId={userId}
-              calleeId={selectedUser._id}
-              ringtoneRef={ringtoneRef}
-              availableUsers={availableUsers}
-            />
+            <div className={styles.chatHeaderActions}>
+              {isSelectedBot && onClearBotHistory ? (
+                <button
+                  type="button"
+                  className={`${styles.botHeaderAction} ${styles.botDangerAction}`}
+                  onClick={onClearBotHistory}
+                  disabled={isClearingBotHistory}
+                >
+                  <Trash2 className="h-4 w-4" />
+                  <span className="cursor-pointer">
+                    {isClearingBotHistory ? "Dang xóa..." : "Xóa lịch sử"}
+                  </span>
+                </button>
+              ) : (
+                <Call
+                  userId={userId}
+                  calleeId={selectedUser._id}
+                  ringtoneRef={ringtoneRef}
+                  availableUsers={availableUsers}
+                />
+              )}
+            </div>
           </>
         ) : (
           <div className={`w-full text-center min-h-[28px] ${styles.metaText}`}></div>
@@ -619,6 +651,12 @@ export default function MainChat({
                             )}
 
                             {/* Media với width riêng biệt */}
+                            <MessageBubble
+                              message={msg}
+                              isCurrentUser={isCurrentUser}
+                              onQuickReply={handleSendMessage}
+                            />
+
                             {msg.mediaUrl && (
                               <div
                                 className="overflow-hidden w-fit relative group"
@@ -827,6 +865,34 @@ export default function MainChat({
               <p className={styles.emptyText}>
                 Chưa có tin nhắn nào. Hãy bắt đầu cuộc trò chuyện!
               </p>
+            </div>
+          )}
+          {isSelectedBot && isBotThinking && selectedUser && (
+            <div className={`${styles.messageContainer} flex mb-4`}>
+              <div className="max-w-md relative flex">
+                <div
+                  className={`w-8 h-8 rounded-full overflow-hidden mr-3 relative flex-shrink-0 self-end ${styles.avatarContainer}`}
+                  title={selectedUser.username}
+                >
+                  {selectedUser.profilePicture ? (
+                    <Image
+                      src={selectedUser.profilePicture}
+                      alt={selectedUser.username}
+                      fill
+                      className="object-cover"
+                    />
+                  ) : (
+                    <div className={styles.botTypingAvatarFallback}>
+                      {selectedUser.username.charAt(0).toUpperCase()}
+                    </div>
+                  )}
+                </div>
+                <div className={styles.botTypingBubble}>
+                  <span className={styles.botTypingDot}></span>
+                  <span className={styles.botTypingDot}></span>
+                  <span className={styles.botTypingDot}></span>
+                </div>
+              </div>
             </div>
           )}
           <div ref={messagesEndRef} />

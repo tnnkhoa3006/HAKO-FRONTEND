@@ -6,18 +6,44 @@ import type { Group } from "@/types/messenger.types";
 
 const BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api`;
 
+export const deleteConversationMessages = async (
+  userId: string
+): Promise<void> => {
+  const token = getAuthToken();
+  if (!token) throw new Error("Khong co token xac thuc");
+
+  const response = await fetch(`${BASE_URL}/messenger/messages/${userId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Khong the xoa lich su tro chuyen");
+  }
+};
+
 export type AvailableUser = {
   _id: string;
   username: string;
+  fullName?: string;
   profilePicture?: string;
+  checkMark?: boolean;
+  isBot?: boolean;
+  lastActive?: string;
+  lastOnline?: string;
+  hasStory?: boolean;
 };
 
 export type RecentChat = {
   user: {
     _id: string;
     username: string;
+    fullName?: string;
     profilePicture?: string;
     checkMark: boolean;
+    isBot?: boolean;
     isOnline: boolean;
     lastActive: string;
     lastOnline: string;
