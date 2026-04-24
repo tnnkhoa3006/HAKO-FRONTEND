@@ -141,7 +141,7 @@ export const addCommentToPost = async (
  * Type definition for commentable items.
  * 'image' will be mapped to 'post' by the backend's mapItemType function.
  */
-export type CommentableItemType = "post" | "reel" | "video" | "image";
+export type CommentableItemType = "post" | "reel" | "video" | "image" | "text";
 
 /**
  * Fetches comments for a specific item (post, reel, or video).

@@ -49,7 +49,6 @@ export default function CaptionStep({
     );
 
     setCaption(nextValue);
-    setShowEmojiPicker(false);
     focusAndRestoreSelection(textareaRef.current, cursorPosition);
   };
 

@@ -10,9 +10,10 @@ export interface Post {
   likes: number;
   _id: string;
   caption: string;
+  desc?: string;
   fileUrl: string;
   filePublicId: string;
-  type: "image" | "video";
+  type: "image" | "video" | "text";
   author: Author;
   createdAt: string; // ISO date string
   updatedAt: string;

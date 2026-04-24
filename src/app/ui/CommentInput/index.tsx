@@ -122,7 +122,6 @@ export default function CommentInput({
     );
 
     updateInputValue(nextValue);
-    setShowEmojiPicker(false);
     focusAndRestoreSelection(inputRef.current, cursorPosition);
   };
 

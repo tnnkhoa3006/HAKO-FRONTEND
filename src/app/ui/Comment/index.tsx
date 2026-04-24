@@ -28,6 +28,8 @@ export default function Comment({
   animationClass?: string;
 }) {
   const dispatch = useDispatch<AppDispatch>();
+  const commentItemType =
+    post.type === "video" ? "video" : ("post" as const);
 
   // STATE ĐỂ QUẢN LÝ REPLY CHO MOBILE VIEW
   const [replyTo, setReplyTo] = useState<ReplyData | null>(null);
@@ -94,27 +96,25 @@ export default function Comment({
     // Load more when scrolled 80% down
     if (scrollPercentage > 0.8) {
       // Lấy itemType động từ post.type
-      const itemType = post.type as "post" | "reel" | "image";
       dispatch(
         loadMoreComments({
           itemId: post._id,
-          itemType,
+          itemType: commentItemType,
           limit: 15,
         })
       );
     }
-  }, [dispatch, post._id, post.type, metrics?.hasMore, loadingMore]);
+  }, [commentItemType, dispatch, post._id, metrics?.hasMore, loadingMore]);
 
   useEffect(() => {
     // Lấy itemType động từ post.type
-    const itemType = post.type as "post" | "reel" | "image";
-    dispatch(setActiveItem({ id: post._id, type: itemType }));
+    dispatch(setActiveItem({ id: post._id, type: commentItemType }));
 
     // Initial fetch with limit (API only ONCE)
     dispatch(
       fetchComments({
         itemId: post._id,
-        itemType,
+        itemType: commentItemType,
         limit: 15,
       })
     );
@@ -152,7 +152,7 @@ export default function Comment({
       socketService.offCommentsUpdated(handleCommentsUpdated);
       dispatch(clearActiveItem());
     };
-  }, [dispatch, post._id, post.type]);
+  }, [commentItemType, dispatch, post._id]);
 
   // Add scroll listener
   useEffect(() => {

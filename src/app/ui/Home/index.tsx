@@ -131,11 +131,21 @@ const PostItem = memo(
     onCloseRelatedOverlay?: () => void;
   }) => {
     const [showAiSummary, setShowAiSummary] = useState(false);
+    const [isExpanded, setIsExpanded] = useState(false);
+
     const author = post.author;
     const authorUsername = author?.username || "Người dùng";
     const authorProfilePicture =
       author?.profilePicture || "/api/placeholder/40/40";
     const hasAuthorProfile = Boolean(author?._id || author?.username);
+    const postText = post.caption?.trim() || post.desc?.trim() || "";
+    const isTextOnlyPost = post.type === "text" || !post.fileUrl;
+ 
+    const CHAR_LIMIT = 260;
+    const isLongText = postText.length > CHAR_LIMIT;
+    const displayPostText = isLongText && !isExpanded 
+      ? postText.slice(0, CHAR_LIMIT) + "..." 
+      : postText;
 
     return (
       <div
@@ -233,9 +243,29 @@ const PostItem = memo(
         </div>
 
         <div
-          className={`${styles.mediaContainerResponsiveBg} relative w-full aspect-square`}
+          className={`${styles.mediaContainerResponsiveBg} relative w-full ${
+            isTextOnlyPost ? styles.textPostWrapper : "aspect-square"
+          }`}
         >
-          {post.type === "image" ? (
+          {isTextOnlyPost ? (
+            <div className={`${styles.textPostCard} ${isExpanded ? styles.expanded : ""}`}>
+              <div className={styles.textPostTexture}></div>
+              <div className={styles.textPostContent}>
+                <p className={styles.textPostCaption}>{displayPostText}</p>
+                {isLongText && (
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setIsExpanded(!isExpanded);
+                    }}
+                    className={styles.seeMoreBtn}
+                  >
+                    {isExpanded ? "Thu gọn" : "Xem thêm"}
+                  </button>
+                )}
+              </div>
+            </div>
+          ) : post.type === "image" ? (
             <Image
               src={post.fileUrl}
               alt={post.caption}
@@ -310,7 +340,8 @@ const PostItem = memo(
           {format(post.totalLikes)} lượt thích
         </div>
 
-        <div className="px-3 pb-2" style={{ color: "var(--post-subtext)" }}>
+        {!isTextOnlyPost && (
+          <div className="px-3 pb-2" style={{ color: "var(--post-subtext)" }}>
           <span
             className={`font-semibold mr-2 cursor-pointer hover:underline`}
             style={{ color: "var(--post-text)" }}
@@ -340,7 +371,8 @@ const PostItem = memo(
               )}
             </div>
           )}
-        </div>
+          </div>
+        )}
         <button
           className={`px-3 pt-1 pb-2 text-sm text-[#8e8e8e] cursor-pointer hover:underline ${styles.commentInput}`}
           onClick={(e) => onOpenComments(post, e)}

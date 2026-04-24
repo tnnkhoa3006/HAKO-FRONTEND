@@ -8,6 +8,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useNavItems } from "@/app/hooks/useNavItems";
 import StoryUserHome from "@/components/StoryUserHome";
+import HomeCaptionComposer from "@/components/HomeCaptionComposer";
 import { usePostContext } from "@/contexts/PostContext";
 import Suggestions from "@/components/Suggestions";
 import MessengerPreview from "@/components/MessengerPreview";
@@ -305,6 +306,7 @@ export default function Home() {
       </div>
 
       <StoryUserHome />
+      <HomeCaptionComposer />
 
       {/* Virtualized Posts */}
       {loading ? (

@@ -50,6 +50,8 @@ export default function PostModal({
 
   // Lấy post mới nhất từ context nếu có
   const currentPost = posts.find((p) => p._id === post._id) || post;
+  const modalText = currentPost.caption?.trim() || currentPost.desc?.trim() || "";
+  const isTextOnlyPost = currentPost.type === "text" || !currentPost.fileUrl;
 
   // Function để xác định object-fit dựa trên tỷ lệ khung hình
   const determineObjectFit = (
@@ -188,22 +190,33 @@ export default function PostModal({
       }
     >
       {/* Phần hình ảnh */}
-      <div className={styles.imageContainer}>
-        {post.type === "image" ? (
+      <div
+        className={`${styles.imageContainer} ${
+          isTextOnlyPost ? styles.imageContainerTextOnly : ""
+        }`}
+      >
+        {isTextOnlyPost ? (
+          <div className={styles.textCard}>
+            <div className={styles.textCardTexture}></div>
+            <div className={styles.textCardContent}>
+              <p className={styles.textCardCaption}>{modalText}</p>
+            </div>
+          </div>
+        ) : currentPost.type === "image" ? (
           <Image
             ref={imageRef}
-            src={post.fileUrl}
+            src={currentPost.fileUrl}
             alt="Post"
             className={styles.postImage}
             layout="fill"
             objectFit={objectFit}
             onLoad={handleImageLoad}
           />
-        ) : post.type === "video" ? (
+        ) : currentPost.type === "video" ? (
           <video
             ref={videoRef}
             className={styles.postVideo}
-            src={post.fileUrl}
+            src={currentPost.fileUrl}
             autoPlay={true}
             loop={false}
             muted={false}
@@ -233,10 +246,10 @@ export default function PostModal({
         <div className={styles.postHeader}>
           <div className={styles.userInfo}>
             <div className={styles.avatarContainer}>
-              {post.author?.profilePicture ? (
+              {currentPost.author?.profilePicture ? (
                 <Image
-                  src={post.author.profilePicture}
-                  alt={post.author.profilePicture}
+                  src={currentPost.author.profilePicture}
+                  alt={currentPost.author.profilePicture}
                   width={32}
                   height={32}
                   className={styles.avatar}
@@ -247,8 +260,8 @@ export default function PostModal({
             </div>
             <div className={styles.userDetails}>
               <span className={`${styles.username} flex items-center gap-0.5`}>
-                {post.author?.username}
-                {post.author?.checkMark && (
+                {currentPost.author?.username}
+                {currentPost.author?.checkMark && (
                   <span
                     style={{
                       display: "inline-block",
@@ -273,13 +286,15 @@ export default function PostModal({
                   </span>
                 )}
               </span>
-              <ShortenCaption
-                text={post.caption}
-                maxLines={1}
-                className={styles.caption}
-              />
+              {!isTextOnlyPost && (
+                <ShortenCaption
+                  text={currentPost.caption}
+                  maxLines={1}
+                  className={styles.caption}
+                />
+              )}
 
-              {post.aiSummary && (
+              {currentPost.aiSummary && (
                 <div className={styles.aiSummaryWrapper}>
                   <button
                     className={`${styles.aiSummaryToggle} ${showAiSummary ? styles.active : ""}`}
@@ -295,7 +310,7 @@ export default function PostModal({
 
                   {showAiSummary && (
                     <div className={styles.aiSummaryContainer}>
-                      <p className={styles.aiSummaryText}>{post.aiSummary}</p>
+                      <p className={styles.aiSummaryText}>{currentPost.aiSummary}</p>
                     </div>
                   )}
                 </div>

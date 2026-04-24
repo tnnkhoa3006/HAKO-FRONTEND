@@ -92,13 +92,19 @@ export default function OverlayRelatedPosts({
               className={styles.item}
             >
               <div className={styles.imageWrapper}>
-                <Image
-                  src={post.fileUrl || ""}
-                  alt={post.caption || "Related post"}
-                  fill
-                  sizes="(max-width: 768px) 50vw, 25vw"
-                  className={styles.image}
-                />
+                {post.type === "text" || !post.fileUrl ? (
+                  <div className={styles.textCard}>
+                    <p>{post.caption || "Bài viết chữ"}</p>
+                  </div>
+                ) : (
+                  <Image
+                    src={post.fileUrl}
+                    alt={post.caption || "Related post"}
+                    fill
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                    className={styles.image}
+                  />
+                )}
               </div>
               {post.caption && (
                 <div className={styles.captionOverlay}>

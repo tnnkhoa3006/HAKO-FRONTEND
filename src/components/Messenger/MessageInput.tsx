@@ -88,7 +88,6 @@ export default function MessageInput({
     );
 
     setMessage(nextValue);
-    setShowEmojiPicker(false);
     focusAndRestoreSelection(inputRef.current, cursorPosition);
   };
 

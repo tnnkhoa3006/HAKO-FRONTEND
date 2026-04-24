@@ -60,6 +60,120 @@
   }
 }
 
+.textPostWrapper {
+  min-height: 420px;
+
+  @media (max-width: 768px) {
+    min-height: 360px;
+  }
+}
+
+.textPostCard {
+  position: relative;
+  min-height: 420px;
+  height: 100%;
+  padding: 28px;
+  display: flex;
+  align-items: stretch;
+  border-radius: 22px;
+  overflow: hidden;
+  background: var(--surface-media);
+  border: 1px solid var(--divider-soft);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+
+  @media (max-width: 768px) {
+    min-height: 360px;
+    border-radius: 0;
+  }
+ 
+  &.expanded {
+    height: auto;
+    min-height: 420px;
+  }
+}
+
+.textPostTexture {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 0, rgba(255, 255, 255, 0.03) 1px, transparent 1px, transparent 100%),
+    linear-gradient(rgba(255, 255, 255, 0.02) 0, rgba(255, 255, 255, 0.02) 1px, transparent 1px, transparent 100%);
+  background-size: 24px 24px;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.textPostContent {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  backdrop-filter: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: none;
+}
+
+.textPostBadge {
+  display: inline-flex;
+  align-self: flex-start;
+  padding: 6px 12px;
+  border-radius: 999px;
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: var(--accent-soft);
+  color: var(--accent-color);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.textPostCaption {
+  margin: 0;
+  color: var(--post-text);
+  font-size: clamp(1.2rem, 2.2vw, 1.8rem);
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 90%;
+}
+ 
+.seeMoreBtn {
+  margin-top: 16px;
+  background: var(--accent-soft);
+  color: var(--accent-color);
+  border: 1px solid rgba(102, 217, 255, 0.2);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+ 
+  &:hover {
+    background: var(--accent-color);
+    color: #fff;
+    transform: translateY(-1px);
+  }
+}
+
 .mobileOverlay {
   position: fixed;
   top: 0;

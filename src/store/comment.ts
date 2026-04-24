@@ -209,7 +209,11 @@ const commentSlice = createSlice({
     setActiveItem: (state, action: PayloadAction<{ id: string; type: CommentableItemType }>) => {
       const { id, type } = action.payload;
       if (state.activeItem) {
-        if (state.activeItem.type === 'post' || state.activeItem.type === 'image') {
+        if (
+          state.activeItem.type === 'post' ||
+          state.activeItem.type === 'image' ||
+          state.activeItem.type === 'text'
+        ) {
           socketService.leavePostRoom(state.activeItem.id);
         } else if (state.activeItem.type === 'reel') {
           socketService.leaveReelRoom(state.activeItem.id);
@@ -224,7 +228,11 @@ const commentSlice = createSlice({
     },
     clearActiveItem: (state) => {
       if (state.activeItem) {
-        if (state.activeItem.type === 'post' || state.activeItem.type === 'image') {
+        if (
+          state.activeItem.type === 'post' ||
+          state.activeItem.type === 'image' ||
+          state.activeItem.type === 'text'
+        ) {
           socketService.leavePostRoom(state.activeItem.id);
         } else if (state.activeItem.type === 'reel') {
           socketService.leaveReelRoom(state.activeItem.id);

@@ -36,7 +36,6 @@ export default function InputStory({
     );
 
     setMessage(nextValue);
-    setShowEmojiPicker(false);
     focusAndRestoreSelection(inputRef.current, cursorPosition);
   };
 

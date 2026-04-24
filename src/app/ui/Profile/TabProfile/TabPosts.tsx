@@ -43,7 +43,11 @@ export default function TabPosts({ user }: { user: User }) {
           userId: user._id,
           username: user.username,
         });
-        setPosts(data);
+        setPosts(
+          data.filter(
+            (post: ProfilePost) => post.type !== "text" && Boolean(post.fileUrl)
+          )
+        );
       } catch (error) {
         console.error("Loi khi lay bai dang:", error);
       } finally {
