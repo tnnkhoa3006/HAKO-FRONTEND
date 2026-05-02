@@ -126,7 +126,7 @@ front-end/
 
 ```bash
 # Clone the repository
-git clone git@github.com:khoatnn/HAKO_Front-End.git
+git clone https://github.com/tnnkhoa3006/HAKO-FRONTEND.git
 cd HAKO_Front-End
 
 # Install dependencies
@@ -253,9 +253,9 @@ Copyright © 2025 khoatnn. All rights reserved.
 
 **khoatnn**
 
-- 📧 Email: [tokhoatnn@gmail.com](mailto:tokhoatnn@gmail.com)
+- 📧 Email: [khoat0360@gmail.com](mailto:khoat0360@gmail.com)
 - 📘 Facebook: [khoatnn63](https://www.facebook.com/khoatnn63/)
-- 💻 GitHub: [@khoatnn](https://github.com/khoatnn)
+- 💻 GitHub: [@khoatnn](https://github.com/tnnkhoa3006)
 
 ---
 
